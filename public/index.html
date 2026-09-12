@@ -342,6 +342,7 @@
 </head>
 <body>
 
+  <!-- Layar Splash Awal -->
   <div id="splash-screen">
     <div class="splash-content">
       <div class="splash-title">BLACKOUT</div>
@@ -349,14 +350,15 @@
     </div>
   </div>
 
-  <!-- Elemen audio standar HTML5 dengan sumber file mp3 eksternal yang stabil -->
+  <!-- Elemen Audio Lokal (Pastikan file bernama ambient.mp3 ada di folder yang sama) -->
   <audio id="bgAudio" loop preload="auto">
-    <source src="https://actions.google.com/sounds/v1/ambiences/deep_space_drone.ogg" type="audio/ogg">
-    <source src="https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=deep-space-ambient-10255.mp3" type="audio/mpeg">
+    <source src="ambient.mp3" type="audio/mpeg">
   </audio>
 
+  <!-- Container Animasi 3D Background -->
   <div id="canvas-container"></div>
 
+  <!-- Konten Utama -->
   <div class="container" id="mainContainer">
     <div class="top-bar">
       <div class="status-badge">
@@ -405,6 +407,7 @@
   </div>
 
   <script>
+    // Logika Pemutar Audio
     const bgAudio = document.getElementById('bgAudio');
     const splashScreen = document.getElementById('splash-screen');
     const mainContainer = document.getElementById('mainContainer');
@@ -412,7 +415,7 @@
     const audioText = document.getElementById('audioText');
     let isPlaying = false;
 
-    bgAudio.volume = 1.0;
+    bgAudio.volume = 0.8;
 
     function playAudio() {
       bgAudio.play().then(() => {
@@ -420,7 +423,7 @@
         audioToggleBtn.classList.add('playing');
         audioText.textContent = 'Sound: ON';
       }).catch(err => {
-        console.log("Autoplay blocked:", err);
+        console.log("Audio play blocked:", err);
       });
     }
 
@@ -447,6 +450,7 @@
       }
     });
 
+    // Efek Mouse Glow pada Kartu
     const cards = document.querySelectorAll('.glow-card');
     cards.forEach(card => {
       card.addEventListener('mousemove', e => {
@@ -458,6 +462,7 @@
       });
     });
 
+    // Setup Animasi 3D Three.js
     const container = document.getElementById('canvas-container');
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);

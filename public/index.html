@@ -51,6 +51,16 @@
       padding: 50px 20px;
     }
 
+    /* Top Bar Header Layout for Audio & Status */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
     /* Live Operational Status Badge */
     .status-badge {
       display: inline-flex;
@@ -63,8 +73,44 @@
       font-size: 0.7rem;
       letter-spacing: 2px;
       text-transform: uppercase;
-      margin-bottom: 22px;
       color: var(--text-secondary);
+    }
+
+    /* Cosmic Audio Control Button */
+    .audio-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-color);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .audio-btn:hover {
+      border-color: rgba(255, 255, 255, 0.6);
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .audio-icon {
+      width: 6px;
+      height: 6px;
+      background-color: var(--text-secondary);
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+
+    .audio-btn.playing .audio-icon {
+      background-color: #ffffff;
+      box-shadow: 0 0 8px #ffffff;
+      animation: pulse 1.5s infinite;
     }
 
     .pulse-dot {
@@ -193,7 +239,7 @@
       box-shadow: 0 10px 25px rgba(255, 255, 255, 0.25);
     }
 
-    /* Section Title dengan Garis Gradien Lembut (Tidak Menghalangi Latar Belakang) */
+    /* Section Title dengan Garis Gradien Lembut */
     .section-title {
       font-size: 0.95rem;
       font-weight: 800;
@@ -243,7 +289,7 @@
 
     .blog-card p {
       color: var(--text-secondary);
-      font-size: 0.9rem;
+      font-size: 0.90rem;
       line-height: 1.5;
     }
 
@@ -259,12 +305,19 @@
   <div id="canvas-container"></div>
 
   <div class="container">
-    <header class="profile-card glow-card">
-      <div class="glow-spot"></div>
+    <div class="top-bar">
       <div class="status-badge">
         <div class="pulse-dot"></div>
         System Operational
       </div>
+      <button class="audio-btn" id="audioToggle">
+        <div class="audio-icon"></div>
+        <span id="audioText">Sound: OFF</span>
+      </button>
+    </div>
+
+    <header class="profile-card glow-card">
+      <div class="glow-spot"></div>
       <div class="avatar-box">
         <img src="logo.JPG" alt="Honalabs Logo">
       </div>
@@ -299,6 +352,61 @@
   </div>
 
   <script>
+    // Sintesis Suara Ambient Luar Angkasa (Web Audio API - Space Drone)
+    let audioCtx = null;
+    let isPlaying = false;
+    let masterGain = null;
+    let oscillators = [];
+
+    function initSpaceAudio() {
+      if (audioCtx) return;
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      
+      masterGain = audioCtx.createGain();
+      masterGain.gain.setValueAtTime(0.08, audioCtx.currentTime); // Volume lembut dan nyaman
+      masterGain.connect(audioCtx.destination);
+
+      // Frekuensi nada rendah luar angkasa (Deep Cosmic Drone chords)
+      const freqs = [55, 110, 164.81, 220]; // Nada A minor cosmic drone
+      
+      freqs.forEach((f, index) => {
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        
+        osc.type = index % 2 === 0 ? 'sine' : 'triangle';
+        osc.frequency.setValueAtTime(f, audioCtx.currentTime);
+        
+        // Modulasi lembut agar suara terdengar hidup dan bernafas
+        gainNode.gain.setValueAtTime(0.02, audioCtx.currentTime);
+        
+        osc.connect(gainNode);
+        gainNode.connect(masterGain);
+        osc.start();
+        oscillators.push(osc);
+      });
+    }
+
+    const audioToggleBtn = document.getElementById('audioToggle');
+    const audioText = document.getElementById('audioText');
+
+    audioToggleBtn.addEventListener('click', () => {
+      initSpaceAudio();
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+
+      isPlaying = !isPlaying;
+      if (isPlaying) {
+        masterGain.gain.setTargetAtTime(0.12, audioCtx.currentTime, 1);
+        audioToggleBtn.classList.add('playing');
+        audioText.textContent = 'Sound: ON';
+      } else {
+        masterGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.5);
+        audioToggleBtn.classList.remove('playing');
+        audioText.textContent = 'Sound: OFF';
+      }
+    });
+
     // Efek Interaktif: Mengatur koordinat sorot kursor
     const cards = document.querySelectorAll('.glow-card');
     cards.forEach(card => {
@@ -311,7 +419,7 @@
       });
     });
 
-    // Three.js 3D Background dengan Efek Kilatan Cahaya (Glow Particles) pada Bola
+    // Three.js 3D Background dengan Kilatan Cahaya
     const container = document.getElementById('canvas-container');
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -325,13 +433,11 @@
     const group = new THREE.Group();
     scene.add(group);
 
-    // Geometri Bola (Icosahedron) dengan Wireframe Tipis
     const geo = new THREE.IcosahedronGeometry(2.2, 1);
     const mat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.18 });
     const mesh = new THREE.Mesh(geo, mat);
     group.add(mesh);
 
-    // Tambahan Partikel / Titik Kilatan Cahaya di setiap titik sudut bola
     const particleGeo = new THREE.BufferGeometry().copy(geo);
     const particleMat = new THREE.PointsMaterial({
       color: 0xffffff,
@@ -362,7 +468,6 @@
     function animate() {
       requestAnimationFrame(animate);
       
-      // Putar bola dan partikel cahaya secara bersamaan
       mesh.rotation.x += 0.004;
       mesh.rotation.y += 0.007;
       sparkPoints.rotation.x += 0.004;

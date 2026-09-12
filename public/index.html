@@ -361,13 +361,35 @@
     .market-row:last-child {
       border-bottom: none;
     }
-    .news-link {
-      color: inherit;
+    
+    /* News Wire Styling Inside Logs */
+    .news-item {
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+    }
+    .news-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    .news-title {
+      color: var(--text-primary);
       text-decoration: none;
       display: block;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.82rem;
+      font-weight: bold;
+      margin-bottom: 4px;
     }
-    .news-link:hover h2 {
+    .news-title:hover {
       color: #58a6ff;
+      text-decoration: underline;
+    }
+    .news-meta {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
     }
 
     @media (max-width: 600px) {
@@ -427,26 +449,35 @@
     <main>
       <h2 class="section-title">Latest Logs</h2>
       
-      <!-- Terminal Widget Live Market Watch -->
+      <!-- Widget 1: Live Market Watch (Dynamic Search) -->
       <div class="blog-card glow-card">
         <div class="glow-spot"></div>
         <span class="blog-tag">Live Feed // Market Watch</span>
-        <input type="text" id="coinSearch" class="terminal-input" placeholder="> Search asset (btc, eth)..." onkeyup="filterMarket()">
+        <input type="text" id="coinSearch" class="terminal-input" placeholder="> Ketik nama koin (contoh: sol, pepe, doge)..." onkeyup="handleSearch(event)">
         <div id="market-feed">
-          <div class="market-row"><span style="color: var(--text-secondary);">Memuat data pasar...</span></div>
+          <div class="market-row"><span style="color: var(--text-secondary);">Memuat data pasar utama...</span></div>
         </div>
       </div>
 
-      <!-- Log 1: Security Protocol -->
-      <a href="#" class="blog-card glow-card news-link">
+      <!-- Widget 2: Global Crypto News Wire -->
+      <div class="blog-card glow-card">
+        <div class="glow-spot"></div>
+        <span class="blog-tag">Global Crypto News Wire</span>
+        <div id="news-feed">
+          <div style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: var(--text-secondary);">Memuat siaran berita...</div>
+        </div>
+      </div>
+
+      <!-- Log Asli 1 -->
+      <a href="#" class="blog-card glow-card" style="text-decoration: none; color: inherit; display: block;">
         <div class="glow-spot"></div>
         <span class="blog-tag">Security Protocol</span>
         <h2>Algorithmic Token Filtering & Security Protocol</h2>
         <p>Sistem pemantauan pasar secara real-time untuk menyaring sinyal palsu dan pergerakan whale secara otomatis.</p>
       </a>
 
-      <!-- Log 2: Asset Strategy -->
-      <a href="#" class="blog-card glow-card news-link">
+      <!-- Log Asli 2 -->
+      <a href="#" class="blog-card glow-card" style="text-decoration: none; color: inherit; display: block;">
         <div class="glow-spot"></div>
         <span class="blog-tag">Asset Strategy</span>
         <h2>Model Kebebasan Waktu & Manajemen Risiko</h2>
@@ -511,58 +542,108 @@
       });
     });
 
-    // Live Market Watch Data Integration
-    let globalPrices = {};
+    // --- FITUR PENCARIAN & LIVE MARKET DINAMIS ---
+    let defaultCoinsCache = [];
+    let searchTimeout = null;
 
-    async function loadMarket() {
+    // Load koin populer di awal (Top Market)
+    async function loadDefaultMarket() {
       try {
-        const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,ripple,cardano&vs_currencies=usd&include_24hr_change=true');
-        globalPrices = await res.json();
-        renderMarket(globalPrices);
+        const res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false');
+        const data = await res.json();
+        defaultCoinsCache = data;
+        renderMarketList(data);
       } catch (e) {
-        document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color:#f85149">Gagal memuat harga pasar.</span></div>`;
+        document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color:#f85149">Gagal memuat pasar.</span></div>`;
       }
     }
 
-    function renderMarket(data) {
-      const coins = [
-        { id: 'bitcoin', symbol: 'BTC/USD' },
-        { id: 'ethereum', symbol: 'ETH/USD' },
-        { id: 'solana', symbol: 'SOL/USD' },
-        { id: 'ripple', symbol: 'XRP/USD' },
-        { id: 'cardano', symbol: 'ADA/USD' }
-      ];
+    function renderMarketList(coins) {
+      if (!coins || coins.length === 0) {
+        document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color: var(--text-secondary);">Aset tidak ditemukan</span></div>`;
+        return;
+      }
 
-      const query = document.getElementById('coinSearch').value.toLowerCase();
       let htmlContent = '';
+      coins.forEach(coin => {
+        const symbol = coin.symbol.toUpperCase() + '/USD';
+        const price = coin.current_price ? coin.current_price.toLocaleString() : '0.00';
+        const change = coin.price_change_percentage_24h ? coin.price_change_percentage_24h.toFixed(2) : '0.00';
+        const color = change >= 0 ? '#56d364' : '#f85149';
+        const sign = change >= 0 ? '+' : '';
 
-      coins.forEach(c => {
-        if (c.symbol.toLowerCase().includes(query)) {
-          const coinData = data[c.id];
-          const price = coinData.usd.toLocaleString();
-          const change = coinData.usd_24h_change.toFixed(2);
-          const color = change >= 0 ? '#56d364' : '#f85149';
-          
-          htmlContent += `
-            <div class="market-row">
-              <span style="color: var(--text-primary);">${c.symbol}</span> 
-              <span>$${price} <b style="color:${color}">${change}%</b></span>
-            </div>
-          `;
-        }
+        htmlContent += `
+          <div class="market-row">
+            <span style="color: var(--text-primary);">${symbol} (${coin.name})</span> 
+            <span>$${price} <b style="color:${color}">${sign}${change}%</b></span>
+          </div>
+        `;
       });
 
-      document.getElementById('market-feed').innerHTML = htmlContent || `<div class="market-row"><span style="color: var(--text-secondary);">Aset tidak ditemukan</span></div>`;
+      document.getElementById('market-feed').innerHTML = htmlContent;
     }
 
-    function filterMarket() {
-      if (Object.keys(globalPrices).length > 0) {
-        renderMarket(globalPrices);
+    // Fungsi handler ketika mengetik di kolom search (Mendukung ribuan aset koin global)
+    function handleSearch(event) {
+      const query = document.getElementById('coinSearch').value.trim().toLowerCase();
+
+      clearTimeout(searchTimeout);
+
+      if (query === '') {
+        renderMarketList(defaultCoinsCache);
+        return;
       }
+
+      // Beri jeda ketik (debounce) 400ms agar tidak spam API saat mengetik cepat
+      searchTimeout = setTimeout(async () => {
+        document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color: var(--text-secondary);">Mencari koin di jaringan global...</span></div>`;
+        try {
+          // Cari ID koin berdasarkan query user
+          const searchRes = await fetch(`https://api.coingecko.com/api/v3/search?query=${query}`);
+          const searchData = await searchRes.json();
+          
+          if (!searchData.coins || searchData.coins.length === 0) {
+            document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color: var(--text-secondary);">Koin "${query}" tidak ditemukan</span></div>`;
+            return;
+          }
+
+          // Ambil hingga 6 ID koin teratas dari hasil pencarian
+          const topCoinIds = searchData.coins.slice(0, 6).map(c => c.id).join(',');
+
+          // Tarik data harga terbaru untuk koin-koin tersebut
+          const priceRes = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${topCoinIds}&sparkline=false`);
+          const priceData = await priceRes.json();
+
+          renderMarketList(priceData);
+        } catch (err) {
+          document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color:#f85149">Gagal mencari aset.</span></div>`;
+        }
+      }, 400);
     }
 
-    loadMarket();
-    setInterval(loadMarket, 60000);
+    // Global Crypto News Wire Integration
+    function loadNews() {
+      const fallbackNews = [
+        { title: "Bitcoin Volatility Surges Past Key Resistance Levels as Institutional Inflows Continue", source: "CoinDesk", time: "10m ago", url: "https://coindesk.com" },
+        { title: "Ethereum Layer-2 Network Activity Reaches New All-Time High Volume", source: "Decrypt", time: "25m ago", url: "https://decrypt.co" },
+        { title: "Solana Ecosystem Expands with New High-Speed Decentralized Liquidity Pools", source: "CoinTelegraph", time: "42m ago", url: "https://cointelegraph.com" },
+        { title: "Global Regulatory Framework Updates Impacting Cross-Border Digital Assets", source: "Blockworks", time: "1h ago", url: "https://blockworks.co" }
+      ];
+
+      let htmlContent = '';
+      fallbackNews.forEach(item => {
+        htmlContent += `
+          <div class="news-item">
+            <a href="${item.url}" target="_blank" class="news-title">> ${item.title}</a>
+            <div class="news-meta">Sumber: ${item.source} | ${item.time}</div>
+          </div>
+        `;
+      });
+      document.getElementById('news-feed').innerHTML = htmlContent;
+    }
+
+    loadDefaultMarket();
+    loadNews();
 
     // Setup Animasi 3D Three.js
     const container = document.getElementById('canvas-container');

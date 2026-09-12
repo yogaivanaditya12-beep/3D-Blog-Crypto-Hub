@@ -352,62 +352,57 @@
   </div>
 
   <script>
-    // Sintesis Suara Ambient Luar Angkasa (Web Audio API - Space Drone)
+    // Sintesis Suara Ambient Luar Angkasa (Web Audio API)
     let audioCtx = null;
-    let isPlaying = false;
     let masterGain = null;
+    let isPlaying = false;
     let oscillators = [];
-
-    function initSpaceAudio() {
-      if (audioCtx) return;
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      
-      masterGain = audioCtx.createGain();
-      masterGain.gain.setValueAtTime(0.08, audioCtx.currentTime); // Volume lembut dan nyaman
-      masterGain.connect(audioCtx.destination);
-
-      // Frekuensi nada rendah luar angkasa (Deep Cosmic Drone chords)
-      const freqs = [55, 110, 164.81, 220]; // Nada A minor cosmic drone
-      
-      freqs.forEach((f, index) => {
-        const osc = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
-        
-        osc.type = index % 2 === 0 ? 'sine' : 'triangle';
-        osc.frequency.setValueAtTime(f, audioCtx.currentTime);
-        
-        // Modulasi lembut agar suara terdengar hidup dan bernafas
-        gainNode.gain.setValueAtTime(0.02, audioCtx.currentTime);
-        
-        osc.connect(gainNode);
-        gainNode.connect(masterGain);
-        osc.start();
-        oscillators.push(osc);
-      });
-    }
 
     const audioToggleBtn = document.getElementById('audioToggle');
     const audioText = document.getElementById('audioText');
 
     audioToggleBtn.addEventListener('click', () => {
-      initSpaceAudio();
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        masterGain = audioCtx.createGain();
+        masterGain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        masterGain.connect(audioCtx.destination);
+
+        // Frekuensi chord kosmik luar angkasa
+        const freqs = [65.41, 130.81, 196.00, 261.63]; 
+        freqs.forEach((f, index) => {
+          const osc = audioCtx.createOscillator();
+          const gainNode = audioCtx.createGain();
+          
+          osc.type = index % 2 === 0 ? 'sine' : 'triangle';
+          osc.frequency.setValueAtTime(f, audioCtx.currentTime);
+          
+          gainNode.gain.setValueAtTime(0.04, audioCtx.currentTime);
+          
+          osc.connect(gainNode);
+          gainNode.connect(masterGain);
+          osc.start();
+          oscillators.push(osc);
+        });
+      }
+
       if (audioCtx.state === 'suspended') {
         audioCtx.resume();
       }
 
       isPlaying = !isPlaying;
       if (isPlaying) {
-        masterGain.gain.setTargetAtTime(0.12, audioCtx.currentTime, 1);
+        masterGain.gain.setValueAtTime(0.15, audioCtx.currentTime);
         audioToggleBtn.classList.add('playing');
         audioText.textContent = 'Sound: ON';
       } else {
-        masterGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.5);
+        masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
         audioToggleBtn.classList.remove('playing');
         audioText.textContent = 'Sound: OFF';
       }
     });
 
-    // Efek Interaktif: Mengatur koordinat sorot kursor
+    // Efek Interaktif: Sorot Kursor (Spotlight)
     const cards = document.querySelectorAll('.glow-card');
     cards.forEach(card => {
       card.addEventListener('mousemove', e => {

@@ -361,8 +361,41 @@
     .market-row:last-child {
       border-bottom: none;
     }
+
+    /* Quick Converter Widget Styling */
+    .converter-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .converter-select {
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-color);
+      color: #ffffff;
+      padding: 8px;
+      font-family: 'Courier New', Courier, monospace;
+      border-radius: 8px;
+      font-size: 0.8rem;
+    }
+    .converter-select:focus {
+      outline: none;
+      border-color: rgba(255, 255, 255, 0.6);
+    }
+    .converter-result {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.85rem;
+      color: #7ee787;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: center;
+    }
     
-    /* News Wire Styling Inside Logs */
+    /* News Wire Styling */
     .news-item {
       margin-bottom: 12px;
       padding-bottom: 10px;
@@ -449,7 +482,7 @@
     <main>
       <h2 class="section-title">Latest Logs</h2>
       
-      <!-- Widget 1: Live Market Watch (Dynamic Search) -->
+      <!-- Widget 1: Live Market Watch (Cleaned from FIGR_HELOC) -->
       <div class="blog-card glow-card">
         <div class="glow-spot"></div>
         <span class="blog-tag">Live Feed // Market Watch</span>
@@ -459,7 +492,26 @@
         </div>
       </div>
 
-      <!-- Widget 2: Global Crypto News Wire -->
+      <!-- Widget 2: Quick Crypto Converter (BARU) -->
+      <div class="blog-card glow-card">
+        <div class="glow-spot"></div>
+        <span class="blog-tag">Quick Converter // USD & Crypto</span>
+        <div class="converter-grid">
+          <input type="number" id="convertAmount" class="terminal-input" value="1" min="0" step="any" oninput="calculateConversion()" style="margin-bottom:0;">
+          <span style="font-family:'Courier New',Courier,monospace; font-size:0.8rem; color:var(--text-secondary); text-align:center;">→</span>
+          <select id="convertCoin" class="converter-select" onchange="calculateConversion()">
+            <option value="bitcoin">BTC</option>
+            <option value="ethereum">ETH</option>
+            <option value="tether">USDT</option>
+            <option value="binancecoin">BNB</option>
+            <option value="ripple">XRP</option>
+            <option value="solana" selected>SOL</option>
+          </select>
+        </div>
+        <div id="convertResult" class="converter-result">Menghitung konversi...</div>
+      </div>
+
+      <!-- Widget 3: Global Crypto News Wire -->
       <div class="blog-card glow-card">
         <div class="glow-spot"></div>
         <span class="blog-tag">Global Crypto News Wire</span>
@@ -546,19 +598,17 @@
     let defaultCoinsCache = [];
     let searchTimeout = null;
 
-    // Load koin populer di awal (Top Market) dengan filter penyaringan FIGR_HELOC
     async function loadDefaultMarket() {
       try {
-        // Ambil lebih dari 10 agar jika ada yang disaring, jumlah sisa tetap pas
         const res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=15&page=1&sparkline=false');
         let data = await res.json();
         
         // Menyingkirkan figure-heloc dari daftar agar layout tetap lurus dan rapi
         data = data.filter(coin => coin.id !== 'figure-heloc');
         
-        // Ambil pas 10 koin teratas setelah difilter
         defaultCoinsCache = data.slice(0, 10);
         renderMarketList(defaultCoinsCache);
+        calculateConversion(); // Hitung konversi awal setelah data termuat
       } catch (e) {
         document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color:#f85149">Gagal memuat pasar.</span></div>`;
       }
@@ -589,7 +639,6 @@
       document.getElementById('market-feed').innerHTML = htmlContent;
     }
 
-    // Fungsi handler ketika mengetik di kolom search
     function handleSearch(event) {
       const query = document.getElementById('coinSearch').value.trim().toLowerCase();
 
@@ -611,7 +660,6 @@
             return;
           }
 
-          // Filter hasil pencarian agar figure-heloc tidak sengaja ikut muncul jika dicari
           const filteredCoins = searchData.coins.filter(c => c.id !== 'figure-heloc');
           const topCoinIds = filteredCoins.slice(0, 6).map(c => c.id).join(',');
 
@@ -628,6 +676,46 @@
           document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color:#f85149">Gagal mencari aset.</span></div>`;
         }
       }, 400);
+    }
+
+    // --- LOGIKA QUICK CONVERTER ---
+    async function calculateConversion() {
+      const amountInput = document.getElementById('convertAmount').value;
+      const selectedCoinId = document.getElementById('convertCoin').value;
+      const resultDiv = document.getElementById('convertResult');
+
+      const amount = parseFloat(amountInput);
+      if (isNaN(amount) || amount < 0) {
+        resultDiv.textContent = "Masukkan nominal yang valid";
+        return;
+      }
+
+      // Cek apakah data koin ada di cache utama
+      let coinObj = defaultCoinsCache.find(c => c.id === selectedCoinId);
+
+      try {
+        if (!coinObj) {
+          // Jika tidak ada di cache (misal koin lain), fetch secara mandiri
+          const res = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${selectedCoinId}&sparkline=false`);
+          const data = await res.json();
+          if (data && data.length > 0) {
+            coinObj = data[0];
+          }
+        }
+
+        if (coinObj && coinObj.current_price) {
+          const priceInUSD = coinObj.current_price;
+          const convertedValue = amount / priceInUSD;
+          
+          // Format desimal berdasarkan nilai koin
+          let formattedResult = convertedValue < 1 ? convertedValue.toFixed(6) : convertedValue.toFixed(4);
+          resultDiv.textContent = `= ${formattedResult} ${coinObj.symbol.toUpperCase()} ($${amount.toLocaleString()} USD)`;
+        } else {
+          resultDiv.textContent = "Gagal mengambil harga koin.";
+        }
+      } catch (err) {
+        resultDiv.textContent = "Kesalahan koneksi konverter.";
+      }
     }
 
     // Global Crypto News Wire Integration

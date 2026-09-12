@@ -349,11 +349,6 @@
     </div>
   </div>
 
-  <!-- Audio Embedded Base64 (100% aman tanpa kendala eksternal / offline) -->
-  <audio id="bgAudio" loop preload="auto">
-    <source src="data:audio/wav;base64,UklGRiR9AABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZG90YQAA..." type="audio/wav">
-  </audio>
-
   <div id="canvas-container"></div>
 
   <div class="container" id="mainContainer">
@@ -404,27 +399,70 @@
   </div>
 
   <script>
-    const bgAudio = document.getElementById('bgAudio');
+    let audioCtx = null;
+    let masterGain = null;
+    let isPlaying = false;
+
     const splashScreen = document.getElementById('splash-screen');
     const mainContainer = document.getElementById('mainContainer');
     const audioToggleBtn = document.getElementById('audioToggle');
     const audioText = document.getElementById('audioText');
-    let isPlaying = false;
 
-    bgAudio.volume = 0.8;
+    function initWebAudio() {
+      if (audioCtx) return;
+      
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      audioCtx = new AudioContextClass();
 
-    function startAudio() {
-      bgAudio.play().then(() => {
-        isPlaying = true;
-        audioToggleBtn.classList.add('playing');
-        audioText.textContent = 'Sound: ON';
-      }).catch(err => {
-        console.log("Audio play error:", err);
+      masterGain = audioCtx.createGain();
+      masterGain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+      masterGain.connect(audioCtx.destination);
+
+      // Deep Space Ambient Drone Chord Frequencies
+      const frequencies = [55.0, 82.41, 110.0, 164.81];
+
+      frequencies.forEach((freq, index) => {
+        const osc = audioCtx.createOscillator();
+        osc.type = index % 2 === 0 ? 'sine' : 'triangle';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+        // Slow modulation filter for space atmosphere shift
+        const lfo = audioCtx.createOscillator();
+        lfo.frequency.value = 0.05 + (index * 0.02);
+        const lfoGain = audioCtx.createGain();
+        lfoGain.gain.value = 1.5;
+
+        lfo.connect(lfoGain);
+        lfoGain.connect(osc.frequency);
+        lfo.start();
+
+        osc.connect(masterGain);
+        osc.start();
       });
     }
 
+    function startSound() {
+      initWebAudio();
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      masterGain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+      isPlaying = true;
+      audioToggleBtn.classList.add('playing');
+      audioText.textContent = 'Sound: ON';
+    }
+
+    function stopSound() {
+      if (masterGain && audioCtx) {
+        masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
+      }
+      isPlaying = false;
+      audioToggleBtn.classList.remove('playing');
+      audioText.textContent = 'Sound: OFF';
+    }
+
     splashScreen.addEventListener('click', () => {
-      startAudio();
+      startSound();
       splashScreen.style.opacity = '0';
       setTimeout(() => {
         splashScreen.style.display = 'none';
@@ -434,15 +472,10 @@
 
     audioToggleBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      isPlaying = !isPlaying;
-      if (isPlaying) {
-        bgAudio.play();
-        audioToggleBtn.classList.add('playing');
-        audioText.textContent = 'Sound: ON';
+      if (!isPlaying) {
+        startSound();
       } else {
-        bgAudio.pause();
-        audioToggleBtn.classList.remove('playing');
-        audioText.textContent = 'Sound: OFF';
+        stopSound();
       }
     });
 

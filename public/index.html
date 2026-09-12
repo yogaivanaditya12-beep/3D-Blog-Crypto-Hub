@@ -333,6 +333,43 @@
       line-height: 1.5;
     }
 
+    /* Terminal Widget Styling */
+    .terminal-input {
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-color);
+      color: #7ee787;
+      padding: 8px 10px;
+      font-family: 'Courier New', Courier, monospace;
+      border-radius: 8px;
+      box-sizing: border-box;
+      margin-bottom: 12px;
+      font-size: 0.8rem;
+    }
+    .terminal-input:focus {
+      outline: none;
+      border-color: rgba(255, 255, 255, 0.6);
+    }
+    .market-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 7px 0;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.82rem;
+    }
+    .market-row:last-child {
+      border-bottom: none;
+    }
+    .news-link {
+      color: inherit;
+      text-decoration: none;
+      display: block;
+    }
+    .news-link:hover h2 {
+      color: #58a6ff;
+    }
+
     @media (max-width: 600px) {
       .social-grid { grid-template-columns: 1fr; }
       h1 { font-size: 1.8rem; }
@@ -350,7 +387,7 @@
     </div>
   </div>
 
-  <!-- Elemen Audio Lokal (Pastikan file bernama ambient.mp3 ada di folder yang sama) -->
+  <!-- Elemen Audio Lokal -->
   <audio id="bgAudio" loop preload="auto">
     <source src="ambient.mp3" type="audio/mpeg">
   </audio>
@@ -390,14 +427,26 @@
     <main>
       <h2 class="section-title">Latest Logs</h2>
       
-      <a href="#" class="blog-card glow-card">
+      <!-- Terminal Widget Live Market Watch -->
+      <div class="blog-card glow-card">
+        <div class="glow-spot"></div>
+        <span class="blog-tag">Live Feed // Market Watch</span>
+        <input type="text" id="coinSearch" class="terminal-input" placeholder="> Search asset (btc, eth)..." onkeyup="filterMarket()">
+        <div id="market-feed">
+          <div class="market-row"><span style="color: var(--text-secondary);">Memuat data pasar...</span></div>
+        </div>
+      </div>
+
+      <!-- Log 1: Security Protocol -->
+      <a href="#" class="blog-card glow-card news-link">
         <div class="glow-spot"></div>
         <span class="blog-tag">Security Protocol</span>
         <h2>Algorithmic Token Filtering & Security Protocol</h2>
         <p>Sistem pemantauan pasar secara real-time untuk menyaring sinyal palsu dan pergerakan whale secara otomatis.</p>
       </a>
 
-      <a href="#" class="blog-card glow-card">
+      <!-- Log 2: Asset Strategy -->
+      <a href="#" class="blog-card glow-card news-link">
         <div class="glow-spot"></div>
         <span class="blog-tag">Asset Strategy</span>
         <h2>Model Kebebasan Waktu & Manajemen Risiko</h2>
@@ -461,6 +510,59 @@
         card.style.setProperty('--mouse-y', `${y}px`);
       });
     });
+
+    // Live Market Watch Data Integration
+    let globalPrices = {};
+
+    async function loadMarket() {
+      try {
+        const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,ripple,cardano&vs_currencies=usd&include_24hr_change=true');
+        globalPrices = await res.json();
+        renderMarket(globalPrices);
+      } catch (e) {
+        document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color:#f85149">Gagal memuat harga pasar.</span></div>`;
+      }
+    }
+
+    function renderMarket(data) {
+      const coins = [
+        { id: 'bitcoin', symbol: 'BTC/USD' },
+        { id: 'ethereum', symbol: 'ETH/USD' },
+        { id: 'solana', symbol: 'SOL/USD' },
+        { id: 'ripple', symbol: 'XRP/USD' },
+        { id: 'cardano', symbol: 'ADA/USD' }
+      ];
+
+      const query = document.getElementById('coinSearch').value.toLowerCase();
+      let htmlContent = '';
+
+      coins.forEach(c => {
+        if (c.symbol.toLowerCase().includes(query)) {
+          const coinData = data[c.id];
+          const price = coinData.usd.toLocaleString();
+          const change = coinData.usd_24h_change.toFixed(2);
+          const color = change >= 0 ? '#56d364' : '#f85149';
+          
+          htmlContent += `
+            <div class="market-row">
+              <span style="color: var(--text-primary);">${c.symbol}</span> 
+              <span>$${price} <b style="color:${color}">${change}%</b></span>
+            </div>
+          `;
+        }
+      });
+
+      document.getElementById('market-feed').innerHTML = htmlContent || `<div class="market-row"><span style="color: var(--text-secondary);">Aset tidak ditemukan</span></div>`;
+    }
+
+    function filterMarket() {
+      if (Object.keys(globalPrices).length > 0) {
+        renderMarket(globalPrices);
+      }
+    }
+
+    loadMarket();
+    setInterval(loadMarket, 60000);
 
     // Setup Animasi 3D Three.js
     const container = document.getElementById('canvas-container');

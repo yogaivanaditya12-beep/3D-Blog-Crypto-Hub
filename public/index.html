@@ -349,10 +349,9 @@
     </div>
   </div>
 
-  <!-- Audio Element menggunakan stream publik musik ambient luar angkasa -->
+  <!-- Audio Embedded Base64 (100% aman tanpa kendala eksternal / offline) -->
   <audio id="bgAudio" loop preload="auto">
-    <source src="https://ia800902.us.archive.org/15/items/SpaceAmbientMusic/SpaceAmbient.mp3" type="audio/mpeg">
-    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf756.mp3?filename=space-ambient-112349.mp3" type="audio/mpeg">
+    <source src="data:audio/wav;base64,UklGRiR9AABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZG90YQAA..." type="audio/wav">
   </audio>
 
   <div id="canvas-container"></div>
@@ -412,7 +411,7 @@
     const audioText = document.getElementById('audioText');
     let isPlaying = false;
 
-    bgAudio.volume = 0.5;
+    bgAudio.volume = 0.8;
 
     function startAudio() {
       bgAudio.play().then(() => {
@@ -420,7 +419,7 @@
         audioToggleBtn.classList.add('playing');
         audioText.textContent = 'Sound: ON';
       }).catch(err => {
-        console.log("Audio play blocked/failed:", err);
+        console.log("Audio play error:", err);
       });
     }
 

@@ -345,14 +345,9 @@
   <div id="splash-screen">
     <div class="splash-content">
       <div class="splash-title">BLACKOUT</div>
-      <div class="splash-subtitle">[ Click Anywhere To Initialize ]</div>
+      <div class="splash-subtitle">[ Click Anywhere To Initialize Space Audio ]</div>
     </div>
   </div>
-
-  <!-- Audio Space Ambient Drone (Base64) - Efek Musik Luar Angkasa -->
-  <audio id="bgAudio" loop>
-    <source src="data:audio/wav;base64,UklGRqYPAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YZiPAAAAAAAAAAAAAAAAAAAA////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////" type="audio/wav">
-  </audio>
 
   <div id="canvas-container"></div>
 
@@ -404,23 +399,65 @@
   </div>
 
   <script>
-    const bgAudio = document.getElementById('bgAudio');
+    let audioCtx = null;
+    let oscillators = [];
+    let gainNode = null;
+    let isPlaying = false;
+
     const splashScreen = document.getElementById('splash-screen');
     const mainContainer = document.getElementById('mainContainer');
     const audioToggleBtn = document.getElementById('audioToggle');
     const audioText = document.getElementById('audioText');
-    let isPlaying = false;
 
-    bgAudio.volume = 0.4;
+    function initSpaceAudio() {
+      if (audioCtx) return;
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      
+      gainNode = audioCtx.createGain();
+      gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      gainNode.connect(audioCtx.destination);
+
+      // Space drone chord frequencies (Deep atmospheric space pad)
+      const freqs = [55.0, 82.41, 110.0, 164.81, 220.0]; 
+
+      freqs.forEach(f => {
+        const osc = audioCtx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(f, audioCtx.currentTime);
+
+        // Add subtle modulation/detune for cosmic atmosphere
+        const lfo = audioCtx.createOscillator();
+        lfo.frequency.value = 0.1; // slow wave
+        const lfoGain = audioCtx.createGain();
+        lfoGain.gain.value = 1.5;
+        lfo.connect(lfoGain);
+        lfoGain.connect(osc.frequency);
+        lfo.start();
+
+        osc.connect(gainNode);
+        osc.start();
+        oscillators.push(osc);
+      });
+    }
 
     function startAudio() {
-      bgAudio.play().then(() => {
-        isPlaying = true;
-        audioToggleBtn.classList.add('playing');
-        audioText.textContent = 'Sound: ON';
-      }).catch(err => {
-        console.log("Audio play prevented:", err);
-      });
+      if (!audioCtx) initSpaceAudio();
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      isPlaying = true;
+      audioToggleBtn.classList.add('playing');
+      audioText.textContent = 'Sound: ON';
+    }
+
+    function stopAudio() {
+      if (audioCtx && gainNode) {
+        gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+      }
+      isPlaying = false;
+      audioToggleBtn.classList.remove('playing');
+      audioText.textContent = 'Sound: OFF';
     }
 
     splashScreen.addEventListener('click', () => {
@@ -434,15 +471,10 @@
 
     audioToggleBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      isPlaying = !isPlaying;
-      if (isPlaying) {
-        bgAudio.play();
-        audioToggleBtn.classList.add('playing');
-        audioText.textContent = 'Sound: ON';
+      if (!isPlaying) {
+        startAudio();
       } else {
-        bgAudio.pause();
-        audioToggleBtn.classList.remove('playing');
-        audioText.textContent = 'Sound: OFF';
+        stopAudio();
       }
     });
 

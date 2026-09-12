@@ -193,6 +193,7 @@
       box-shadow: 0 10px 25px rgba(255, 255, 255, 0.25);
     }
 
+    /* Section Title dengan Garis Gradien Lembut (Tidak Menghalangi Latar Belakang) */
     .section-title {
       font-size: 0.95rem;
       font-weight: 800;
@@ -209,7 +210,7 @@
       content: '';
       flex: 1;
       height: 1px;
-      background: var(--border-color);
+      background: linear-gradient(90deg, rgba(255,255,255,0.25), transparent);
     }
 
     /* Elite Blog Cards */
@@ -298,7 +299,7 @@
   </div>
 
   <script>
-    // Efek Interaktif: Mengatur posisi koordinat lampu sorot berdasarkan kursor
+    // Efek Interaktif: Mengatur koordinat sorot kursor
     const cards = document.querySelectorAll('.glow-card');
     cards.forEach(card => {
       card.addEventListener('mousemove', e => {
@@ -310,7 +311,7 @@
       });
     });
 
-    // Latar Belakang Three.js (3D Icosahedron)
+    // Three.js 3D Background dengan Efek Kilatan Cahaya (Glow Particles) pada Bola
     const container = document.getElementById('canvas-container');
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -324,10 +325,23 @@
     const group = new THREE.Group();
     scene.add(group);
 
+    // Geometri Bola (Icosahedron) dengan Wireframe Tipis
     const geo = new THREE.IcosahedronGeometry(2.2, 1);
-    const mat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.22 });
+    const mat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.18 });
     const mesh = new THREE.Mesh(geo, mat);
     group.add(mesh);
+
+    // Tambahan Partikel / Titik Kilatan Cahaya di setiap titik sudut bola
+    const particleGeo = new THREE.BufferGeometry().copy(geo);
+    const particleMat = new THREE.PointsMaterial({
+      color: 0xffffff,
+      size: 0.08,
+      transparent: true,
+      opacity: 0.8,
+      blending: THREE.AdditiveBlending
+    });
+    const sparkPoints = new THREE.Points(particleGeo, particleMat);
+    group.add(sparkPoints);
 
     let targetX = 0, targetY = 0;
     const halfX = window.innerWidth / 2;
@@ -347,8 +361,12 @@
 
     function animate() {
       requestAnimationFrame(animate);
+      
+      // Putar bola dan partikel cahaya secara bersamaan
       mesh.rotation.x += 0.004;
       mesh.rotation.y += 0.007;
+      sparkPoints.rotation.x += 0.004;
+      sparkPoints.rotation.y += 0.007;
 
       group.rotation.y += (targetX - group.rotation.y) * 0.05;
       group.rotation.x += (targetY - group.rotation.x) * 0.05;

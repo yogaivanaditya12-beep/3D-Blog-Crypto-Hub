@@ -7,18 +7,19 @@
   <link rel="icon" href="logo.JPG" type="image/jpeg">
   <style>
     :root {
-      --bg-color: #080808;
-      --card-bg: rgba(18, 18, 18, 0.85);
-      --border-color: rgba(255, 255, 255, 0.15);
+      --bg-color: #030303;
+      --card-bg: rgba(12, 12, 12, 0.85);
+      --border-color: rgba(255, 255, 255, 0.18);
+      --border-hover: rgba(255, 255, 255, 0.9);
       --text-primary: #ffffff;
-      --text-secondary: #999999;
+      --text-secondary: #888888;
     }
 
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
     }
 
     body {
@@ -27,6 +28,11 @@
       min-height: 100vh;
       overflow-x: hidden;
     }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg-color); }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); border-radius: 4px; }
 
     #canvas-container {
       position: fixed;
@@ -46,99 +52,144 @@
       padding: 50px 20px;
     }
 
+    /* Profile Card with Elite Glow */
     .profile-card {
       background: var(--card-bg);
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border-color);
-      border-radius: 20px;
-      padding: 35px 25px;
+      border-radius: 24px;
+      padding: 45px 30px;
       text-align: center;
       margin-bottom: 40px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(255, 255, 255, 0.03);
+      transition: all 0.4s ease;
     }
 
+    .profile-card:hover {
+      border-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(255, 255, 255, 0.08);
+    }
+
+    /* Real Image Avatar Container */
     .avatar-box {
-      width: 70px;
-      height: 70px;
+      width: 85px;
+      height: 85px;
       margin: 0 auto 20px;
       border-radius: 50%;
-      border: 1px solid #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
+      border: 2px solid #ffffff;
+      overflow: hidden;
       background: #000000;
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.25);
+    }
+
+    .avatar-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     h1 {
-      font-size: 2rem;
-      font-weight: 800;
-      letter-spacing: 2px;
+      font-size: 2.3rem;
+      font-weight: 900;
+      letter-spacing: 3px;
       text-transform: uppercase;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
     }
 
     .bio {
       color: var(--text-secondary);
-      font-size: 0.9rem;
-      line-height: 1.5;
-      margin-bottom: 25px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      max-width: 500px;
+      margin: 0 auto 30px;
     }
 
+    /* Social Grid Style */
     .social-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
+      gap: 12px;
     }
 
     .social-btn {
-      padding: 12px;
-      background: rgba(255, 255, 255, 0.05);
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--border-color);
-      border-radius: 10px;
+      border-radius: 14px;
       color: #ffffff;
       text-decoration: none;
-      font-weight: 600;
-      font-size: 0.8rem;
+      font-weight: 700;
+      font-size: 0.85rem;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .social-btn:hover {
       background: #ffffff;
       color: #000000;
+      border-color: #ffffff;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(255, 255, 255, 0.25);
     }
 
     .section-title {
-      font-size: 0.9rem;
-      font-weight: 700;
-      letter-spacing: 2px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      letter-spacing: 3px;
       text-transform: uppercase;
       margin-bottom: 20px;
       color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-color);
+    }
+
+    /* Elite Blog Cards */
     .blog-card {
       background: var(--card-bg);
+      backdrop-filter: blur(15px);
       border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 22px;
-      margin-bottom: 15px;
+      border-radius: 18px;
+      padding: 26px;
+      margin-bottom: 18px;
       text-decoration: none;
       color: inherit;
       display: block;
+      transition: all 0.4s ease;
+    }
+
+    .blog-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 255, 255, 0.06);
     }
 
     .blog-card h2 {
-      font-size: 1.1rem;
+      font-size: 1.2rem;
+      font-weight: 700;
       margin-bottom: 8px;
+      letter-spacing: 0.5px;
     }
 
     .blog-card p {
       color: var(--text-secondary);
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       line-height: 1.5;
+    }
+
+    @media (max-width: 600px) {
+      .social-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 1.8rem; }
     }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -149,7 +200,9 @@
 
   <div class="container">
     <header class="profile-card">
-      <div class="avatar-box">✦</div>
+      <div class="avatar-box">
+        <img src="logo.JPG" alt="Honalabs Logo">
+      </div>
       <h1>Honalabs</h1>
       <p class="bio">The inner circle. Tempat para pengumpul alpha bergerak dalam sunyi sebelum pasar menyadarinya.</p>
       
@@ -166,12 +219,12 @@
       
       <a href="#" class="blog-card">
         <h2>Algorithmic Token Filtering & Security Protocol</h2>
-        <p>Sistem pemantauan pasar secara real-time untuk menyaring sinyal palsu dan pergerakan whale.</p>
+        <p>Sistem pemantauan pasar secara real-time untuk menyaring sinyal palsu dan pergerakan whale secara otomatis.</p>
       </a>
 
       <a href="#" class="blog-card">
         <h2>Model Kebebasan Waktu & Manajemen Risiko</h2>
-        <p>Prinsip personal mengenai akumulasi aset produktif dan strategi alokasi dana trading.</p>
+        <p>Prinsip personal mengenai akumulasi aset produktif dan strategi alokasi dana trading yang terukur.</p>
       </a>
     </main>
   </div>
@@ -184,17 +237,41 @@
 
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
-    const geo = new THREE.IcosahedronGeometry(2, 1);
-    const mat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.2 });
+    const group = new THREE.Group();
+    scene.add(group);
+
+    const geo = new THREE.IcosahedronGeometry(2.2, 1);
+    const mat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.22 });
     const mesh = new THREE.Mesh(geo, mat);
-    scene.add(mesh);
+    group.add(mesh);
+
+    let targetX = 0, targetY = 0;
+    const halfX = window.innerWidth / 2;
+    const halfY = window.innerHeight / 2;
+
+    document.addEventListener('mousemove', (e) => {
+      targetX = (e.clientX - halfX) * 0.001;
+      targetY = (e.clientY - halfY) * 0.001;
+    });
+
+    document.addEventListener('touchmove', (e) => {
+      if(e.touches.length > 0) {
+        targetX = (e.touches[0].clientX - halfX) * 0.001;
+        targetY = (e.touches[0].clientY - halfY) * 0.001;
+      }
+    });
 
     function animate() {
       requestAnimationFrame(animate);
-      mesh.rotation.x += 0.005;
-      mesh.rotation.y += 0.008;
+      mesh.rotation.x += 0.004;
+      mesh.rotation.y += 0.007;
+
+      group.rotation.y += (targetX - group.rotation.y) * 0.05;
+      group.rotation.x += (targetY - group.rotation.x) * 0.05;
+
       renderer.render(scene, camera);
     }
     animate();

@@ -546,13 +546,19 @@
     let defaultCoinsCache = [];
     let searchTimeout = null;
 
-    // Load koin populer di awal (Top Market)
+    // Load koin populer di awal (Top Market) dengan filter penyaringan FIGR_HELOC
     async function loadDefaultMarket() {
       try {
-        const res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false');
-        const data = await res.json();
-        defaultCoinsCache = data;
-        renderMarketList(data);
+        // Ambil lebih dari 10 agar jika ada yang disaring, jumlah sisa tetap pas
+        const res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=15&page=1&sparkline=false');
+        let data = await res.json();
+        
+        // Menyingkirkan figure-heloc dari daftar agar layout tetap lurus dan rapi
+        data = data.filter(coin => coin.id !== 'figure-heloc');
+        
+        // Ambil pas 10 koin teratas setelah difilter
+        defaultCoinsCache = data.slice(0, 10);
+        renderMarketList(defaultCoinsCache);
       } catch (e) {
         document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color:#f85149">Gagal memuat pasar.</span></div>`;
       }
@@ -583,7 +589,7 @@
       document.getElementById('market-feed').innerHTML = htmlContent;
     }
 
-    // Fungsi handler ketika mengetik di kolom search (Mendukung ribuan aset koin global)
+    // Fungsi handler ketika mengetik di kolom search
     function handleSearch(event) {
       const query = document.getElementById('coinSearch').value.trim().toLowerCase();
 
@@ -594,11 +600,9 @@
         return;
       }
 
-      // Beri jeda ketik (debounce) 400ms agar tidak spam API saat mengetik cepat
       searchTimeout = setTimeout(async () => {
         document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color: var(--text-secondary);">Mencari koin di jaringan global...</span></div>`;
         try {
-          // Cari ID koin berdasarkan query user
           const searchRes = await fetch(`https://api.coingecko.com/api/v3/search?query=${query}`);
           const searchData = await searchRes.json();
           
@@ -607,10 +611,15 @@
             return;
           }
 
-          // Ambil hingga 6 ID koin teratas dari hasil pencarian
-          const topCoinIds = searchData.coins.slice(0, 6).map(c => c.id).join(',');
+          // Filter hasil pencarian agar figure-heloc tidak sengaja ikut muncul jika dicari
+          const filteredCoins = searchData.coins.filter(c => c.id !== 'figure-heloc');
+          const topCoinIds = filteredCoins.slice(0, 6).map(c => c.id).join(',');
 
-          // Tarik data harga terbaru untuk koin-koin tersebut
+          if (!topCoinIds) {
+            document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color: var(--text-secondary);">Aset tidak ditemukan</span></div>`;
+            return;
+          }
+
           const priceRes = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${topCoinIds}&sparkline=false`);
           const priceData = await priceRes.json();
 

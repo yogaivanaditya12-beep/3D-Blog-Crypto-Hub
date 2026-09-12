@@ -3,33 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Crypto Alpha Hub & Personal Blog</title>
+  <title>BLACKOUT // 3D Personal Hub</title>
   <style>
     :root {
-      --bg-color: #07070a;
-      --card-bg: rgba(18, 18, 28, 0.65);
-      --accent-cyan: #00f0ff;
-      --accent-purple: #7000ff;
-      --accent-pink: #ff007a;
-      --text-main: #ffffff;
-      --text-muted: #a0a0b0;
+      --bg-color: #050505;
+      --card-bg: rgba(18, 18, 18, 0.7);
+      --border-color: rgba(255, 255, 255, 0.12);
+      --border-hover: rgba(255, 255, 255, 0.8);
+      --text-primary: #ffffff;
+      --text-secondary: #888888;
     }
 
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
     }
 
     body {
       background-color: var(--bg-color);
-      color: var(--text-main);
+      color: var(--text-primary);
       overflow-x: hidden;
       min-height: 100vh;
     }
 
-    /* 3D Background Canvas */
+    /* 3D Canvas Background */
     #canvas-container {
       position: fixed;
       top: 0;
@@ -40,59 +39,66 @@
       pointer-events: none;
     }
 
-    /* Main Container Layout */
+    /* Container Layout */
     .container {
       position: relative;
       z-index: 2;
-      max-width: 850px;
+      max-width: 800px;
       margin: 0 auto;
-      padding: 50px 20px;
+      padding: 60px 20px;
     }
 
-    /* Profile Header & Glass Card */
+    /* Profile Card (Monochrome Glassmorphism) */
     .profile-card {
       background: var(--card-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 24px;
-      padding: 35px 25px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 40px 30px;
       text-align: center;
-      margin-bottom: 40px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      margin-bottom: 50px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+      transition: border-color 0.4s ease;
     }
 
-    .avatar-glow {
-      width: 85px;
-      height: 85px;
+    .profile-card:hover {
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .avatar-box {
+      width: 75px;
+      height: 75px;
       margin: 0 auto 20px;
       border-radius: 50%;
-      background: linear-gradient(45deg, var(--accent-cyan), var(--accent-purple));
+      border: 1px solid #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2.2rem;
-      box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
+      font-size: 1.8rem;
+      background: #000000;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
     }
 
     h1 {
       font-size: 2.2rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, #ffffff 30%, var(--accent-cyan) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 10px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      color: #ffffff;
     }
 
     .bio {
-      color: var(--text-muted);
-      font-size: 1rem;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
       line-height: 1.6;
-      max-width: 550px;
-      margin: 0 auto 25px;
+      max-width: 500px;
+      margin: 0 auto 30px;
+      letter-spacing: 0.5px;
     }
 
-    /* Social Media Grid */
+    /* Social Buttons Grid */
     .social-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -100,47 +106,51 @@
     }
 
     .social-btn {
-      padding: 12px 16px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
-      color: var(--text-main);
+      padding: 12px 18px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      color: var(--text-primary);
       text-decoration: none;
       font-weight: 600;
-      font-size: 0.9rem;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: all 0.3s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
     }
 
     .social-btn:hover {
-      background: var(--accent-cyan);
-      color: #000;
-      transform: translateY(-4px);
-      box-shadow: 0 8px 20px rgba(0, 240, 255, 0.35);
+      background: #ffffff;
+      color: #000000;
+      border-color: #ffffff;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2);
     }
 
-    /* Section Styling */
+    /* Blog Section Header */
     .section-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 20px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 25px;
+      color: var(--text-secondary);
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
 
-    .section-title::before {
+    .section-title::after {
       content: '';
-      width: 4px;
-      height: 22px;
-      background: var(--accent-pink);
-      border-radius: 4px;
+      flex: 1;
+      height: 1px;
+      background: var(--border-color);
     }
 
-    /* Blog Grid */
+    /* Blog Cards */
     .blog-list {
       display: flex;
       flex-direction: column;
@@ -149,166 +159,199 @@
 
     .blog-card {
       background: var(--card-bg);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 20px;
-      padding: 25px;
-      transition: all 0.3s ease;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 28px;
+      transition: all 0.4s ease;
       text-decoration: none;
       color: inherit;
       display: block;
+      position: relative;
     }
 
     .blog-card:hover {
-      border-color: rgba(0, 240, 255, 0.4);
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      border-color: var(--border-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
     }
 
     .blog-tag {
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--accent-cyan);
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: #ffffff;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
       display: inline-block;
+      border-bottom: 1px solid #ffffff;
+      padding-bottom: 2px;
     }
 
     .blog-card h2 {
       font-size: 1.3rem;
+      font-weight: 700;
       margin-bottom: 10px;
       line-height: 1.4;
+      letter-spacing: 0.5px;
     }
 
     .blog-card p {
-      color: var(--text-muted);
-      font-size: 0.95rem;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
       line-height: 1.6;
     }
 
-    /* Mobile Responsiveness */
     @media (max-width: 600px) {
-      h1 { font-size: 1.8rem; }
-      .container { padding: 30px 15px; }
-      .profile-card { padding: 25px 15px; }
+      h1 { font-size: 1.7rem; }
+      .container { padding: 40px 15px; }
+      .profile-card { padding: 30px 20px; }
     }
   </style>
-  <!-- Three.js CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
 
-  <!-- 3D Canvas Container -->
   <div id="canvas-container"></div>
 
-  <!-- Main Content Layout -->
   <div class="container">
     
-    <!-- Header / Profile Section -->
+    <!-- Profile Card -->
     <header class="profile-card">
-      <div class="avatar-glow">🚀</div>
-      <h1>ALPHA CALLER HUB</h1>
-      <p class="bio">Web Developer, Crypto Enthusiast & Asset Builder. Tempat berbagi catatan riset trading, bot Telegram, dan komunitas crypto.</p>
+      <div class="avatar-box">✦</div>
+      <h1>ALPHA CALLER</h1>
+      <p class="bio">Web Developer, Trader & Crypto Asset Builder. Tempat berbagi otomatisasi bot Telegram, analisa keamanan token, dan catatan riset personal.</p>
       
       <div class="social-grid">
-        <a href="https://t.me/" target="_blank" class="social-btn">📢 Telegram</a>
-        <a href="https://x.com/" target="_blank" class="social-btn">🦅 Twitter / X</a>
-        <a href="https://instagram.com/" target="_blank" class="social-btn">📸 Instagram</a>
-        <a href="https://discord.gg/" target="_btn" class="social-btn">👾 Discord</a>
+        <a href="https://t.me/" target="_blank" class="social-btn">Telegram</a>
+        <a href="https://x.com/" target="_blank" class="social-btn">Twitter / X</a>
+        <a href="https://instagram.com/" target="_blank" class="social-btn">Instagram</a>
+        <a href="https://discord.gg/" target="_blank" class="social-btn">Discord</a>
       </div>
     </header>
 
     <!-- Blog Section -->
     <main>
-      <h2 class="section-title">Artikel & Riset Terbaru</h2>
+      <h2 class="section-title">LATEST LOGS</h2>
       
       <div class="blog-list">
         <article class="blog-card">
-          <span class="blog-tag">Web3 & Security</span>
-          <h2>Integrasi Real-Time Data Token Sniffer & GoPlus API</h2>
-          <p>Panduan membangun sistem pengawas keamanan token EVM dan Solana otomatis untuk mendeteksi honeypot dan analisa persentase top 10 holder...</p>
+          <span class="blog-tag">Web3 Architecture</span>
+          <h2>Sistem Scan On-Chain Real-Time via DexScreener & GoPlus API</h2>
+          <p>Implementasi arsitektur bot Telegram untuk mengekstrak indikator keamanan token, status honeypot, dan konsentrasi pemegang top 10 secara otomatis...</p>
         </article>
 
         <article class="blog-card">
-          <span class="blog-tag">Trading Strategy</span>
-          <h2>Memodelkan Kebebasan Finansial Lewat Manajemen Aset Crypto</h2>
-          <p>Catatan strategi pribadi mengumpulkan aset produktif di usia muda, mengatur toleransi risiko, dan memanfaatkan bot untuk automasi alpha call...</p>
+          <span class="blog-tag">Asset Strategy</span>
+          <h2>Model Kebebasan Waktu & Manajemen Risiko Portofolio Crypto</h2>
+          <p>Prinsip personal mengenai akumulasi aset produktif di usia muda, strategi alokasi dana trading, dan automasi pemantauan alpha call...</p>
         </article>
       </div>
     </main>
 
   </div>
 
-  <!-- 3D Animation Script -->
+  <!-- 3D Monochrome Geometry Script -->
   <script>
     const container = document.getElementById('canvas-container');
     const scene = new THREE.Scene();
 
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 6;
+    camera.position.z = 7;
 
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
-    // Dynamic 3D Torus Knot Geometry
-    const geometry = new THREE.TorusKnotGeometry(1.4, 0.38, 120, 16);
-    const material = new THREE.MeshStandardMaterial({
-      color: 0x7000ff,
-      metalness: 0.85,
-      roughness: 0.15,
+    // Group for layered 3D objects
+    const group = new THREE.Group();
+    scene.add(group);
+
+    // Outer Wireframe Geometry (Icosahedron)
+    const outerGeo = new THREE.IcosahedronGeometry(2.5, 1);
+    const outerMat = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.18
+    });
+    const outerMesh = new THREE.Mesh(outerGeo, outerMat);
+    group.add(outerMesh);
+
+    // Inner Solid Core
+    const innerGeo = new THREE.IcosahedronGeometry(1.2, 0);
+    const innerMat = new THREE.MeshStandardMaterial({
+      color: 0x111111,
+      metalness: 0.9,
+      roughness: 0.1,
       wireframe: false
     });
+    const innerMesh = new THREE.Mesh(innerGeo, innerMat);
+    group.add(innerMesh);
 
-    const shape = new THREE.Mesh(geometry, material);
-    scene.add(shape);
+    // Inner Core Wireframe Accent
+    const coreWireMat = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.4
+    });
+    const coreWireMesh = new THREE.Mesh(innerGeo, coreWireMat);
+    coreWireMesh.scale.set(1.02, 1.02, 1.02);
+    group.add(coreWireMesh);
 
-    // Lighting Setup
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    // Pure White Point Lights (Pencahayaan Hitam-Putih)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
     scene.add(ambientLight);
 
-    const cyanLight = new THREE.PointLight(0x00f0ff, 2.5, 100);
-    cyanLight.position.set(6, 6, 6);
-    scene.add(cyanLight);
+    const light1 = new THREE.PointLight(0xffffff, 2, 100);
+    light1.position.set(8, 8, 8);
+    scene.add(light1);
 
-    const pinkLight = new THREE.PointLight(0xff007a, 2.5, 100);
-    pinkLight.position.set(-6, -6, 2);
-    scene.add(pinkLight);
+    const light2 = new THREE.PointLight(0xffffff, 1, 100);
+    light2.position.set(-8, -8, -4);
+    scene.add(light2);
 
-    // Mouse & Touch Interaction
+    // Interactive Mouse Tracking
     let targetX = 0, targetY = 0;
-    const windowHalfX = window.innerWidth / 2;
-    const windowHalfY = window.innerHeight / 2;
+    const halfX = window.innerWidth / 2;
+    const halfY = window.innerHeight / 2;
 
     document.addEventListener('mousemove', (e) => {
-      targetX = (e.clientX - windowHalfX) * 0.001;
-      targetY = (e.clientY - windowHalfY) * 0.001;
+      targetX = (e.clientX - halfX) * 0.0008;
+      targetY = (e.clientY - halfY) * 0.0008;
     });
 
     document.addEventListener('touchmove', (e) => {
       if(e.touches.length > 0) {
-        targetX = (e.touches[0].clientX - windowHalfX) * 0.001;
-        targetY = (e.touches[0].clientY - windowHalfY) * 0.001;
+        targetX = (e.touches[0].clientX - halfX) * 0.0008;
+        targetY = (e.touches[0].clientY - halfY) * 0.0008;
       }
     });
 
-    // Render Loop
+    // Animation Loop
     const clock = new THREE.Clock();
     function animate() {
       requestAnimationFrame(animate);
       const elapsedTime = clock.getElapsedTime();
 
-      // Continuous Idle Animation
-      shape.rotation.x = elapsedTime * 0.25;
-      shape.rotation.y = elapsedTime * 0.35;
-      shape.position.y = Math.sin(elapsedTime * 1.5) * 0.18;
+      // Dual-Axis Rotation
+      outerMesh.rotation.x = elapsedTime * 0.15;
+      outerMesh.rotation.y = elapsedTime * 0.2;
 
-      // Parallax Mouse Interpolation
-      shape.rotation.y += (targetX - shape.rotation.y) * 0.05;
-      shape.rotation.x += (targetY - shape.rotation.x) * 0.05;
+      innerMesh.rotation.x = -elapsedTime * 0.25;
+      innerMesh.rotation.y = -elapsedTime * 0.3;
+      coreWireMesh.rotation.x = -elapsedTime * 0.25;
+      coreWireMesh.rotation.y = -elapsedTime * 0.3;
+
+      // Floating Effect
+      group.position.y = Math.sin(elapsedTime * 1.2) * 0.2;
+
+      // Smooth Parallax
+      group.rotation.y += (targetX - group.rotation.y) * 0.05;
+      group.rotation.x += (targetY - group.rotation.x) * 0.05;
 
       renderer.render(scene, camera);
     }

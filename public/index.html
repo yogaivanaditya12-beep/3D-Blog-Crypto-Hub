@@ -492,13 +492,13 @@
         </div>
       </div>
 
-      <!-- Widget 2: Quick Crypto Converter (BARU) -->
+      <!-- Widget 2: Quick Crypto Converter (DISEMPURNAKAN & REAL-TIME) -->
       <div class="blog-card glow-card">
         <div class="glow-spot"></div>
         <span class="blog-tag">Quick Converter // USD & Crypto</span>
         <div class="converter-grid">
-          <input type="number" id="convertAmount" class="terminal-input" value="1" min="0" step="any" oninput="calculateConversion()" style="margin-bottom:0;">
-          <span style="font-family:'Courier New',Courier,monospace; font-size:0.8rem; color:var(--text-secondary); text-align:center;">→</span>
+          <input type="number" id="convertAmount" class="terminal-input" value="100" min="0" step="any" oninput="calculateConversion()" style="margin-bottom:0;">
+          <span style="font-family:'Courier New',Courier,monospace; font-size:0.8rem; color:var(--text-secondary); text-align:center;">USD →</span>
           <select id="convertCoin" class="converter-select" onchange="calculateConversion()">
             <option value="bitcoin">BTC</option>
             <option value="ethereum">ETH</option>
@@ -508,7 +508,7 @@
             <option value="solana" selected>SOL</option>
           </select>
         </div>
-        <div id="convertResult" class="converter-result">Menghitung konversi...</div>
+        <div id="convertResult" class="converter-result">Menghitung data real-time...</div>
       </div>
 
       <!-- Widget 3: Global Crypto News Wire -->
@@ -608,7 +608,7 @@
         
         defaultCoinsCache = data.slice(0, 10);
         renderMarketList(defaultCoinsCache);
-        calculateConversion(); // Hitung konversi awal setelah data termuat
+        calculateConversion(); // Jalankan konverter setelah data siap
       } catch (e) {
         document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color:#f85149">Gagal memuat pasar.</span></div>`;
       }
@@ -678,7 +678,7 @@
       }, 400);
     }
 
-    // --- LOGIKA QUICK CONVERTER ---
+    // --- LOGIKA QUICK CONVERTER YANG DISEMPURNAKAN & REAL-TIME ---
     async function calculateConversion() {
       const amountInput = document.getElementById('convertAmount').value;
       const selectedCoinId = document.getElementById('convertCoin').value;
@@ -690,12 +690,10 @@
         return;
       }
 
-      // Cek apakah data koin ada di cache utama
       let coinObj = defaultCoinsCache.find(c => c.id === selectedCoinId);
 
       try {
         if (!coinObj) {
-          // Jika tidak ada di cache (misal koin lain), fetch secara mandiri
           const res = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${selectedCoinId}&sparkline=false`);
           const data = await res.json();
           if (data && data.length > 0) {
@@ -705,11 +703,11 @@
 
         if (coinObj && coinObj.current_price) {
           const priceInUSD = coinObj.current_price;
+          // Rumus benar: Nominal USD dibagi harga koin = Jumlah Koin yang didapat
           const convertedValue = amount / priceInUSD;
           
-          // Format desimal berdasarkan nilai koin
-          let formattedResult = convertedValue < 1 ? convertedValue.toFixed(6) : convertedValue.toFixed(4);
-          resultDiv.textContent = `= ${formattedResult} ${coinObj.symbol.toUpperCase()} ($${amount.toLocaleString()} USD)`;
+          let formattedResult = convertedValue < 0.0001 ? convertedValue.toFixed(8) : (convertedValue < 1 ? convertedValue.toFixed(6) : convertedValue.toFixed(4));
+          resultDiv.textContent = `= ${formattedResult} ${coinObj.symbol.toUpperCase()} (Kurs: $${priceInUSD.toLocaleString()})`;
         } else {
           resultDiv.textContent = "Gagal mengambil harga koin.";
         }

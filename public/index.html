@@ -43,12 +43,58 @@
       pointer-events: none;
     }
 
+    /* Splash Screen Overlay untuk Membuka Audio & Interaksi */
+    #splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(3, 3, 3, 0.95);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: opacity 0.6s ease;
+    }
+
+    .splash-content {
+      text-align: center;
+      animation: pulse 2s infinite;
+    }
+
+    .splash-title {
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      color: #ffffff;
+    }
+
+    .splash-subtitle {
+      font-size: 0.8rem;
+      letter-spacing: 3px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+
     .container {
       position: relative;
-      z-index: 2;
+      z-index: 10;
       max-width: 750px;
       margin: 0 auto;
       padding: 50px 20px;
+      opacity: 0;
+      transition: opacity 1s ease;
+      pointer-events: none;
+    }
+
+    .container.active {
+      opacity: 1;
+      pointer-events: auto;
     }
 
     /* Top Bar Header Layout for Audio & Status */
@@ -91,6 +137,8 @@
       color: var(--text-secondary);
       cursor: pointer;
       transition: all 0.3s ease;
+      position: relative;
+      z-index: 20;
     }
 
     .audio-btn:hover {
@@ -145,7 +193,6 @@
       box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9);
     }
 
-    /* Elemen Sorot Cahaya Mengikuti Kursor */
     .glow-card .glow-spot {
       position: absolute;
       top: 0;
@@ -167,7 +214,6 @@
       opacity: 1;
     }
 
-    /* Profile Card Specifics */
     .profile-card {
       padding: 45px 30px;
       text-align: center;
@@ -175,7 +221,6 @@
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
     }
 
-    /* Real Image Avatar Container */
     .avatar-box {
       width: 85px;
       height: 85px;
@@ -210,11 +255,12 @@
       margin: 0 auto 30px;
     }
 
-    /* Social Grid Style */
     .social-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 12px;
+      position: relative;
+      z-index: 20;
     }
 
     .social-btn {
@@ -239,7 +285,6 @@
       box-shadow: 0 10px 25px rgba(255, 255, 255, 0.25);
     }
 
-    /* Section Title dengan Garis Gradien Lembut */
     .section-title {
       font-size: 0.95rem;
       font-weight: 800;
@@ -259,13 +304,14 @@
       background: linear-gradient(90deg, rgba(255,255,255,0.25), transparent);
     }
 
-    /* Elite Blog Cards */
     .blog-card {
       padding: 26px;
       margin-bottom: 18px;
       text-decoration: none;
       color: inherit;
       display: block;
+      position: relative;
+      z-index: 20;
     }
 
     .blog-tag {
@@ -302,14 +348,18 @@
 </head>
 <body>
 
+  <!-- Layar Pembuka untuk Mengizinkan Audio & Interaksi Web -->
+  <div id="splash-screen">
+    <div class="splash-content">
+      <div class="splash-title">BLACKOUT</div>
+      <div class="splash-subtitle">[ Click Anywhere To Initialize ]</div>
+    </div>
+  </div>
+
   <div id="canvas-container"></div>
 
-  <!-- Audio Elemen Standar HTML5 dengan Musik Luar Angkasa -->
-  <audio id="spaceAudio" loop preload="auto">
-    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf756.mp3?filename=space-drone-ims-10904.mp3" type="audio/mpeg">
-  </audio>
-
-  <div class="container">
+  <!-- Audio Sintesis Web Audio API (Aman Tanpa Error CORS / File Lokal) -->
+  <div class="container" id="mainContainer">
     <div class="top-bar">
       <div class="status-badge">
         <div class="pulse-dot"></div>
@@ -317,7 +367,7 @@
       </div>
       <button class="audio-btn" id="audioToggle">
         <div class="audio-icon"></div>
-        <span id="audioText">Sound: OFF</span>
+        <span id="audioText">Sound: ON</span>
       </button>
     </div>
 
@@ -349,6 +399,7 @@
 
       <a href="#" class="blog-card glow-card">
         <div class="glow-spot"></div>
+        <span class="glow-spot"></span>
         <span class="blog-tag">Asset Strategy</span>
         <h2>Model Kebebasan Waktu & Manajemen Risiko</h2>
         <p>Prinsip personal mengenai akumulasi aset produktif dan strategi alokasi dana trading yang terukur.</p>
@@ -357,26 +408,77 @@
   </div>
 
   <script>
-    // Kontrol Pemutaran Audio HTML5
-    const spaceAudio = document.getElementById('spaceAudio');
+    let audioCtx = null;
+    let masterGain = null;
+    let isPlaying = false;
+    let oscillators = [];
+
+    const splashScreen = document.getElementById('splash-screen');
+    const mainContainer = document.getElementById('mainContainer');
     const audioToggleBtn = document.getElementById('audioToggle');
     const audioText = document.getElementById('audioText');
-    let isPlaying = false;
 
-    spaceAudio.volume = 0.4; // Atur volume agar nyaman di telinga
+    // Fungsi untuk menginisialisasi dan menyalakan audio ambient kosmik
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        masterGain = audioCtx.createGain();
+        masterGain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        masterGain.connect(audioCtx.destination);
 
-    audioToggleBtn.addEventListener('click', () => {
+        // Akord kosmik luar angkasa
+        const freqs = [65.41, 130.81, 196.00, 261.63]; 
+        freqs.forEach((f, index) => {
+          const osc = audioCtx.createOscillator();
+          const gainNode = audioCtx.createGain();
+          
+          osc.type = index % 2 === 0 ? 'sine' : 'triangle';
+          osc.frequency.setValueAtTime(f, audioCtx.currentTime);
+          
+          gainNode.gain.setValueAtTime(0.04, audioCtx.currentTime);
+          
+          osc.connect(gainNode);
+          gainNode.connect(masterGain);
+          osc.start();
+          oscillators.push(osc);
+        });
+      }
+
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+
+      isPlaying = true;
+      audioToggleBtn.classList.add('playing');
+      audioText.textContent = 'Sound: ON';
+    }
+
+    // Klik pada Splash Screen membuka seluruh halaman dan audio
+    splashScreen.addEventListener('click', () => {
+      initAudio();
+      splashScreen.style.opacity = '0';
+      setTimeout(() => {
+        splashScreen.style.display = 'none';
+        mainContainer.classList.add('active');
+      }, 500);
+    });
+
+    // Tombol Toggle Sound di Atas
+    audioToggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!audioCtx) {
+        initAudio();
+        return;
+      }
+
       isPlaying = !isPlaying;
       if (isPlaying) {
-        spaceAudio.play().then(() => {
-          audioToggleBtn.classList.add('playing');
-          audioText.textContent = 'Sound: ON';
-        }).catch(err => {
-          console.log("Gagal memutar audio:", err);
-          isPlaying = false;
-        });
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        masterGain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        audioToggleBtn.classList.add('playing');
+        audioText.textContent = 'Sound: ON';
       } else {
-        spaceAudio.pause();
+        masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
         audioToggleBtn.classList.remove('playing');
         audioText.textContent = 'Sound: OFF';
       }

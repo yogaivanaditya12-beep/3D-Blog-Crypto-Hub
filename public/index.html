@@ -43,7 +43,7 @@
       pointer-events: none;
     }
 
-    /* Splash Screen Overlay untuk Membuka Audio & Interaksi */
+    /* Layar Pembuka untuk Membuka Audio & Interaksi */
     #splash-screen {
       position: fixed;
       top: 0;
@@ -358,7 +358,6 @@
 
   <div id="canvas-container"></div>
 
-  <!-- Audio Sintesis Web Audio API (Aman Tanpa Error CORS / File Lokal) -->
   <div class="container" id="mainContainer">
     <div class="top-bar">
       <div class="status-badge">
@@ -399,7 +398,6 @@
 
       <a href="#" class="blog-card glow-card">
         <div class="glow-spot"></div>
-        <span class="glow-spot"></span>
         <span class="blog-tag">Asset Strategy</span>
         <h2>Model Kebebasan Waktu & Manajemen Risiko</h2>
         <p>Prinsip personal mengenai akumulasi aset produktif dan strategi alokasi dana trading yang terukur.</p>
@@ -418,16 +416,15 @@
     const audioToggleBtn = document.getElementById('audioToggle');
     const audioText = document.getElementById('audioText');
 
-    // Fungsi untuk menginisialisasi dan menyalakan audio ambient kosmik
     function initAudio() {
       if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         masterGain = audioCtx.createGain();
-        masterGain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        masterGain.gain.setValueAtTime(0.25, audioCtx.currentTime);
         masterGain.connect(audioCtx.destination);
 
-        // Akord kosmik luar angkasa
-        const freqs = [65.41, 130.81, 196.00, 261.63]; 
+        // Akord mid-high yang jernih dan terdengar jelas di speaker apa pun
+        const freqs = [220.00, 329.63, 440.00, 554.37]; 
         freqs.forEach((f, index) => {
           const osc = audioCtx.createOscillator();
           const gainNode = audioCtx.createGain();
@@ -435,7 +432,7 @@
           osc.type = index % 2 === 0 ? 'sine' : 'triangle';
           osc.frequency.setValueAtTime(f, audioCtx.currentTime);
           
-          gainNode.gain.setValueAtTime(0.04, audioCtx.currentTime);
+          gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
           
           osc.connect(gainNode);
           gainNode.connect(masterGain);
@@ -453,7 +450,6 @@
       audioText.textContent = 'Sound: ON';
     }
 
-    // Klik pada Splash Screen membuka seluruh halaman dan audio
     splashScreen.addEventListener('click', () => {
       initAudio();
       splashScreen.style.opacity = '0';
@@ -463,7 +459,6 @@
       }, 500);
     });
 
-    // Tombol Toggle Sound di Atas
     audioToggleBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       if (!audioCtx) {
@@ -474,7 +469,7 @@
       isPlaying = !isPlaying;
       if (isPlaying) {
         if (audioCtx.state === 'suspended') audioCtx.resume();
-        masterGain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        masterGain.gain.setValueAtTime(0.25, audioCtx.currentTime);
         audioToggleBtn.classList.add('playing');
         audioText.textContent = 'Sound: ON';
       } else {

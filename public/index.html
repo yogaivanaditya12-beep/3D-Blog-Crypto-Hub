@@ -304,6 +304,11 @@
 
   <div id="canvas-container"></div>
 
+  <!-- Audio Elemen Standar HTML5 dengan Musik Luar Angkasa -->
+  <audio id="spaceAudio" loop preload="auto">
+    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf756.mp3?filename=space-drone-ims-10904.mp3" type="audio/mpeg">
+  </audio>
+
   <div class="container">
     <div class="top-bar">
       <div class="status-badge">
@@ -352,51 +357,26 @@
   </div>
 
   <script>
-    // Sintesis Suara Ambient Luar Angkasa (Web Audio API)
-    let audioCtx = null;
-    let masterGain = null;
-    let isPlaying = false;
-    let oscillators = [];
-
+    // Kontrol Pemutaran Audio HTML5
+    const spaceAudio = document.getElementById('spaceAudio');
     const audioToggleBtn = document.getElementById('audioToggle');
     const audioText = document.getElementById('audioText');
+    let isPlaying = false;
+
+    spaceAudio.volume = 0.4; // Atur volume agar nyaman di telinga
 
     audioToggleBtn.addEventListener('click', () => {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        masterGain = audioCtx.createGain();
-        masterGain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-        masterGain.connect(audioCtx.destination);
-
-        // Frekuensi chord kosmik luar angkasa
-        const freqs = [65.41, 130.81, 196.00, 261.63]; 
-        freqs.forEach((f, index) => {
-          const osc = audioCtx.createOscillator();
-          const gainNode = audioCtx.createGain();
-          
-          osc.type = index % 2 === 0 ? 'sine' : 'triangle';
-          osc.frequency.setValueAtTime(f, audioCtx.currentTime);
-          
-          gainNode.gain.setValueAtTime(0.04, audioCtx.currentTime);
-          
-          osc.connect(gainNode);
-          gainNode.connect(masterGain);
-          osc.start();
-          oscillators.push(osc);
-        });
-      }
-
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-
       isPlaying = !isPlaying;
       if (isPlaying) {
-        masterGain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-        audioToggleBtn.classList.add('playing');
-        audioText.textContent = 'Sound: ON';
+        spaceAudio.play().then(() => {
+          audioToggleBtn.classList.add('playing');
+          audioText.textContent = 'Sound: ON';
+        }).catch(err => {
+          console.log("Gagal memutar audio:", err);
+          isPlaying = false;
+        });
       } else {
-        masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
+        spaceAudio.pause();
         audioToggleBtn.classList.remove('playing');
         audioText.textContent = 'Sound: OFF';
       }

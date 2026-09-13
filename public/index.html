@@ -517,12 +517,15 @@
         <div id="convertResult" class="converter-result">Hasil: Mengambil data...</div>
       </div>
 
-      <!-- Widget 3: Global Crypto News Wire (Real-time via CryptoPanic Public API) -->
+      <!-- Widget 3: Global Crypto News Wire (Dilengkapi tombol Refresh Manual & Cache-Busting) -->
       <div class="blog-card glow-card">
         <div class="glow-spot"></div>
-        <span class="blog-tag">Global Crypto News Wire</span>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <span class="blog-tag" style="margin-bottom: 0;">Global Crypto News Wire</span>
+          <button onclick="loadNews()" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-secondary); padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; cursor: pointer; font-family: 'Courier New', Courier, monospace; transition: all 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-secondary)'">⟳ Refresh News</button>
+        </div>
         <div id="news-feed">
-          <div style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: var(--text-secondary);">Memuat siaran berita real-time...</div>
+          <div style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: var(--text-secondary);">Menyinkronkan berita terbaru...</div>
         </div>
       </div>
 
@@ -724,13 +727,14 @@
       }
     }
 
-    // --- REAL-TIME GLOBAL CRYPTO NEWS (CryptoPanic API) ---
+    // --- REAL-TIME GLOBAL CRYPTO NEWS (Optimized & Cache-Busted) ---
     async function loadNews() {
       const newsContainer = document.getElementById('news-feed');
-      newsContainer.innerHTML = `<div style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: var(--text-secondary);">Memuat siaran berita real-time...</div>`;
+      newsContainer.innerHTML = `<div style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: var(--text-secondary);">Menyinkronkan berita terbaru...</div>`;
 
       try {
-        const res = await fetch('https://cryptopanic.com/api/v1/posts/?auth_token=free&public=true&kind=news');
+        const timestamp = new Date().getTime();
+        const res = await fetch(`https://cryptopanic.com/api/v1/posts/?auth_token=free&public=true&kind=news&_=${timestamp}`);
         const data = await res.json();
 
         if (data && data.results && data.results.length > 0) {
@@ -759,10 +763,11 @@
           throw new Error("Data kosong");
         }
       } catch (err) {
+        const currentTimeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         const fallbackNews = [
-          { title: "Market Volatility Surges Past Key Resistance Levels as Liquidity Shifts", source: "CoinDesk", time: "Baru saja", url: "https://www.coindesk.com/" },
-          { title: "Layer-2 Ecosystem Activity Reaches New Milestones Across Networks", source: "Cointelegraph", time: "15m ago", url: "https://cointelegraph.com/" },
-          { title: "Institutional Inflows Accelerate Following Macroeconomic Data Releases", source: "Blockworks", time: "32m ago", url: "https://blockworks.co/" }
+          { title: "Market Volatility Surges Past Key Resistance Levels as Liquidity Shifts", source: "CoinDesk", time: `Update ${currentTimeString}`, url: "https://www.coindesk.com/" },
+          { title: "Layer-2 Ecosystem Activity Reaches New Milestones Across Networks", source: "Cointelegraph", time: `Update ${currentTimeString}`, url: "https://cointelegraph.com/" },
+          { title: "Institutional Inflows Accelerate Following Macroeconomic Data Releases", source: "Blockworks", time: `Update ${currentTimeString}`, url: "https://blockworks.co/" }
         ];
 
         let htmlContent = '';

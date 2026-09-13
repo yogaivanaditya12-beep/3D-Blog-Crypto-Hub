@@ -806,78 +806,65 @@
       }
     }
 
-    // --- REAL-TIME GLOBAL CRYPTO NEWS (Direct XML Fetching) ---
+    // --- REAL-TIME GLOBAL CRYPTO NEWS (Optimized Proxy) ---
     async function loadNews() {
       const newsContainer = document.getElementById('news-feed');
       newsContainer.innerHTML = `<div style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: var(--text-secondary);">Menyinkronkan berita real-time terbaru...</div>`;
 
       try {
         const timestamp = new Date().getTime();
-        const rssUrl = `https://cointelegraph.com/rss?t=${timestamp}`;
-        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`;
+        const rssUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent('https://cointelegraph.com/rss?t=' + timestamp)}`;
         
-        const res = await fetch(proxyUrl, { cache: 'no-store' });
-        const data = await res.json();
+        const res = await fetch(rssUrl, { cache: 'no-store' });
+        const textData = await res.text();
 
-        if (data && data.contents) {
-          const parser = new DOMParser();
-          const xmlDoc = parser.parseFromString(data.contents, "text/xml");
-          const items = xmlDoc.querySelectorAll("item");
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(textData, "text/xml");
+        const items = xmlDoc.querySelectorAll("item");
 
-          if (items.length > 0) {
-            let htmlContent = '';
-            const count = Math.min(items.length, 4);
+        if (items.length > 0) {
+          let htmlContent = '';
+          const count = Math.min(items.length, 4);
 
-            for (let i = 0; i < count; i++) {
-              const item = items[i];
-              const title = item.querySelector("title") ? item.querySelector("title").textContent : "No Title";
-              const link = item.querySelector("link") ? item.querySelector("link").textContent : "#";
-              const pubDateStr = item.querySelector("pubDate") ? item.querySelector("pubDate").textContent : "";
-              
-              const pubDate = new Date(pubDateStr);
-              const timeAgo = Math.floor((Date.now() - pubDate.getTime()) / 60000);
-              let timeString = '';
-              
-              if (isNaN(timeAgo) || timeAgo < 1) {
-                timeString = `Just now`;
-              } else if (timeAgo < 60) {
-                timeString = `${timeAgo}m ago`;
-              } else if (timeAgo < 1440) {
-                timeString = `${Math.floor(timeAgo / 60)}h ago`;
-              } else {
-                timeString = `${Math.floor(timeAgo / 1440)}d ago`;
-              }
-
-              htmlContent += `
-                <div class="news-item">
-                  <a href="${link}" target="_blank" rel="noopener noreferrer" class="news-title">> ${title}</a>
-                  <div class="news-meta">Sumber: Cointelegraph | ${timeString}</div>
-                </div>
-              `;
+          for (let i = 0; i < count; i++) {
+            const item = items[i];
+            const title = item.querySelector("title") ? item.querySelector("title").textContent : "No Title";
+            const link = item.querySelector("link") ? item.querySelector("link").textContent : "#";
+            const pubDateStr = item.querySelector("pubDate") ? item.querySelector("pubDate").textContent : "";
+            
+            const pubDate = new Date(pubDateStr);
+            const timeAgo = Math.floor((Date.now() - pubDate.getTime()) / 60000);
+            let timeString = '';
+            
+            if (isNaN(timeAgo) || timeAgo < 1) {
+              timeString = `Just now`;
+            } else if (timeAgo < 60) {
+              timeString = `${timeAgo}m ago`;
+            } else if (timeAgo < 1440) {
+              timeString = `${Math.floor(timeAgo / 60)}h ago`;
+            } else {
+              timeString = `${Math.floor(timeAgo / 1440)}d ago`;
             }
-            newsContainer.innerHTML = htmlContent;
-            return;
+
+            htmlContent += `
+              <div class="news-item">
+                <a href="${link}" target="_blank" rel="noopener noreferrer" class="news-title">> ${title}</a>
+                <div class="news-meta">Sumber: Cointelegraph | ${timeString}</div>
+              </div>
+            `;
           }
+          newsContainer.innerHTML = htmlContent;
+        } else {
+          throw new Error("Format XML kosong");
         }
-        throw new Error("Gagal memparsing XML");
       } catch (err) {
         const now = new Date();
         const currentTimeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        const fallbackNews = [
-          { title: "Global Crypto Liquidity Shifts as Institutional Volumes Rebalance", source: "CoinDesk", time: `Live ${currentTimeString}`, url: "https://www.coindesk.com/" },
-          { title: "Layer-1 and Layer-2 Network Metrics Update in Real-Time", source: "Decrypt", time: `Live ${currentTimeString}`, url: "https://decrypt.co/" }
-        ];
-
-        let htmlContent = '';
-        fallbackNews.forEach(item => {
-          htmlContent += `
-            <div class="news-item">
-              <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="news-title">> ${item.title}</a>
-              <div class="news-meta">Sumber: ${item.source} | ${item.time}</div>
-            </div>
-          `;
-        });
-        newsContainer.innerHTML = htmlContent;
+        newsContainer.innerHTML = `
+          <div class="news-item">
+            <a href="https://cointelegraph.com" target="_blank" rel="noopener noreferrer" class="news-title">> Gagal memuat feed live, klik untuk buka Cointelegraph langsung</a>
+            <div class="news-meta">Sumber: System | ${currentTimeString}</div>
+          </div>`;
       }
     }
 

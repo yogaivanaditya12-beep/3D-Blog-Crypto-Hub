@@ -806,7 +806,7 @@
       }
     }
 
-    // --- REAL-TIME GLOBAL CRYPTO NEWS (Stable AllOrigins Proxy) ---
+    // --- REAL-TIME GLOBAL CRYPTO NEWS (Stable CORSProxy.io) ---
     async function loadNews() {
       const newsContainer = document.getElementById('news-feed');
       newsContainer.innerHTML = `<div style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: var(--text-secondary);">Menyinkronkan berita real-time terbaru...</div>`;
@@ -814,17 +814,14 @@
       try {
         const timestamp = new Date().getTime();
         const targetUrl = `https://cointelegraph.com/rss?t=${timestamp}`;
-        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+        const proxyUrl = `https://corsproxy.io/?` + encodeURIComponent(targetUrl);
         
-        const res = await fetch(proxyUrl, { cache: 'no-store' });
-        const json = await res.json();
+        const res = await fetch(proxyUrl);
+        if (!res.ok) throw new Error("Network response was not ok");
         
-        if (!json.contents) {
-          throw new Error("Gagal mengambil isi konten dari proxy");
-        }
-
+        const xmlText = await res.text();
         const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(json.contents, "text/xml");
+        const xmlDoc = parser.parseFromString(xmlText, "text/xml");
         const items = xmlDoc.querySelectorAll("item");
 
         if (items.length > 0) {

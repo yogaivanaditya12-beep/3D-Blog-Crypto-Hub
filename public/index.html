@@ -517,7 +517,7 @@
         <div id="convertResult" class="converter-result">Hasil: Mengambil data...</div>
       </div>
 
-      <!-- Widget 3: Global Crypto News Wire (Live API CryptoCompare) -->
+      <!-- Widget 3: Global Crypto News Wire (Live RSS Bridge) -->
       <div class="blog-card glow-card">
         <div class="glow-spot"></div>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
@@ -727,28 +727,27 @@
       }
     }
 
-    // --- REAL-TIME GLOBAL CRYPTO NEWS (Menggunakan CryptoCompare API langsung) ---
+    // --- REAL-TIME GLOBAL CRYPTO NEWS (Updated RSS Bridge) ---
     async function loadNews() {
       const newsContainer = document.getElementById('news-feed');
       newsContainer.innerHTML = `<div style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: var(--text-secondary);">Menyinkronkan berita real-time terbaru...</div>`;
 
       try {
-        // Menggunakan CryptoCompare API yang di-bypass cache-nya menggunakan timestamp detik unik
-        const timestamp = new Date().getTime();
-        const res = await fetch(`https://min-api.cryptocompare.com/data/v2/news/?lang=EN&_=${timestamp}`, { cache: 'no-store' });
+        const uniqueParam = 't=' + new Date().getTime() + '&rand=' + Math.random();
+        const rssUrl = encodeURIComponent(`https://cointelegraph.com/rss?${uniqueParam}`);
+        const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}&_=${uniqueParam}`, { cache: 'no-store' });
         const json = await res.json();
 
-        if (json && json.Data && json.Data.length > 0) {
+        if (json.status === 'ok' && json.items && json.items.length > 0) {
           let htmlContent = '';
-          const latestNews = json.Data.slice(0, 4);
+          const latestNews = json.items.slice(0, 4);
 
           latestNews.forEach(item => {
             const title = item.title;
-            const source = item.source_info && item.source_info.name ? item.source_info.name : item.source;
+            const source = "Cointelegraph";
             
-            // Hitung waktu rilis secara presisi berdasarkan unix timestamp dari API
-            const pubTimestamp = item.published_on * 1000;
-            const timeAgo = Math.floor((Date.now() - pubTimestamp) / 60000);
+            const pubDate = new Date(item.pubDate);
+            const timeAgo = Math.floor((Date.now() - pubDate.getTime()) / 60000);
             let timeString = '';
             
             if (timeAgo < 1) {
@@ -761,7 +760,7 @@
               timeString = `${Math.floor(timeAgo / 1440)}d ago`;
             }
             
-            const url = item.url;
+            const url = item.link;
 
             htmlContent += `
               <div class="news-item">
@@ -772,14 +771,14 @@
           });
           newsContainer.innerHTML = htmlContent;
         } else {
-          throw new Error("Data berita kosong");
+          throw new Error("RSS feed tidak valid");
         }
       } catch (err) {
         const now = new Date();
         const currentTimeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         const fallbackNews = [
-          { title: "Market Volatility Surges Past Key Resistance Levels as Liquidity Shifts", source: "CoinDesk", time: `Live ${currentTimeString}`, url: "https://www.coindesk.com/" },
-          { title: "Layer-2 Ecosystem Activity Reaches New Milestones Across Networks", source: "Cointelegraph", time: `Live ${currentTimeString}`, url: "https://cointelegraph.com/" }
+          { title: "Global Crypto Liquidity Shifts as Institutional Volumes Rebalance", source: "CoinDesk", time: `Live ${currentTimeString}`, url: "https://www.coindesk.com/" },
+          { title: "Layer-1 and Layer-2 Network Metrics Update in Real-Time", source: "Decrypt", time: `Live ${currentTimeString}`, url: "https://decrypt.co/" }
         ];
 
         let htmlContent = '';

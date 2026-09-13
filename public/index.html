@@ -806,52 +806,60 @@
       }
     }
 
-    // --- REAL-TIME GLOBAL CRYPTO NEWS ---
+    // --- REAL-TIME GLOBAL CRYPTO NEWS (Direct XML Fetching) ---
     async function loadNews() {
       const newsContainer = document.getElementById('news-feed');
       newsContainer.innerHTML = `<div style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: var(--text-secondary);">Menyinkronkan berita real-time terbaru...</div>`;
 
       try {
-        const uniqueParam = 't=' + new Date().getTime() + '&rand=' + Math.random();
-        const rssUrl = encodeURIComponent(`https://cointelegraph.com/rss?${uniqueParam}`);
-        const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}&_=${uniqueParam}`, { cache: 'no-store' });
-        const json = await res.json();
+        const timestamp = new Date().getTime();
+        const rssUrl = `https://cointelegraph.com/rss?t=${timestamp}`;
+        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`;
+        
+        const res = await fetch(proxyUrl, { cache: 'no-store' });
+        const data = await res.json();
 
-        if (json.status === 'ok' && json.items && json.items.length > 0) {
-          let htmlContent = '';
-          const latestNews = json.items.slice(0, 4);
+        if (data && data.contents) {
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(data.contents, "text/xml");
+          const items = xmlDoc.querySelectorAll("item");
 
-          latestNews.forEach(item => {
-            const title = item.title;
-            const source = "Cointelegraph";
-            
-            const pubDate = new Date(item.pubDate);
-            const timeAgo = Math.floor((Date.now() - pubDate.getTime()) / 60000);
-            let timeString = '';
-            
-            if (timeAgo < 1) {
-              timeString = `Just now`;
-            } else if (timeAgo < 60) {
-              timeString = `${timeAgo}m ago`;
-            } else if (timeAgo < 1440) {
-              timeString = `${Math.floor(timeAgo / 60)}h ago`;
-            } else {
-              timeString = `${Math.floor(timeAgo / 1440)}d ago`;
+          if (items.length > 0) {
+            let htmlContent = '';
+            const count = Math.min(items.length, 4);
+
+            for (let i = 0; i < count; i++) {
+              const item = items[i];
+              const title = item.querySelector("title") ? item.querySelector("title").textContent : "No Title";
+              const link = item.querySelector("link") ? item.querySelector("link").textContent : "#";
+              const pubDateStr = item.querySelector("pubDate") ? item.querySelector("pubDate").textContent : "";
+              
+              const pubDate = new Date(pubDateStr);
+              const timeAgo = Math.floor((Date.now() - pubDate.getTime()) / 60000);
+              let timeString = '';
+              
+              if (isNaN(timeAgo) || timeAgo < 1) {
+                timeString = `Just now`;
+              } else if (timeAgo < 60) {
+                timeString = `${timeAgo}m ago`;
+              } else if (timeAgo < 1440) {
+                timeString = `${Math.floor(timeAgo / 60)}h ago`;
+              } else {
+                timeString = `${Math.floor(timeAgo / 1440)}d ago`;
+              }
+
+              htmlContent += `
+                <div class="news-item">
+                  <a href="${link}" target="_blank" rel="noopener noreferrer" class="news-title">> ${title}</a>
+                  <div class="news-meta">Sumber: Cointelegraph | ${timeString}</div>
+                </div>
+              `;
             }
-            
-            const url = item.link;
-
-            htmlContent += `
-              <div class="news-item">
-                <a href="${url}" target="_blank" rel="noopener noreferrer" class="news-title">> ${title}</a>
-                <div class="news-meta">Sumber: ${source} | ${timeString}</div>
-              </div>
-            `;
-          });
-          newsContainer.innerHTML = htmlContent;
-        } else {
-          throw new Error("RSS feed tidak valid");
+            newsContainer.innerHTML = htmlContent;
+            return;
+          }
         }
+        throw new Error("Gagal memparsing XML");
       } catch (err) {
         const now = new Date();
         const currentTimeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });

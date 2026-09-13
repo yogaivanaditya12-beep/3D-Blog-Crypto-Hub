@@ -279,7 +279,6 @@
       box-shadow: 0 10px 25px rgba(255, 255, 255, 0.25);
     }
 
-    /* Interactive Tab Navigation Styling */
     .tab-nav {
       display: flex;
       gap: 8px;
@@ -366,7 +365,6 @@
       line-height: 1.5;
     }
 
-    /* Terminal Widget Styling */
     .terminal-input {
       width: 100%;
       background-color: rgba(0, 0, 0, 0.4);
@@ -395,7 +393,6 @@
       border-bottom: none;
     }
 
-    /* Quick Converter Widget Styling */
     .converter-box {
       display: flex;
       background-color: rgba(0, 0, 0, 0.5);
@@ -436,7 +433,6 @@
       padding: 4px 2px;
     }
     
-    /* News Wire Styling */
     .news-item {
       margin-bottom: 12px;
       padding-bottom: 10px;
@@ -477,7 +473,6 @@
 </head>
 <body>
 
-  <!-- Layar Splash Awal -->
   <div id="splash-screen">
     <div class="splash-content">
       <div class="splash-title">BLACKOUT</div>
@@ -485,15 +480,12 @@
     </div>
   </div>
 
-  <!-- Elemen Audio Lokal -->
   <audio id="bgAudio" loop preload="auto">
     <source src="ambient.mp3" type="audio/mpeg">
   </audio>
 
-  <!-- Container Animasi 3D Background -->
   <div id="canvas-container"></div>
 
-  <!-- Konten Utama -->
   <div class="container" id="mainContainer">
     <div class="top-bar">
       <div class="status-badge">
@@ -522,7 +514,6 @@
       </div>
     </header>
 
-    <!-- Navigasi Tab Interaktif -->
     <nav class="tab-nav">
       <button class="tab-btn active" onclick="switchTab('markets')">Markets</button>
       <button class="tab-btn" onclick="switchTab('converter')">Converter</button>
@@ -531,7 +522,6 @@
     </nav>
 
     <main>
-      <!-- TAB 1: MARKETS -->
       <div id="tab-markets" class="tab-pane active">
         <div class="blog-card glow-card">
           <div class="glow-spot"></div>
@@ -543,7 +533,6 @@
         </div>
       </div>
 
-      <!-- TAB 2: CONVERTER -->
       <div id="tab-converter" class="tab-pane">
         <div class="blog-card glow-card">
           <div class="glow-spot"></div>
@@ -562,7 +551,6 @@
         </div>
       </div>
 
-      <!-- TAB 3: NEWS WIRE -->
       <div id="tab-news" class="tab-pane">
         <div class="blog-card glow-card">
           <div class="glow-spot"></div>
@@ -576,7 +564,6 @@
         </div>
       </div>
 
-      <!-- TAB 4: LOGS -->
       <div id="tab-logs" class="tab-pane">
         <a href="#" class="blog-card glow-card" style="text-decoration: none; color: inherit; display: block;" onclick="event.preventDefault();">
           <div class="glow-spot"></div>
@@ -596,7 +583,6 @@
   </div>
 
   <script>
-    // Logika Pemutar Audio
     const bgAudio = document.getElementById('bgAudio');
     const splashScreen = document.getElementById('splash-screen');
     const mainContainer = document.getElementById('mainContainer');
@@ -639,7 +625,6 @@
       }
     });
 
-    // Logika Tab Interaktif
     function switchTab(tabId) {
       const panes = document.querySelectorAll('.tab-pane');
       panes.forEach(pane => pane.classList.remove('active'));
@@ -651,7 +636,6 @@
       event.currentTarget.classList.add('active');
     }
 
-    // Efek Mouse Glow pada Kartu
     const cards = document.querySelectorAll('.glow-card');
     cards.forEach(card => {
       card.addEventListener('mousemove', e => {
@@ -663,7 +647,6 @@
       });
     });
 
-    // --- FITUR PENCARIAN & LIVE MARKET DINAMIS ---
     let defaultCoinsCache = [];
     let searchTimeout = null;
 
@@ -671,9 +654,7 @@
       try {
         const res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=15&page=1&sparkline=false');
         let data = await res.json();
-        
         data = data.filter(coin => coin.id !== 'figure-heloc');
-        
         defaultCoinsCache = data.slice(0, 10);
         renderMarketList(defaultCoinsCache);
         calculateConversion();
@@ -709,7 +690,6 @@
 
     function handleSearch(event) {
       const query = document.getElementById('coinSearch').value.trim().toLowerCase();
-
       clearTimeout(searchTimeout);
 
       if (query === '') {
@@ -750,7 +730,6 @@
       }, 400);
     }
 
-    // --- LOGIKA QUICK CONVERTER ---
     async function calculateConversion() {
       const amountInput = document.getElementById('convertAmount').value;
       const selectedCoinId = document.getElementById('convertCoin').value;
@@ -776,7 +755,6 @@
         if (coinObj && coinObj.current_price) {
           const priceInUSD = coinObj.current_price;
           const total = amount * priceInUSD;
-          
           const formattedTotal = total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
           resultDiv.textContent = `Hasil: $${formattedTotal} USD`;
         } else {
@@ -787,13 +765,11 @@
       }
     }
 
-    // --- REAL-TIME GLOBAL CRYPTO NEWS (Using CryptoPanic Public API) ---
     async function loadNews() {
       const newsContainer = document.getElementById('news-feed');
       newsContainer.innerHTML = `<div style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: var(--text-secondary);">Menyinkronkan berita real-time terbaru...</div>`;
 
       try {
-        // Menggunakan CryptoPanic API publik untuk bypass masalah CORS RSS Reader
         const res = await fetch('https://cryptopanic.com/api/v1/posts/?auth_token=free&public=true&kind=news');
         if (!res.ok) throw new Error("Network response was not ok");
         
@@ -849,7 +825,7 @@
     loadDefaultMarket();
     loadNews();
 
-    // Setup Animasi 3D Three.js
+    // --- SETUP ANIMASI 3D THREE.JS (DI-UPGRADE LEBIH KEREN) ---
     const container = document.getElementById('canvas-container');
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -863,45 +839,74 @@
     const group = new THREE.Group();
     scene.add(group);
 
-    const geo = new THREE.IcosahedronGeometry(2.2, 1);
-    const mat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.18 });
+    // 1. Objek Utama: Geometri Kompleks (Icosahedron berlapis / Dodecahedron)
+    const geo = new THREE.IcosahedronGeometry(2.1, 2);
+    const mat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.12 });
     const mesh = new THREE.Mesh(geo, mat);
     group.add(mesh);
 
-    const particleGeo = new THREE.BufferGeometry().copy(geo);
-    const particleMat = new THREE.PointsMaterial({
+    // Lapisan ke-2 (Bola dalam dengan ukuran lebih kecil dan rotasi berlawanan arah)
+    const innerGeo = new THREE.DodecahedronGeometry(1.4, 1);
+    const innerMat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.22 });
+    const innerMesh = new THREE.Mesh(innerGeo, innerMat);
+    group.add(innerMesh);
+
+    // 2. Efek Partikel Debu/Bintang di Luar Objek (Floating Dust Particles)
+    const particlesCount = 300;
+    const posArray = new Float32Array(particlesCount * 3);
+
+    for(let i = 0; i < particlesCount * 3; i++) {
+      posArray[i] = (Math.random() - 0.5) * 15; // Menyebar luas di layar
+    }
+
+    const particlesGeo = new THREE.BufferGeometry();
+    particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+    const particlesMat = new THREE.PointsMaterial({
+      size: 0.035,
       color: 0xffffff,
-      size: 0.08,
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.6,
       blending: THREE.AdditiveBlending
     });
-    const sparkPoints = new THREE.Points(particleGeo, particleMat);
-    group.add(sparkPoints);
 
+    const dustParticles = new THREE.Points(particlesGeo, particlesMat);
+    scene.add(dustParticles);
+
+    // Interaksi Mouse Halus
+    let mouseX = 0, mouseY = 0;
     let targetX = 0, targetY = 0;
     const halfX = window.innerWidth / 2;
     const halfY = window.innerHeight / 2;
 
     document.addEventListener('mousemove', (e) => {
-      targetX = (e.clientX - halfX) * 0.001;
-      targetY = (e.clientY - halfY) * 0.001;
+      mouseX = (e.clientX - halfX);
+      mouseY = (e.clientY - halfY);
     });
 
     document.addEventListener('touchmove', (e) => {
       if(e.touches.length > 0) {
-        targetX = (e.touches[0].clientX - halfX) * 0.001;
-        targetY = (e.touches[0].clientY - halfY) * 0.001;
+        mouseX = (e.touches[0].clientX - halfX);
+        mouseY = (e.touches[0].clientY - halfY);
       }
     });
 
     function animate() {
       requestAnimationFrame(animate);
       
-      mesh.rotation.x += 0.004;
-      mesh.rotation.y += 0.007;
-      sparkPoints.rotation.x += 0.004;
-      sparkPoints.rotation.y += 0.007;
+      // Rotasi objek utama & lapisan dalam secara berlawanan arah
+      mesh.rotation.x += 0.002;
+      mesh.rotation.y += 0.004;
+
+      innerMesh.rotation.x -= 0.004;
+      innerMesh.rotation.y -= 0.007;
+
+      // Partikel debu berputar perlahan
+      dustParticles.rotation.y += 0.0008;
+
+      // Efek smooth mengikuti kursor (Parallax effect)
+      targetX = mouseX * 0.0008;
+      targetY = mouseY * 0.0008;
 
       group.rotation.y += (targetX - group.rotation.y) * 0.05;
       group.rotation.x += (targetY - group.rotation.x) * 0.05;

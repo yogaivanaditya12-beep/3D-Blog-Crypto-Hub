@@ -42,13 +42,16 @@
       pointer-events: none;
     }
 
+    /* Splash Screen Diperbarui agar Lebih Elegan & Berestetika */
     #splash-screen {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(3, 3, 3, 0.95);
+      background: rgba(3, 3, 3, 0.92);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
       z-index: 9999;
       display: flex;
       flex-direction: column;
@@ -60,23 +63,35 @@
 
     .splash-content {
       text-align: center;
-      animation: pulse 2s infinite;
+      padding: 35px 45px;
+      background: rgba(18, 18, 18, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 25px rgba(255, 255, 255, 0.05);
+      animation: pulseGlow 2.5s infinite ease-in-out;
     }
 
     .splash-title {
-      font-size: 1.5rem;
+      font-size: 1.8rem;
       font-weight: 900;
-      letter-spacing: 6px;
+      letter-spacing: 8px;
       text-transform: uppercase;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       color: #ffffff;
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
     }
 
     .splash-subtitle {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       letter-spacing: 3px;
       color: var(--text-secondary);
       text-transform: uppercase;
+    }
+
+    @keyframes pulseGlow {
+      0% { transform: scale(0.98); border-color: rgba(255, 255, 255, 0.15); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 255, 255, 0.03); }
+      50% { transform: scale(1.02); border-color: rgba(255, 255, 255, 0.4); box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(255, 255, 255, 0.12); }
+      100% { transform: scale(0.98); border-color: rgba(255, 255, 255, 0.15); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 255, 255, 0.03); }
     }
 
     .container {
@@ -473,6 +488,7 @@
 </head>
 <body>
 
+  <!-- Layar Splash Awal yang Diperbarui -->
   <div id="splash-screen">
     <div class="splash-content">
       <div class="splash-title">BLACKOUT</div>
@@ -825,7 +841,6 @@
     loadDefaultMarket();
     loadNews();
 
-    // --- SETUP ANIMASI 3D THREE.JS (DI-UPGRADE LEBIH KEREN) ---
     const container = document.getElementById('canvas-container');
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -839,24 +854,21 @@
     const group = new THREE.Group();
     scene.add(group);
 
-    // 1. Objek Utama: Geometri Kompleks (Icosahedron berlapis / Dodecahedron)
     const geo = new THREE.IcosahedronGeometry(2.1, 2);
     const mat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.12 });
     const mesh = new THREE.Mesh(geo, mat);
     group.add(mesh);
 
-    // Lapisan ke-2 (Bola dalam dengan ukuran lebih kecil dan rotasi berlawanan arah)
     const innerGeo = new THREE.DodecahedronGeometry(1.4, 1);
     const innerMat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.22 });
     const innerMesh = new THREE.Mesh(innerGeo, innerMat);
     group.add(innerMesh);
 
-    // 2. Efek Partikel Debu/Bintang di Luar Objek (Floating Dust Particles)
     const particlesCount = 300;
     const posArray = new Float32Array(particlesCount * 3);
 
     for(let i = 0; i < particlesCount * 3; i++) {
-      posArray[i] = (Math.random() - 0.5) * 15; // Menyebar luas di layar
+      posArray[i] = (Math.random() - 0.5) * 15;
     }
 
     const particlesGeo = new THREE.BufferGeometry();
@@ -873,7 +885,6 @@
     const dustParticles = new THREE.Points(particlesGeo, particlesMat);
     scene.add(dustParticles);
 
-    // Interaksi Mouse Halus
     let mouseX = 0, mouseY = 0;
     let targetX = 0, targetY = 0;
     const halfX = window.innerWidth / 2;
@@ -894,17 +905,14 @@
     function animate() {
       requestAnimationFrame(animate);
       
-      // Rotasi objek utama & lapisan dalam secara berlawanan arah
       mesh.rotation.x += 0.002;
       mesh.rotation.y += 0.004;
 
       innerMesh.rotation.x -= 0.004;
       innerMesh.rotation.y -= 0.007;
 
-      // Partikel debu berputar perlahan
       dustParticles.rotation.y += 0.0008;
 
-      // Efek smooth mengikuti kursor (Parallax effect)
       targetX = mouseX * 0.0008;
       targetY = mouseY * 0.0008;
 

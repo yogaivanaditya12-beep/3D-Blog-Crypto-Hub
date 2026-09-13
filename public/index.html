@@ -211,7 +211,7 @@
     .profile-card {
       padding: 45px 30px;
       text-align: center;
-      margin-bottom: 40px;
+      margin-bottom: 30px;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
     }
 
@@ -277,6 +277,58 @@
       border-color: #ffffff;
       transform: translateY(-2px);
       box-shadow: 0 10px 25px rgba(255, 255, 255, 0.25);
+    }
+
+    /* Interactive Tab Navigation Styling */
+    .tab-nav {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 25px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 6px;
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      position: relative;
+      z-index: 20;
+    }
+
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 10px 12px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .tab-btn:hover {
+      color: #ffffff;
+    }
+
+    .tab-btn.active {
+      background: #ffffff;
+      color: #000000;
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+    }
+
+    .tab-pane {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .section-title {
@@ -436,6 +488,8 @@
     @media (max-width: 600px) {
       .social-grid { grid-template-columns: 1fr; }
       h1 { font-size: 1.8rem; }
+      .tab-nav { flex-wrap: wrap; }
+      .tab-btn { font-size: 0.65rem; padding: 8px 6px; }
     }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -487,63 +541,76 @@
       </div>
     </header>
 
+    <!-- Navigasi Tab Interaktif -->
+    <nav class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('markets')">Markets</button>
+      <button class="tab-btn" onclick="switchTab('converter')">Converter</button>
+      <button class="tab-btn" onclick="switchTab('news')">News Wire</button>
+      <button class="tab-btn" onclick="switchTab('logs')">Logs</button>
+    </nav>
+
     <main>
-      <h2 class="section-title">Latest Logs</h2>
-      
-      <!-- Widget 1: Live Market Watch -->
-      <div class="blog-card glow-card">
-        <div class="glow-spot"></div>
-        <span class="blog-tag">Live Feed // Market Watch</span>
-        <input type="text" id="coinSearch" class="terminal-input" placeholder="> Ketik nama koin (contoh: sol, pepe, doge)..." onkeyup="handleSearch(event)">
-        <div id="market-feed">
-          <div class="market-row"><span style="color: var(--text-secondary);">Memuat data pasar utama...</span></div>
+      <!-- TAB 1: MARKETS -->
+      <div id="tab-markets" class="tab-pane active">
+        <div class="blog-card glow-card">
+          <div class="glow-spot"></div>
+          <span class="blog-tag">Live Feed // Market Watch</span>
+          <input type="text" id="coinSearch" class="terminal-input" placeholder="> Ketik nama koin (contoh: sol, pepe, doge)..." onkeyup="handleSearch(event)">
+          <div id="market-feed">
+            <div class="market-row"><span style="color: var(--text-secondary);">Memuat data pasar utama...</span></div>
+          </div>
         </div>
       </div>
 
-      <!-- Widget 2: Quick Crypto Converter -->
-      <div class="blog-card glow-card">
-        <div class="glow-spot"></div>
-        <span class="blog-tag">Quick Converter</span>
-        <div class="converter-box">
-          <input type="number" id="convertAmount" class="converter-input" value="1" min="0" step="any" oninput="calculateConversion()">
-          <select id="convertCoin" class="converter-select" onchange="calculateConversion()">
-            <option value="bitcoin">BTC</option>
-            <option value="ethereum">ETH</option>
-            <option value="solana" selected>SOL</option>
-            <option value="binancecoin">BNB</option>
-            <option value="ripple">XRP</option>
-          </select>
-        </div>
-        <div id="convertResult" class="converter-result">Hasil: Mengambil data...</div>
-      </div>
-
-      <!-- Widget 3: Global Crypto News Wire (Live RSS Bridge) -->
-      <div class="blog-card glow-card">
-        <div class="glow-spot"></div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-          <span class="blog-tag" style="margin-bottom: 0;">Global Crypto News Wire</span>
-          <button onclick="loadNews()" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-secondary); padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; cursor: pointer; font-family: 'Courier New', Courier, monospace; transition: all 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-secondary)'">⟳ Refresh News</button>
-        </div>
-        <div id="news-feed">
-          <div style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: var(--text-secondary);">Menyinkronkan berita real-time terbaru...</div>
+      <!-- TAB 2: CONVERTER -->
+      <div id="tab-converter" class="tab-pane">
+        <div class="blog-card glow-card">
+          <div class="glow-spot"></div>
+          <span class="blog-tag">Quick Converter</span>
+          <div class="converter-box">
+            <input type="number" id="convertAmount" class="converter-input" value="1" min="0" step="any" oninput="calculateConversion()">
+            <select id="convertCoin" class="converter-select" onchange="calculateConversion()">
+              <option value="bitcoin">BTC</option>
+              <option value="ethereum">ETH</option>
+              <option value="solana" selected>SOL</option>
+              <option value="binancecoin">BNB</option>
+              <option value="ripple">XRP</option>
+            </select>
+          </div>
+          <div id="convertResult" class="converter-result">Hasil: Mengambil data...</div>
         </div>
       </div>
 
-      <!-- Log Asli 1 -->
-      <a href="#" class="blog-card glow-card" style="text-decoration: none; color: inherit; display: block;" onclick="event.preventDefault();">
-        <div class="glow-spot"></div>
-        <span class="blog-tag">Security Protocol</span>
-        <h2>Algorithmic Token Filtering & Security Protocol</h2>
-        <p>Sistem pemantauan pasar secara real-time untuk menyaring sinyal palsu dan pergerakan whale secara otomatis.</p>
-      </a>
+      <!-- TAB 3: NEWS WIRE -->
+      <div id="tab-news" class="tab-pane">
+        <div class="blog-card glow-card">
+          <div class="glow-spot"></div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <span class="blog-tag" style="margin-bottom: 0;">Global Crypto News Wire</span>
+            <button onclick="loadNews()" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-secondary); padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; cursor: pointer; font-family: 'Courier New', Courier, monospace; transition: all 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-secondary)'">⟳ Refresh News</button>
+          </div>
+          <div id="news-feed">
+            <div style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: var(--text-secondary);">Menyinkronkan berita real-time terbaru...</div>
+          </div>
+        </div>
+      </div>
 
-      <!-- Log Asli 2 -->
-      <a href="#" class="blog-card glow-card" style="text-decoration: none; color: inherit; display: block;" onclick="event.preventDefault();">
-        <div class="glow-spot"></div>
-        <span class="blog-tag">Asset Strategy</span>
-        <h2>Model Kebebasan Waktu & Manajemen Risiko</h2>
-        <p>Prinsip personal mengenai akumulasi aset produktif dan strategi alokasi dana trading yang terukur.</p>
-      </a>
+      <!-- TAB 4: LOGS -->
+      <div id="tab-logs" class="tab-pane">
+        <a href="#" class="blog-card glow-card" style="text-decoration: none; color: inherit; display: block;" onclick="event.preventDefault();">
+          <div class="glow-spot"></div>
+          <span class="blog-tag">Security Protocol</span>
+          <h2>Algorithmic Token Filtering & Security Protocol</h2>
+          <p>Sistem pemantauan pasar secara real-time untuk menyaring sinyal palsu dan pergerakan whale secara otomatis.</p>
+        </a>
+
+        <a href="#" class="blog-card glow-card" style="text-decoration: none; color: inherit; display: block;" onclick="event.preventDefault();">
+          <div class="glow-spot"></div>
+          <span class="blog-tag">Asset Strategy</span>
+          <h2>Model Kebebasan Waktu & Manajemen Risiko</h2>
+          <p>Prinsip personal mengenai akumulasi aset produktif dan strategi alokasi dana trading yang terukur.</p>
+        </a>
+      </div>
     </main>
   </div>
 
@@ -590,6 +657,18 @@
         audioText.textContent = 'Sound: OFF';
       }
     });
+
+    // Logika Tab Interaktif
+    function switchTab(tabId) {
+      const panes = document.querySelectorAll('.tab-pane');
+      panes.forEach(pane => pane.classList.remove('active'));
+
+      const buttons = document.querySelectorAll('.tab-btn');
+      buttons.forEach(btn => btn.classList.remove('active'));
+
+      document.getElementById('tab-' + tabId).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
 
     // Efek Mouse Glow pada Kartu
     const cards = document.querySelectorAll('.glow-card');
@@ -727,7 +806,7 @@
       }
     }
 
-    // --- REAL-TIME GLOBAL CRYPTO NEWS (Updated RSS Bridge) ---
+    // --- REAL-TIME GLOBAL CRYPTO NEWS ---
     async function loadNews() {
       const newsContainer = document.getElementById('news-feed');
       newsContainer.innerHTML = `<div style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: var(--text-secondary);">Menyinkronkan berita real-time terbaru...</div>`;

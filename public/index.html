@@ -1,4 +1,726 @@
-    // Global Crypto News Wire Integration (Real-time via CryptoPanic Public API)
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BLACKOUT // 3D Personal Hub</title>
+  <link rel="icon" href="logo.JPG" type="image/jpeg">
+  <style>
+    :root {
+      --bg-color: #030303;
+      --card-bg: rgba(12, 12, 12, 0.85);
+      --border-color: rgba(255, 255, 255, 0.15);
+      --text-primary: #ffffff;
+      --text-secondary: #888888;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg-color); }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); border-radius: 4px; }
+
+    #canvas-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    #splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(3, 3, 3, 0.95);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: opacity 0.6s ease;
+    }
+
+    .splash-content {
+      text-align: center;
+      animation: pulse 2s infinite;
+    }
+
+    .splash-title {
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      color: #ffffff;
+    }
+
+    .splash-subtitle {
+      font-size: 0.8rem;
+      letter-spacing: 3px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      max-width: 750px;
+      margin: 0 auto;
+      padding: 50px 20px;
+      opacity: 0;
+      transition: opacity 1s ease;
+      pointer-events: none;
+    }
+
+    .container.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-color);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    .audio-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-color);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 20;
+    }
+
+    .audio-btn:hover {
+      border-color: rgba(255, 255, 255, 0.6);
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .audio-icon {
+      width: 6px;
+      height: 6px;
+      background-color: var(--text-secondary);
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+
+    .audio-btn.playing .audio-icon {
+      background-color: #ffffff;
+      box-shadow: 0 0 8px #ffffff;
+      animation: pulse 1.5s infinite;
+    }
+
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      background-color: #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #ffffff;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); opacity: 0.4; }
+      50% { transform: scale(1.25); opacity: 1; box-shadow: 0 0 12px #ffffff; }
+      100% { transform: scale(0.95); opacity: 0.4; }
+    }
+
+    .glow-card {
+      position: relative;
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      overflow: hidden;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+    }
+
+    .glow-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9);
+    }
+
+    .glow-card .glow-spot {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background: radial-gradient(
+        600px circle at var(--mouse-x) var(--mouse-y),
+        rgba(255, 255, 255, 0.12),
+        transparent 40%
+      );
+      z-index: 3;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .glow-card:hover .glow-spot {
+      opacity: 1;
+    }
+
+    .profile-card {
+      padding: 45px 30px;
+      text-align: center;
+      margin-bottom: 40px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+    }
+
+    .avatar-box {
+      width: 85px;
+      height: 85px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      border: 2px solid #ffffff;
+      overflow: hidden;
+      background: #000000;
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.25);
+    }
+
+    .avatar-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    h1 {
+      font-size: 2.3rem;
+      font-weight: 900;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    }
+
+    .bio {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      max-width: 500px;
+      margin: 0 auto 30px;
+    }
+
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      position: relative;
+      z-index: 20;
+    }
+
+    .social-btn {
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .social-btn:hover {
+      background: #ffffff;
+      color: #000000;
+      border-color: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(255, 255, 255, 0.25);
+    }
+
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.25), transparent);
+    }
+
+    .blog-card {
+      padding: 26px;
+      margin-bottom: 18px;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      position: relative;
+      z-index: 20;
+    }
+
+    .blog-tag {
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+      display: inline-block;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+      padding-bottom: 2px;
+    }
+
+    .blog-card h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .blog-card p {
+      color: var(--text-secondary);
+      font-size: 0.90rem;
+      line-height: 1.5;
+    }
+
+    /* Terminal Widget Styling */
+    .terminal-input {
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-color);
+      color: #7ee787;
+      padding: 8px 10px;
+      font-family: 'Courier New', Courier, monospace;
+      border-radius: 8px;
+      box-sizing: border-box;
+      margin-bottom: 12px;
+      font-size: 0.8rem;
+    }
+    .terminal-input:focus {
+      outline: none;
+      border-color: rgba(255, 255, 255, 0.6);
+    }
+    .market-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 7px 0;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.82rem;
+    }
+    .market-row:last-child {
+      border-bottom: none;
+    }
+
+    /* Quick Converter Widget Styling */
+    .converter-box {
+      display: flex;
+      background-color: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .converter-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      padding: 12px 16px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.95rem;
+    }
+    .converter-input:focus {
+      outline: none;
+    }
+    .converter-select {
+      background: rgba(255, 255, 255, 0.05);
+      border: none;
+      border-left: 1px solid var(--border-color);
+      color: #ffffff;
+      padding: 0 16px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    .converter-select:focus {
+      outline: none;
+    }
+    .converter-result {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9rem;
+      color: #7ee787;
+      padding: 4px 2px;
+    }
+    
+    /* News Wire Styling */
+    .news-item {
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+    }
+    .news-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    .news-title {
+      color: var(--text-primary);
+      text-decoration: none;
+      display: block;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.82rem;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+    .news-title:hover {
+      color: #58a6ff;
+      text-decoration: underline;
+    }
+    .news-meta {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+    }
+
+    @media (max-width: 600px) {
+      .social-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 1.8rem; }
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+  <!-- Layar Splash Awal -->
+  <div id="splash-screen">
+    <div class="splash-content">
+      <div class="splash-title">BLACKOUT</div>
+      <div class="splash-subtitle">[ Click Anywhere To Initialize ]</div>
+    </div>
+  </div>
+
+  <!-- Elemen Audio Lokal -->
+  <audio id="bgAudio" loop preload="auto">
+    <source src="ambient.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Container Animasi 3D Background -->
+  <div id="canvas-container"></div>
+
+  <!-- Konten Utama -->
+  <div class="container" id="mainContainer">
+    <div class="top-bar">
+      <div class="status-badge">
+        <div class="pulse-dot"></div>
+        System Operational
+      </div>
+      <button class="audio-btn" id="audioToggle">
+        <div class="audio-icon"></div>
+        <span id="audioText">Sound: ON</span>
+      </button>
+    </div>
+
+    <header class="profile-card glow-card">
+      <div class="glow-spot"></div>
+      <div class="avatar-box">
+        <img src="logo.JPG" alt="Honalabs Logo">
+      </div>
+      <h1>Honalabs</h1>
+      <p class="bio">The inner circle. Tempat para pengumpul alpha bergerak dalam sunyi sebelum pasar menyadarinya.</p>
+      
+      <div class="social-grid">
+        <a href="https://t.me/+NwW74TFD4hcwODM1/" target="_blank" class="social-btn">Telegram</a>
+        <a href="https://x.com/" target="_blank" class="social-btn">Twitter / X</a>
+        <a href="https://www.instagram.com/holicnarrative.labs" target="_blank" class="social-btn">Instagram</a>
+        <a href="https://discord.gg/" target="_blank" class="social-btn">Discord</a>
+      </div>
+    </header>
+
+    <main>
+      <h2 class="section-title">Latest Logs</h2>
+      
+      <!-- Widget 1: Live Market Watch -->
+      <div class="blog-card glow-card">
+        <div class="glow-spot"></div>
+        <span class="blog-tag">Live Feed // Market Watch</span>
+        <input type="text" id="coinSearch" class="terminal-input" placeholder="> Ketik nama koin (contoh: sol, pepe, doge)..." onkeyup="handleSearch(event)">
+        <div id="market-feed">
+          <div class="market-row"><span style="color: var(--text-secondary);">Memuat data pasar utama...</span></div>
+        </div>
+      </div>
+
+      <!-- Widget 2: Quick Crypto Converter -->
+      <div class="blog-card glow-card">
+        <div class="glow-spot"></div>
+        <span class="blog-tag">Quick Converter</span>
+        <div class="converter-box">
+          <input type="number" id="convertAmount" class="converter-input" value="1" min="0" step="any" oninput="calculateConversion()">
+          <select id="convertCoin" class="converter-select" onchange="calculateConversion()">
+            <option value="bitcoin">BTC</option>
+            <option value="ethereum">ETH</option>
+            <option value="solana" selected>SOL</option>
+            <option value="binancecoin">BNB</option>
+            <option value="ripple">XRP</option>
+          </select>
+        </div>
+        <div id="convertResult" class="converter-result">Hasil: Mengambil data...</div>
+      </div>
+
+      <!-- Widget 3: Global Crypto News Wire (Real-time via CryptoPanic Public API) -->
+      <div class="blog-card glow-card">
+        <div class="glow-spot"></div>
+        <span class="blog-tag">Global Crypto News Wire</span>
+        <div id="news-feed">
+          <div style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: var(--text-secondary);">Memuat siaran berita real-time...</div>
+        </div>
+      </div>
+
+      <!-- Log Asli 1 -->
+      <a href="#" class="blog-card glow-card" style="text-decoration: none; color: inherit; display: block;" onclick="event.preventDefault();">
+        <div class="glow-spot"></div>
+        <span class="blog-tag">Security Protocol</span>
+        <h2>Algorithmic Token Filtering & Security Protocol</h2>
+        <p>Sistem pemantauan pasar secara real-time untuk menyaring sinyal palsu dan pergerakan whale secara otomatis.</p>
+      </a>
+
+      <!-- Log Asli 2 -->
+      <a href="#" class="blog-card glow-card" style="text-decoration: none; color: inherit; display: block;" onclick="event.preventDefault();">
+        <div class="glow-spot"></div>
+        <span class="blog-tag">Asset Strategy</span>
+        <h2>Model Kebebasan Waktu & Manajemen Risiko</h2>
+        <p>Prinsip personal mengenai akumulasi aset produktif dan strategi alokasi dana trading yang terukur.</p>
+      </a>
+    </main>
+  </div>
+
+  <script>
+    // Logika Pemutar Audio
+    const bgAudio = document.getElementById('bgAudio');
+    const splashScreen = document.getElementById('splash-screen');
+    const mainContainer = document.getElementById('mainContainer');
+    const audioToggleBtn = document.getElementById('audioToggle');
+    const audioText = document.getElementById('audioText');
+    let isPlaying = false;
+
+    bgAudio.volume = 0.8;
+
+    function playAudio() {
+      bgAudio.play().then(() => {
+        isPlaying = true;
+        audioToggleBtn.classList.add('playing');
+        audioText.textContent = 'Sound: ON';
+      }).catch(err => {
+        console.log("Audio play blocked:", err);
+      });
+    }
+
+    splashScreen.addEventListener('click', () => {
+      playAudio();
+      splashScreen.style.opacity = '0';
+      setTimeout(() => {
+        splashScreen.style.display = 'none';
+        mainContainer.classList.add('active');
+      }, 500);
+    });
+
+    audioToggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      isPlaying = !isPlaying;
+      if (isPlaying) {
+        bgAudio.play();
+        audioToggleBtn.classList.add('playing');
+        audioText.textContent = 'Sound: ON';
+      } else {
+        bgAudio.pause();
+        audioToggleBtn.classList.remove('playing');
+        audioText.textContent = 'Sound: OFF';
+      }
+    });
+
+    // Efek Mouse Glow pada Kartu
+    const cards = document.querySelectorAll('.glow-card');
+    cards.forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+      });
+    });
+
+    // --- FITUR PENCARIAN & LIVE MARKET DINAMIS ---
+    let defaultCoinsCache = [];
+    let searchTimeout = null;
+
+    async function loadDefaultMarket() {
+      try {
+        const res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=15&page=1&sparkline=false');
+        let data = await res.json();
+        
+        data = data.filter(coin => coin.id !== 'figure-heloc');
+        
+        defaultCoinsCache = data.slice(0, 10);
+        renderMarketList(defaultCoinsCache);
+        calculateConversion();
+      } catch (e) {
+        document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color:#f85149">Gagal memuat pasar.</span></div>`;
+      }
+    }
+
+    function renderMarketList(coins) {
+      if (!coins || coins.length === 0) {
+        document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color: var(--text-secondary);">Aset tidak ditemukan</span></div>`;
+        return;
+      }
+
+      let htmlContent = '';
+      coins.forEach(coin => {
+        const symbol = coin.symbol.toUpperCase() + '/USD';
+        const price = coin.current_price ? coin.current_price.toLocaleString() : '0.00';
+        const change = coin.price_change_percentage_24h ? coin.price_change_percentage_24h.toFixed(2) : '0.00';
+        const color = change >= 0 ? '#56d364' : '#f85149';
+        const sign = change >= 0 ? '+' : '';
+
+        htmlContent += `
+          <div class="market-row">
+            <span style="color: var(--text-primary);">${symbol} (${coin.name})</span> 
+            <span>$${price} <b style="color:${color}">${sign}${change}%</b></span>
+          </div>
+        `;
+      });
+
+      document.getElementById('market-feed').innerHTML = htmlContent;
+    }
+
+    function handleSearch(event) {
+      const query = document.getElementById('coinSearch').value.trim().toLowerCase();
+
+      clearTimeout(searchTimeout);
+
+      if (query === '') {
+        renderMarketList(defaultCoinsCache);
+        return;
+      }
+
+      searchTimeout = setTimeout(async () => {
+        document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color: var(--text-secondary);">Mencari koin di jaringan global...</span></div>`;
+        try {
+          const searchRes = await fetch(`https://api.coingecko.com/api/v3/search?query=${query}`);
+          const searchData = await searchRes.json();
+          
+          if (!searchData.coins || searchData.coins.length === 0) {
+            document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color: var(--text-secondary);">Koin "${query}" tidak ditemukan</span></div>`;
+            return;
+          }
+
+          const filteredCoins = searchData.coins.filter(c => c.id !== 'figure-heloc');
+          const topCoinIds = filteredCoins.slice(0, 6).map(c => c.id).join(',');
+
+          if (!topCoinIds) {
+            document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color: var(--text-secondary);">Aset tidak ditemukan</span></div>`;
+            return;
+          }
+
+          const priceRes = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${topCoinIds}&sparkline=false`);
+          const priceData = await priceRes.json();
+
+          renderMarketList(priceData);
+        } catch (err) {
+          document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color:#f85149">Gagal mencari aset.</span></div>`;
+        }
+      }, 400);
+    }
+
+    // --- LOGIKA QUICK CONVERTER ---
+    async function calculateConversion() {
+      const amountInput = document.getElementById('convertAmount').value;
+      const selectedCoinId = document.getElementById('convertCoin').value;
+      const resultDiv = document.getElementById('convertResult');
+
+      const amount = parseFloat(amountInput);
+      if (isNaN(amount) || amount < 0) {
+        resultDiv.textContent = "Hasil: Masukkan nominal valid";
+        return;
+      }
+
+      let coinObj = defaultCoinsCache.find(c => c.id === selectedCoinId);
+
+      try {
+        if (!coinObj) {
+          const res = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${selectedCoinId}&sparkline=false`);
+          const data = await res.json();
+          if (data && data.length > 0) {
+            coinObj = data[0];
+          }
+        }
+
+        if (coinObj && coinObj.current_price) {
+          const priceInUSD = coinObj.current_price;
+          const total = amount * priceInUSD;
+          
+          const formattedTotal = total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          resultDiv.textContent = `Hasil: $${formattedTotal} USD`;
+        } else {
+          resultDiv.textContent = "Hasil: Gagal memuat harga";
+        }
+      } catch (err) {
+        resultDiv.textContent = "Hasil: Kesalahan koneksi";
+      }
+    }
+
+    // --- REAL-TIME GLOBAL CRYPTO NEWS (CryptoPanic API) ---
     async function loadNews() {
       const newsContainer = document.getElementById('news-feed');
       newsContainer.innerHTML = `<div style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: var(--text-secondary);">Memuat siaran berita real-time...</div>`;
@@ -19,7 +741,6 @@
             const timeAgo = Math.floor((new Date() - dateObj) / 60000);
             const timeString = timeAgo < 60 ? `${timeAgo}m ago` : `${Math.floor(timeAgo / 60)}h ago`;
             
-            // Pastikan URL valid, jika kosong arahkan ke domain CryptoPanic
             const url = item.url ? item.url : 'https://cryptopanic.com/';
 
             htmlContent += `
@@ -34,7 +755,6 @@
           throw new Error("Data kosong");
         }
       } catch (err) {
-        // Fallback jika API publik sedang limit/cors dengan URL eksternal yang aman
         const fallbackNews = [
           { title: "Market Volatility Surges Past Key Resistance Levels as Liquidity Shifts", source: "CryptoWire", time: "Baru saja", url: "https://cryptopanic.com/" },
           { title: "Layer-2 Ecosystem Activity Reaches New Milestones Across Networks", source: "BlockFeed", time: "15m ago", url: "https://cryptopanic.com/" }
@@ -52,3 +772,76 @@
         newsContainer.innerHTML = htmlContent;
       }
     }
+
+    loadDefaultMarket();
+    loadNews();
+
+    // Setup Animasi 3D Three.js
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 6;
+
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    container.appendChild(renderer.domElement);
+
+    const group = new THREE.Group();
+    scene.add(group);
+
+    const geo = new THREE.IcosahedronGeometry(2.2, 1);
+    const mat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.18 });
+    const mesh = new THREE.Mesh(geo, mat);
+    group.add(mesh);
+
+    const particleGeo = new THREE.BufferGeometry().copy(geo);
+    const particleMat = new THREE.PointsMaterial({
+      color: 0xffffff,
+      size: 0.08,
+      transparent: true,
+      opacity: 0.8,
+      blending: THREE.AdditiveBlending
+    });
+    const sparkPoints = new THREE.Points(particleGeo, particleMat);
+    group.add(sparkPoints);
+
+    let targetX = 0, targetY = 0;
+    const halfX = window.innerWidth / 2;
+    const halfY = window.innerHeight / 2;
+
+    document.addEventListener('mousemove', (e) => {
+      targetX = (e.clientX - halfX) * 0.001;
+      targetY = (e.clientY - halfY) * 0.001;
+    });
+
+    document.addEventListener('touchmove', (e) => {
+      if(e.touches.length > 0) {
+        targetX = (e.touches[0].clientX - halfX) * 0.001;
+        targetY = (e.touches[0].clientY - halfY) * 0.001;
+      }
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      
+      mesh.rotation.x += 0.004;
+      mesh.rotation.y += 0.007;
+      sparkPoints.rotation.x += 0.004;
+      sparkPoints.rotation.y += 0.007;
+
+      group.rotation.y += (targetX - group.rotation.y) * 0.05;
+      group.rotation.x += (targetY - group.rotation.x) * 0.05;
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>

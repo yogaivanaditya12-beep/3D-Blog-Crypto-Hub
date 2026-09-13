@@ -528,7 +528,7 @@
         <img src="logo.JPG" alt="Honalabs Logo">
       </div>
       <h1>Honalabs</h1>
-      <p class="bio">The inner circle. Tempat para pengumpul alpha bergerak dalam sunyi sebelum pasar menyadarinya.</p>
+      <p class="bio">The Inner Circle | Community & Media Hub</p>
       
       <div class="social-grid">
         <a href="https://t.me/+4EUbAGW192kyNWRl" target="_blank" class="social-btn">Telegram</a>
@@ -632,15 +632,12 @@
       isWarping = true;
       playAudio();
 
-      // Aktifkan kecepatan Warp Space di animasi Three.js
       warpSpeed = 0.25;
-
       splashScreen.classList.add('warp-active');
 
       setTimeout(() => {
         splashScreen.style.display = 'none';
         mainContainer.classList.add('active');
-        // Kembalikan kecepatan partikel ke normal setelah masuk
         setTimeout(() => {
           warpSpeed = 0.001;
         }, 1000);
@@ -884,15 +881,14 @@
     const innerMesh = new THREE.Mesh(innerGeo, innerMat);
     group.add(innerMesh);
 
-    // Konfigurasi Partikel Ruang Angkasa (Stellar Dust)
     const particlesCount = 600;
     const posArray = new Float32Array(particlesCount * 3);
     const velocities = new Float32Array(particlesCount);
 
     for(let i = 0; i < particlesCount; i++) {
-      posArray[i * 3] = (Math.random() - 0.5) * 30;     // X
-      posArray[i * 3 + 1] = (Math.random() - 0.5) * 30; // Y
-      posArray[i * 3 + 2] = (Math.random() - 0.5) * 50; // Z
+      posArray[i * 3] = (Math.random() - 0.5) * 30;     
+      posArray[i * 3 + 1] = (Math.random() - 0.5) * 30; 
+      posArray[i * 3 + 2] = (Math.random() - 0.5) * 50; 
       velocities[i] = Math.random() * 0.02 + 0.01;
     }
 
@@ -937,12 +933,11 @@
       innerMesh.rotation.x -= 0.004;
       innerMesh.rotation.y -= 0.007;
 
-      // Gerakkan partikel ruang angkasa mendekati kamera (Efek Warp)
       const positions = particlesGeo.attributes.position.array;
       for(let i = 0; i < particlesCount; i++) {
         positions[i * 3 + 2] += velocities[i] + (warpSpeed * 15);
         if (positions[i * 3 + 2] > 10) {
-          positions[i * 3 + 2] = -40; // Reset ke belakang
+          positions[i * 3 + 2] = -40; 
         }
       }
       particlesGeo.attributes.position.needsUpdate = true;

@@ -755,9 +755,11 @@
           throw new Error("Data kosong");
         }
       } catch (err) {
+        // Fallback dengan URL sumber berita eksternal yang berbeda-beda dan unik
         const fallbackNews = [
-          { title: "Market Volatility Surges Past Key Resistance Levels as Liquidity Shifts", source: "CryptoWire", time: "Baru saja", url: "https://cryptopanic.com/" },
-          { title: "Layer-2 Ecosystem Activity Reaches New Milestones Across Networks", source: "BlockFeed", time: "15m ago", url: "https://cryptopanic.com/" }
+          { title: "Market Volatility Surges Past Key Resistance Levels as Liquidity Shifts", source: "CoinDesk", time: "Baru saja", url: "https://www.coindesk.com/" },
+          { title: "Layer-2 Ecosystem Activity Reaches New Milestones Across Networks", source: "Cointelegraph", time: "15m ago", url: "https://cointelegraph.com/" },
+          { title: "Institutional Inflows Accelerate Following Macroeconomic Data Releases", source: "Blockworks", time: "32m ago", url: "https://blockworks.co/" }
         ];
 
         let htmlContent = '';

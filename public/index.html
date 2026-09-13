@@ -363,36 +363,44 @@
     }
 
     /* Quick Converter Widget Styling */
-    .converter-grid {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 8px;
-      align-items: center;
-      margin-bottom: 10px;
+    .converter-box {
+      display: flex;
+      background-color: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .converter-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      padding: 12px 16px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.95rem;
+    }
+    .converter-input:focus {
+      outline: none;
     }
     .converter-select {
-      width: 100%;
-      background-color: rgba(0, 0, 0, 0.4);
-      border: 1px solid var(--border-color);
+      background: rgba(255, 255, 255, 0.05);
+      border: none;
+      border-left: 1px solid var(--border-color);
       color: #ffffff;
-      padding: 8px;
+      padding: 0 16px;
       font-family: 'Courier New', Courier, monospace;
-      border-radius: 8px;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
+      cursor: pointer;
     }
     .converter-select:focus {
       outline: none;
-      border-color: rgba(255, 255, 255, 0.6);
     }
     .converter-result {
       font-family: 'Courier New', Courier, monospace;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       color: #7ee787;
-      background: rgba(0, 0, 0, 0.3);
-      padding: 8px 12px;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      text-align: center;
+      padding: 4px 2px;
     }
     
     /* News Wire Styling */
@@ -482,7 +490,7 @@
     <main>
       <h2 class="section-title">Latest Logs</h2>
       
-      <!-- Widget 1: Live Market Watch (Cleaned from FIGR_HELOC) -->
+      <!-- Widget 1: Live Market Watch -->
       <div class="blog-card glow-card">
         <div class="glow-spot"></div>
         <span class="blog-tag">Live Feed // Market Watch</span>
@@ -492,31 +500,29 @@
         </div>
       </div>
 
-      <!-- Widget 2: Quick Crypto Converter (DISEMPURNAKAN & REAL-TIME) -->
+      <!-- Widget 2: Quick Crypto Converter -->
       <div class="blog-card glow-card">
         <div class="glow-spot"></div>
-        <span class="blog-tag">Quick Converter // USD & Crypto</span>
-        <div class="converter-grid">
-          <input type="number" id="convertAmount" class="terminal-input" value="100" min="0" step="any" oninput="calculateConversion()" style="margin-bottom:0;">
-          <span style="font-family:'Courier New',Courier,monospace; font-size:0.8rem; color:var(--text-secondary); text-align:center;">USD →</span>
+        <span class="blog-tag">Quick Converter</span>
+        <div class="converter-box">
+          <input type="number" id="convertAmount" class="converter-input" value="1" min="0" step="any" oninput="calculateConversion()">
           <select id="convertCoin" class="converter-select" onchange="calculateConversion()">
             <option value="bitcoin">BTC</option>
             <option value="ethereum">ETH</option>
-            <option value="tether">USDT</option>
+            <option value="solana" selected>SOL</option>
             <option value="binancecoin">BNB</option>
             <option value="ripple">XRP</option>
-            <option value="solana" selected>SOL</option>
           </select>
         </div>
-        <div id="convertResult" class="converter-result">Menghitung data real-time...</div>
+        <div id="convertResult" class="converter-result">Hasil: Mengambil data...</div>
       </div>
 
-      <!-- Widget 3: Global Crypto News Wire -->
+      <!-- Widget 3: Global Crypto News Wire (Real-time via CryptoPanic Public API) -->
       <div class="blog-card glow-card">
         <div class="glow-spot"></div>
         <span class="blog-tag">Global Crypto News Wire</span>
         <div id="news-feed">
-          <div style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: var(--text-secondary);">Memuat siaran berita...</div>
+          <div style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: var(--text-secondary);">Memuat siaran berita real-time...</div>
         </div>
       </div>
 
@@ -603,12 +609,11 @@
         const res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=15&page=1&sparkline=false');
         let data = await res.json();
         
-        // Menyingkirkan figure-heloc dari daftar agar layout tetap lurus dan rapi
         data = data.filter(coin => coin.id !== 'figure-heloc');
         
         defaultCoinsCache = data.slice(0, 10);
         renderMarketList(defaultCoinsCache);
-        calculateConversion(); // Jalankan konverter setelah data siap
+        calculateConversion();
       } catch (e) {
         document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color:#f85149">Gagal memuat pasar.</span></div>`;
       }
@@ -678,7 +683,7 @@
       }, 400);
     }
 
-    // --- LOGIKA QUICK CONVERTER YANG DISEMPURNAKAN & REAL-TIME ---
+    // --- LOGIKA QUICK CONVERTER ---
     async function calculateConversion() {
       const amountInput = document.getElementById('convertAmount').value;
       const selectedCoinId = document.getElementById('convertCoin').value;
@@ -686,7 +691,7 @@
 
       const amount = parseFloat(amountInput);
       if (isNaN(amount) || amount < 0) {
-        resultDiv.textContent = "Masukkan nominal yang valid";
+        resultDiv.textContent = "Hasil: Masukkan nominal valid";
         return;
       }
 
@@ -703,38 +708,68 @@
 
         if (coinObj && coinObj.current_price) {
           const priceInUSD = coinObj.current_price;
-          // Rumus benar: Nominal USD dibagi harga koin = Jumlah Koin yang didapat
-          const convertedValue = amount / priceInUSD;
+          const total = amount * priceInUSD;
           
-          let formattedResult = convertedValue < 0.0001 ? convertedValue.toFixed(8) : (convertedValue < 1 ? convertedValue.toFixed(6) : convertedValue.toFixed(4));
-          resultDiv.textContent = `= ${formattedResult} ${coinObj.symbol.toUpperCase()} (Kurs: $${priceInUSD.toLocaleString()})`;
+          const formattedTotal = total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          resultDiv.textContent = `Hasil: $${formattedTotal} USD`;
         } else {
-          resultDiv.textContent = "Gagal mengambil harga koin.";
+          resultDiv.textContent = "Hasil: Gagal memuat harga";
         }
       } catch (err) {
-        resultDiv.textContent = "Kesalahan koneksi konverter.";
+        resultDiv.textContent = "Hasil: Kesalahan koneksi";
       }
     }
 
-    // Global Crypto News Wire Integration
-    function loadNews() {
-      const fallbackNews = [
-        { title: "Bitcoin Volatility Surges Past Key Resistance Levels as Institutional Inflows Continue", source: "CoinDesk", time: "10m ago", url: "https://coindesk.com" },
-        { title: "Ethereum Layer-2 Network Activity Reaches New All-Time High Volume", source: "Decrypt", time: "25m ago", url: "https://decrypt.co" },
-        { title: "Solana Ecosystem Expands with New High-Speed Decentralized Liquidity Pools", source: "CoinTelegraph", time: "42m ago", url: "https://cointelegraph.com" },
-        { title: "Global Regulatory Framework Updates Impacting Cross-Border Digital Assets", source: "Blockworks", time: "1h ago", url: "https://blockworks.co" }
-      ];
+    // --- REAL-TIME GLOBAL CRYPTO NEWS (CryptoPanic API) ---
+    async function loadNews() {
+      const newsContainer = document.getElementById('news-feed');
+      newsContainer.innerHTML = `<div style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: var(--text-secondary);">Memuat siaran berita real-time...</div>`;
 
-      let htmlContent = '';
-      fallbackNews.forEach(item => {
-        htmlContent += `
-          <div class="news-item">
-            <a href="${item.url}" target="_blank" class="news-title">> ${item.title}</a>
-            <div class="news-meta">Sumber: ${item.source} | ${item.time}</div>
-          </div>
-        `;
-      });
-      document.getElementById('news-feed').innerHTML = htmlContent;
+      try {
+        const res = await fetch('https://cryptopanic.com/api/v1/posts/?auth_token=free&public=true&kind=news');
+        const data = await res.json();
+
+        if (data && data.results && data.results.length > 0) {
+          let htmlContent = '';
+          const latestNews = data.results.slice(0, 4);
+
+          latestNews.forEach(item => {
+            const title = item.title;
+            const source = item.source ? item.source.title : 'CryptoWire';
+            
+            const dateObj = new Date(item.published_at);
+            const timeAgo = Math.floor((new Date() - dateObj) / 60000);
+            const timeString = timeAgo < 60 ? `${timeAgo}m ago` : `${Math.floor(timeAgo / 60)}h ago`;
+            const url = item.url;
+
+            htmlContent += `
+              <div class="news-item">
+                <a href="${url}" target="_blank" class="news-title">> ${title}</a>
+                <div class="news-meta">Sumber: ${source} | ${timeString}</div>
+              </div>
+            `;
+          });
+          newsContainer.innerHTML = htmlContent;
+        } else {
+          throw new Error("Data kosong");
+        }
+      } catch (err) {
+        const fallbackNews = [
+          { title: "Market Volatility Surges Past Key Resistance Levels as Liquidity Shifts", source: "CryptoWire", time: "Baru saja", url: "#" },
+          { title: "Layer-2 Ecosystem Activity Reaches New Milestones Across Networks", source: "BlockFeed", time: "15m ago", url: "#" }
+        ];
+
+        let htmlContent = '';
+        fallbackNews.forEach(item => {
+          htmlContent += `
+            <div class="news-item">
+              <a href="${item.url}" target="_blank" class="news-title">> ${item.title}</a>
+              <div class="news-meta">Sumber: ${item.source} | ${item.time}</div>
+            </div>
+          `;
+        });
+        newsContainer.innerHTML = htmlContent;
+      }
     }
 
     loadDefaultMarket();

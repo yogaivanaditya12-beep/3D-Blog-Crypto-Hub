@@ -657,27 +657,33 @@
       searchTimeout = setTimeout(async () => {
         document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color: var(--text-secondary);">Mencari koin di jaringan global...</span></div>`;
         try {
-          const searchRes = await fetch(`https://api.coingecko.com/api/v3/search?query=${query}`);
-          const searchData = await searchRes.json();
-          
-          if (!searchData.coins || searchData.coins.length === 0) {
+          // Menggunakan CoinGecko API untuk pencarian langsung (mengambil endpoint /coins/markets dengan parameter pencarian dinamis atau pencarian langsung id/simbol)
+          const searchRes = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false`);
+          const allCoins = await searchRes.json();
+
+          const filtered = allCoins.filter(coin => 
+            coin.id.toLowerCase().includes(query) || 
+            coin.symbol.toLowerCase().includes(query) || 
+            coin.name.toLowerCase().includes(query)
+          ).slice(0, 6);
+
+          if (filtered.length === 0) {
             document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color: var(--text-secondary);">Koin "${query}" tidak ditemukan</span></div>`;
             return;
           }
 
-          const filteredCoins = searchData.coins.filter(c => c.id !== 'figure-heloc');
-          const topCoinIds = filteredCoins.slice(0, 6).map(c => c.id).join(',');
-
-          if (!topCoinIds) {
-            document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color: var(--text-secondary);">Aset tidak ditemukan</span></div>`;
-            return;
-          }
-
-          const priceRes = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${topCoinIds}&sparkline=false`);
-          const priceData = await priceRes.json();
-
-          renderMarketList(priceData);
+          renderMarketList(filtered);
         } catch (err) {
+          // Fallback pencarian langsung jika endpoint markets gagal/rate limit dengan fetch detail ID tunggal jika query cocok
+          try {
+            const directRes = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${query}&sparkline=false`);
+            const directData = await directRes.json();
+            if (directData && directData.length > 0) {
+              renderMarketList(directData);
+              return;
+            }
+          } catch(e) {}
+
           document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color:#f85149">Gagal mencari aset.</span></div>`;
         }
       }, 400);
@@ -842,7 +848,7 @@
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.renderer.setSize(window.innerWidth, window.innerHeight); // Perbaikan kecil method renderer
     });
   </script>
 </body>

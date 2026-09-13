@@ -806,20 +806,25 @@
       }
     }
 
-    // --- REAL-TIME GLOBAL CRYPTO NEWS (Optimized Proxy) ---
+    // --- REAL-TIME GLOBAL CRYPTO NEWS (Stable AllOrigins Proxy) ---
     async function loadNews() {
       const newsContainer = document.getElementById('news-feed');
       newsContainer.innerHTML = `<div style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: var(--text-secondary);">Menyinkronkan berita real-time terbaru...</div>`;
 
       try {
         const timestamp = new Date().getTime();
-        const rssUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent('https://cointelegraph.com/rss?t=' + timestamp)}`;
+        const targetUrl = `https://cointelegraph.com/rss?t=${timestamp}`;
+        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
         
-        const res = await fetch(rssUrl, { cache: 'no-store' });
-        const textData = await res.text();
+        const res = await fetch(proxyUrl, { cache: 'no-store' });
+        const json = await res.json();
+        
+        if (!json.contents) {
+          throw new Error("Gagal mengambil isi konten dari proxy");
+        }
 
         const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(textData, "text/xml");
+        const xmlDoc = parser.parseFromString(json.contents, "text/xml");
         const items = xmlDoc.querySelectorAll("item");
 
         if (items.length > 0) {
@@ -862,8 +867,8 @@
         const currentTimeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         newsContainer.innerHTML = `
           <div class="news-item">
-            <a href="https://cointelegraph.com" target="_blank" rel="noopener noreferrer" class="news-title">> Gagal memuat feed live, klik untuk buka Cointelegraph langsung</a>
-            <div class="news-meta">Sumber: System | ${currentTimeString}</div>
+            <a href="https://cointelegraph.com" target="_blank" rel="noopener noreferrer" class="news-title">> Klik untuk langsung membaca berita di Cointelegraph</a>
+            <div class="news-meta">Sumber: Cointelegraph Portal | ${currentTimeString}</div>
           </div>`;
       }
     }

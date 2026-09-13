@@ -331,25 +331,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .section-title {
-      font-size: 0.95rem;
-      font-weight: 800;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      margin-bottom: 20px;
-      color: var(--text-secondary);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .section-title::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(90deg, rgba(255,255,255,0.25), transparent);
-    }
-
     .blog-card {
       padding: 26px;
       margin-bottom: 18px;
@@ -806,36 +787,31 @@
       }
     }
 
-    // --- REAL-TIME GLOBAL CRYPTO NEWS (Stable CORSProxy.io) ---
+    // --- REAL-TIME GLOBAL CRYPTO NEWS (Using CryptoPanic Public API) ---
     async function loadNews() {
       const newsContainer = document.getElementById('news-feed');
       newsContainer.innerHTML = `<div style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: var(--text-secondary);">Menyinkronkan berita real-time terbaru...</div>`;
 
       try {
-        const timestamp = new Date().getTime();
-        const targetUrl = `https://cointelegraph.com/rss?t=${timestamp}`;
-        const proxyUrl = `https://corsproxy.io/?` + encodeURIComponent(targetUrl);
-        
-        const res = await fetch(proxyUrl);
+        // Menggunakan CryptoPanic API publik untuk bypass masalah CORS RSS Reader
+        const res = await fetch('https://cryptopanic.com/api/v1/posts/?auth_token=free&public=true&kind=news');
         if (!res.ok) throw new Error("Network response was not ok");
         
-        const xmlText = await res.text();
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(xmlText, "text/xml");
-        const items = xmlDoc.querySelectorAll("item");
+        const data = await res.json();
+        const results = data.results;
 
-        if (items.length > 0) {
+        if (results && results.length > 0) {
           let htmlContent = '';
-          const count = Math.min(items.length, 4);
+          const count = Math.min(results.length, 4);
 
           for (let i = 0; i < count; i++) {
-            const item = items[i];
-            const title = item.querySelector("title") ? item.querySelector("title").textContent : "No Title";
-            const link = item.querySelector("link") ? item.querySelector("link").textContent : "#";
-            const pubDateStr = item.querySelector("pubDate") ? item.querySelector("pubDate").textContent : "";
+            const item = results[i];
+            const title = item.title ? item.title : "No Title";
+            const link = item.url ? item.url : "#";
+            const sourceName = item.source && item.source.title ? item.source.title : "Crypto News";
+            const publishedAt = new Date(item.published_at);
             
-            const pubDate = new Date(pubDateStr);
-            const timeAgo = Math.floor((Date.now() - pubDate.getTime()) / 60000);
+            const timeAgo = Math.floor((Date.now() - publishedAt.getTime()) / 60000);
             let timeString = '';
             
             if (isNaN(timeAgo) || timeAgo < 1) {
@@ -851,21 +827,21 @@
             htmlContent += `
               <div class="news-item">
                 <a href="${link}" target="_blank" rel="noopener noreferrer" class="news-title">> ${title}</a>
-                <div class="news-meta">Sumber: Cointelegraph | ${timeString}</div>
+                <div class="news-meta">Sumber: ${sourceName} | ${timeString}</div>
               </div>
             `;
           }
           newsContainer.innerHTML = htmlContent;
         } else {
-          throw new Error("Format XML kosong");
+          throw new Error("Data berita kosong");
         }
       } catch (err) {
         const now = new Date();
         const currentTimeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         newsContainer.innerHTML = `
           <div class="news-item">
-            <a href="https://cointelegraph.com" target="_blank" rel="noopener noreferrer" class="news-title">> Klik untuk langsung membaca berita di Cointelegraph</a>
-            <div class="news-meta">Sumber: Cointelegraph Portal | ${currentTimeString}</div>
+            <a href="https://cryptopanic.com" target="_blank" rel="noopener noreferrer" class="news-title">> Klik untuk langsung membaca berita di CryptoPanic</a>
+            <div class="news-meta">Sumber: CryptoPanic Portal | ${currentTimeString}</div>
           </div>`;
       }
     }

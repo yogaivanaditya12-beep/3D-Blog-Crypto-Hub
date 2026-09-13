@@ -42,14 +42,14 @@
       pointer-events: none;
     }
 
-    /* Splash Screen Diperbarui agar Lebih Elegan & Berestetika */
+    /* Splash Screen dengan Efek Ruang Angkasa */
     #splash-screen {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(3, 3, 3, 0.92);
+      background: rgba(3, 3, 3, 0.95);
       backdrop-filter: blur(15px);
       -webkit-backdrop-filter: blur(15px);
       z-index: 9999;
@@ -58,7 +58,13 @@
       justify-content: center;
       align-items: center;
       cursor: pointer;
-      transition: opacity 0.6s ease;
+      transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #splash-screen.warp-active {
+      opacity: 0;
+      transform: scale(2.5);
+      pointer-events: none;
     }
 
     .splash-content {
@@ -101,12 +107,14 @@
       margin: 0 auto;
       padding: 50px 20px;
       opacity: 0;
-      transition: opacity 1s ease;
+      transform: translateY(20px);
+      transition: opacity 1s ease, transform 1s cubic-bezier(0.16, 1, 0.3, 1);
       pointer-events: none;
     }
 
     .container.active {
       opacity: 1;
+      transform: translateY(0);
       pointer-events: auto;
     }
 
@@ -488,7 +496,7 @@
 </head>
 <body>
 
-  <!-- Layar Splash Awal yang Diperbarui -->
+  <!-- Layar Splash Dimensi Ruang Angkasa -->
   <div id="splash-screen">
     <div class="splash-content">
       <div class="splash-title">BLACKOUT</div>
@@ -605,6 +613,7 @@
     const audioToggleBtn = document.getElementById('audioToggle');
     const audioText = document.getElementById('audioText');
     let isPlaying = false;
+    let isWarping = false;
 
     bgAudio.volume = 0.8;
 
@@ -619,12 +628,23 @@
     }
 
     splashScreen.addEventListener('click', () => {
+      if (isWarping) return;
+      isWarping = true;
       playAudio();
-      splashScreen.style.opacity = '0';
+
+      // Aktifkan kecepatan Warp Space di animasi Three.js
+      warpSpeed = 0.25;
+
+      splashScreen.classList.add('warp-active');
+
       setTimeout(() => {
         splashScreen.style.display = 'none';
         mainContainer.classList.add('active');
-      }, 500);
+        // Kembalikan kecepatan partikel ke normal setelah masuk
+        setTimeout(() => {
+          warpSpeed = 0.001;
+        }, 1000);
+      }, 700);
     });
 
     audioToggleBtn.addEventListener('click', (e) => {
@@ -864,21 +884,26 @@
     const innerMesh = new THREE.Mesh(innerGeo, innerMat);
     group.add(innerMesh);
 
-    const particlesCount = 300;
+    // Konfigurasi Partikel Ruang Angkasa (Stellar Dust)
+    const particlesCount = 600;
     const posArray = new Float32Array(particlesCount * 3);
+    const velocities = new Float32Array(particlesCount);
 
-    for(let i = 0; i < particlesCount * 3; i++) {
-      posArray[i] = (Math.random() - 0.5) * 15;
+    for(let i = 0; i < particlesCount; i++) {
+      posArray[i * 3] = (Math.random() - 0.5) * 30;     // X
+      posArray[i * 3 + 1] = (Math.random() - 0.5) * 30; // Y
+      posArray[i * 3 + 2] = (Math.random() - 0.5) * 50; // Z
+      velocities[i] = Math.random() * 0.02 + 0.01;
     }
 
     const particlesGeo = new THREE.BufferGeometry();
     particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
 
     const particlesMat = new THREE.PointsMaterial({
-      size: 0.035,
+      size: 0.045,
       color: 0xffffff,
       transparent: true,
-      opacity: 0.6,
+      opacity: 0.7,
       blending: THREE.AdditiveBlending
     });
 
@@ -889,6 +914,7 @@
     let targetX = 0, targetY = 0;
     const halfX = window.innerWidth / 2;
     const halfY = window.innerHeight / 2;
+    let warpSpeed = 0.001;
 
     document.addEventListener('mousemove', (e) => {
       mouseX = (e.clientX - halfX);
@@ -911,6 +937,15 @@
       innerMesh.rotation.x -= 0.004;
       innerMesh.rotation.y -= 0.007;
 
+      // Gerakkan partikel ruang angkasa mendekati kamera (Efek Warp)
+      const positions = particlesGeo.attributes.position.array;
+      for(let i = 0; i < particlesCount; i++) {
+        positions[i * 3 + 2] += velocities[i] + (warpSpeed * 15);
+        if (positions[i * 3 + 2] > 10) {
+          positions[i * 3 + 2] = -40; // Reset ke belakang
+        }
+      }
+      particlesGeo.attributes.position.needsUpdate = true;
       dustParticles.rotation.y += 0.0008;
 
       targetX = mouseX * 0.0008;

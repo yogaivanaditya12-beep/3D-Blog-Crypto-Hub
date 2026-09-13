@@ -480,7 +480,7 @@
       <p class="bio">The inner circle. Tempat para pengumpul alpha bergerak dalam sunyi sebelum pasar menyadarinya.</p>
       
       <div class="social-grid">
-        <a href="https://https://t.me/c/2362131585/1" target="_blank" class="social-btn">Telegram</a>
+        <a href="https://t.me/c/2362131585/1" target="_blank" class="social-btn">Telegram</a>
         <a href="https://x.com/" target="_blank" class="social-btn">Twitter / X</a>
         <a href="https://www.instagram.com/holicnarrative.labs" target="_blank" class="social-btn">Instagram</a>
         <a href="https://discord.gg/" target="_blank" class="social-btn">Discord</a>
@@ -657,7 +657,6 @@
       searchTimeout = setTimeout(async () => {
         document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color: var(--text-secondary);">Mencari koin di jaringan global...</span></div>`;
         try {
-          // Menggunakan CoinGecko API untuk pencarian langsung (mengambil endpoint /coins/markets dengan parameter pencarian dinamis atau pencarian langsung id/simbol)
           const searchRes = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false`);
           const allCoins = await searchRes.json();
 
@@ -674,7 +673,6 @@
 
           renderMarketList(filtered);
         } catch (err) {
-          // Fallback pencarian langsung jika endpoint markets gagal/rate limit dengan fetch detail ID tunggal jika query cocok
           try {
             const directRes = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${query}&sparkline=false`);
             const directData = await directRes.json();
@@ -761,7 +759,6 @@
           throw new Error("Data kosong");
         }
       } catch (err) {
-        // Fallback dengan URL sumber berita eksternal yang berbeda-beda dan unik
         const fallbackNews = [
           { title: "Market Volatility Surges Past Key Resistance Levels as Liquidity Shifts", source: "CoinDesk", time: "Baru saja", url: "https://www.coindesk.com/" },
           { title: "Layer-2 Ecosystem Activity Reaches New Milestones Across Networks", source: "Cointelegraph", time: "15m ago", url: "https://cointelegraph.com/" },
@@ -848,7 +845,7 @@
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
-      renderer.renderer.setSize(window.innerWidth, window.innerHeight); // Perbaikan kecil method renderer
+      renderer.setSize(window.innerWidth, window.innerHeight);
     });
   </script>
 </body>

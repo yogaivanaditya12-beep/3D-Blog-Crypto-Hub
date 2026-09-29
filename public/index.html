@@ -421,10 +421,10 @@
     /* Interactive Matter Floating Nodes HTML Overlays */
     .matter-node {
       position: absolute;
-      background: rgba(15, 15, 15, 0.85);
+      background: rgba(15, 15, 15, 0.9);
       backdrop-filter: blur(8px);
-      border: 1px solid rgba(88, 166, 255, 0.4);
-      padding: 10px 16px;
+      border: 1px solid rgba(88, 166, 255, 0.5);
+      padding: 10px 18px;
       border-radius: 12px;
       color: #ffffff;
       font-size: 0.75rem;
@@ -434,9 +434,10 @@
       z-index: 10;
       transition: all 0.3s ease;
       pointer-events: auto;
-      box-shadow: 0 0 15px rgba(88, 166, 255, 0.2);
+      box-shadow: 0 0 15px rgba(88, 166, 255, 0.25);
       transform: translate(-50%, -50%);
       white-space: nowrap;
+      display: none;
     }
 
     .matter-node:hover {
@@ -454,7 +455,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(3, 3, 3, 0.92);
+      background: rgba(3, 3, 3, 0.94);
       backdrop-filter: blur(15px);
       z-index: 20;
       padding: 30px;
@@ -553,7 +554,7 @@
     <canvas id="warpCanvas"></canvas>
     <div class="splash-content">
       <div class="splash-title">BLACKOUT</div>
-      <div class="splash-subtitle">[ Click To Enter Hyperspace ]</div>
+      <div class="splash-subtitle">[ Click To Enter Portal ]</div>
     </div>
   </div>
 
@@ -603,26 +604,30 @@
       <div id="tab-crypto101" class="tab-pane active">
         <div class="glow-card" style="padding: 24px;">
           <div class="glow-spot"></div>
-          <span class="blog-tag">Space Dimension Portal</span>
+          <span class="blog-tag">Portal</span>
           <h2>Crypto 101 // Dimensi Materi Kripto</h2>
-          <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 15px;">Navigasikan pandangan Anda ke dalam dimensi luar angkasa. Klik materi-materi yang melayang dari belakang ke depan untuk membuka pemahaman.</p>
+          <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 15px;">Navigasikan pandangan Anda ke dalam portal. Klik materi yang melintas satu persatu dari belakang ke depan untuk membuka pemahaman.</p>
           
           <div class="crypto-space-box" id="cryptoSpaceBox">
             <canvas id="cryptoSpaceCanvas"></canvas>
             
             <div class="space-overlay-ui">
               <div class="space-header">
-                <h3>PORTAL LUAR ANGKASA KRIPTO</h3>
+                <h3>PORTAL KRIPTO</h3>
                 <p>[ Klik Materi yang Melintas di Layar ]</p>
               </div>
             </div>
 
-            <!-- DOM Matter Nodes yang melayang bersama animasi kanvas -->
+            <!-- DOM Matter Nodes (8 Materi Berurutan Terbang Satu Per Satu) -->
             <div id="matterNodesContainer">
               <div class="matter-node" data-id="0" onclick="openMatter(0)">01. Blockchain & Ledger</div>
               <div class="matter-node" data-id="1" onclick="openMatter(1)">02. Public & Private Key</div>
               <div class="matter-node" data-id="2" onclick="openMatter(2)">03. Decentralization</div>
               <div class="matter-node" data-id="3" onclick="openMatter(3)">04. Whale & Liquidity</div>
+              <div class="matter-node" data-id="4" onclick="openMatter(4)">05. Consensus Mechanism</div>
+              <div class="matter-node" data-id="5" onclick="openMatter(5)">06. Smart Contracts</div>
+              <div class="matter-node" data-id="6" onclick="openMatter(6)">07. Tokenomics & Utility</div>
+              <div class="matter-node" data-id="7" onclick="openMatter(7)">08. Risk & Portfolio Mgmt</div>
             </div>
 
             <!-- Panel Membaca Materi -->
@@ -633,7 +638,7 @@
                 <p id="readingDesc">Deskripsi lengkap materi akan tampil di sini...</p>
               </div>
               <button class="back-matter-btn" onclick="closeMatterPanel()">
-                <span>← Kembali ke Portal Angkasa</span>
+                <span>← Kembali ke Portal</span>
               </button>
             </div>
 
@@ -796,33 +801,61 @@
       });
     }
 
-    // Data Materi Kripto
+    // 8 Data Materi Kripto
     const mattersData = [
       {
         tag: "Materi 01 // Fundamental",
         title: "Blockchain & Buku Besar Terdistribusi",
-        desc: "Blockchain adalah teknologi rantai blok yang mencatat seluruh transaksi secara permanen dan transparan di ribuan komputer (node) tanpa memerlukan otoritas pusat pihak ketiga.",
-        x: 0.25, y: 0.3, z: 250, speed: 0.8
+        desc: "Blockchain adalah teknologi rantai blok yang mencatat seluruh transaksi secara permanen dan transparan di ribuan komputer (node) tanpa memerlukan otoritas pusat pihak ketiga."
       },
       {
         tag: "Materi 02 // Security",
         title: "Public Key vs Private Key (Kunci Kriptografi)",
-        desc: "Public key berfungsi seperti nomor rekening bank yang aman dibagikan, sedangkan private key adalah tanda tangan digital rahasia mutlak yang memegang kendali penuh atas aset Anda.",
-        x: 0.75, y: 0.35, z: 180, speed: 1.1
+        desc: "Public key berfungsi seperti nomor rekening bank yang aman dibagikan, sedangkan private key adalah tanda tangan digital rahasia mutlak yang memegang kendali penuh atas aset Anda."
       },
       {
         tag: "Materi 03 // Ecosystem",
         title: "Desentralisasi & Kedaulatan Mandiri",
-        desc: "Ekosistem tanpa perantara memberikan kebebasan penuh kepada individu untuk mengelola aset, data, dan partisipasi finansial langsung secara peer-to-peer.",
-        x: 0.35, y: 0.7, z: 300, speed: 0.6
+        desc: "Ekosistem tanpa perantara memberikan kebebasan penuh kepada individu untuk mengelola aset, data, dan partisipasi finansial secara mandiri peer-to-peer."
       },
       {
         tag: "Materi 04 // Market Strategy",
         title: "Pergerakan Whale & Likuiditas Pasar",
-        desc: "Whale adalah entitas dengan kepemilikan modal raksasa yang mampu menggerakkan likuiditas pasar. Memahaminya menghindarkan Anda dari jebakan psikologi pasar (FOMO).",
-        x: 0.7, y: 0.75, z: 120, speed: 1.3
+        desc: "Whale adalah entitas dengan kepemilikan modal raksasa yang mampu menggerakkan likuiditas pasar. Memahaminya menghindarkan Anda dari jebakan psikologi pasar (FOMO)."
+      },
+      {
+        tag: "Materi 05 // Consensus",
+        title: "Proof of Work vs Proof of Stake",
+        desc: "Mekanisme konsensus untuk mengamankan jaringan dan memvalidasi transaksi, mulai dari penggunaan daya komputasi tinggi hingga sistem staking kepemilikan koin."
+      },
+      {
+        tag: "Materi 06 // Smart Contracts",
+        title: "Smart Contracts & Ekosistem DApps",
+        desc: "Program komputer otomatis yang mengeksekusi perjanjian secara otomatis di atas blockchain tanpa pihak penengah begitu syarat terpenuhi."
+      },
+      {
+        tag: "Materi 07 // Tokenomics",
+        title: "Tokenomics & Utilitas Aset Digital",
+        desc: "Studi mengenai ekonomi token, termasuk pasokan total, tingkat inflasi, mekanisme pembakaran (burn), serta kegunaan nyata token di dalam ekosistemnya."
+      },
+      {
+        tag: "Materi 08 // Risk Management",
+        title: "Manajemen Risiko & Psikologi Trading",
+        desc: "Disiplin mengelola ukuran posisi modal, menetapkan batas risiko (stop loss), dan mengendalikan emosi agar tetap bertahan jangka panjang di market."
       }
     ];
+
+    // Inisialisasi posisi 8 materi secara berurutan di sumbu Z agar terbang satu per satu
+    let activeMatterIndex = 0;
+    const matterZDistance = 250; // Jarak antar materi saat terbang
+    
+    const mattersState = mattersData.map((item, idx) => ({
+      ...item,
+      x: 0.2 + Math.random() * 0.6,
+      y: 0.25 + Math.random() * 0.5,
+      z: 100 + (idx * matterZDistance), // Jarak Z bertingkat agar muncul bergiliran
+      speed: 0.8
+    }));
 
     let spacePaused = false;
 
@@ -834,10 +867,10 @@
         let cx = spaceW / 2;
         let cy = spaceH / 2;
 
-        // Render bintang luar angkasa berterbangan
+        // Render bintang latar belakang
         for (let i = 0; i < spaceStars.length; i++) {
           let s = spaceStars[i];
-          s.z -= 1.5;
+          s.z -= 1.2;
           if (s.z <= 0) {
             s.z = 400;
             s.x = (Math.random() - 0.5) * 600;
@@ -854,29 +887,36 @@
           }
         }
 
-        // Render & gerakkan node materi dari belakang ke depan secara bergantian
+        // Render & gerakkan node materi satu persatu dari belakang ke depan
         const nodesDOM = document.querySelectorAll('.matter-node');
-        nodesDOM.forEach((nodeEl, idx) => {
-          let m = mattersData[idx];
+        
+        mattersState.forEach((m, idx) => {
           m.z -= m.speed;
+          
+          // Jika materi sudah sampai di depan (z <= 10), reset ke belakang antrean
           if (m.z <= 10) {
-            m.z = 350; // Kembali ke belakang setelah sampai di depan
-            m.x = Math.random() * 0.6 + 0.2;
-            m.y = Math.random() * 0.6 + 0.2;
+            m.z = mattersState.length * matterZDistance;
+            m.x = 0.2 + Math.random() * 0.6;
+            m.y = 0.25 + Math.random() * 0.5;
           }
 
+          let nodeEl = nodesDOM[idx];
           let k = 200 / m.z;
           let nx = (m.x - 0.5) * spaceW * k + cx;
           let ny = (m.y - 0.5) * spaceH * k + cy;
 
-          // Atur posisi dan skala elemen HTML berdasarkan koordinat z ruang 3D
-          if (nx >= -50 && nx <= spaceW + 50 && ny >= -50 && ny <= spaceH + 50) {
+          // Hanya tampilkan node jika berada dalam jangkauan pandang (Z antara 10 dan 350)
+          if (m.z < 350 && nx >= -80 && nx <= spaceW + 80 && ny >= -50 && ny <= spaceH + 50) {
             nodeEl.style.display = 'block';
             nodeEl.style.left = `${nx}px`;
             nodeEl.style.top = `${ny}px`;
-            let scale = Math.max(0.6, Math.min(1.6, k * 1.2));
+            let scale = Math.max(0.5, Math.min(1.5, k * 1.1));
             nodeEl.style.transform = `translate(-50%, -50%) scale(${scale})`;
-            nodeEl.style.opacity = Math.min(1, (350 - m.z) / 80);
+            // Efek fade-in & fade-out berdasarkan jarak z
+            let opacity = 1;
+            if (m.z > 280) opacity = (350 - m.z) / 70;
+            if (m.z < 50) opacity = m.z / 50;
+            nodeEl.style.opacity = Math.max(0, Math.min(1, opacity));
           } else {
             nodeEl.style.display = 'none';
           }

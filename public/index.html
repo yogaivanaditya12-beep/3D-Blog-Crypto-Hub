@@ -358,7 +358,7 @@
 
     .sim-canvas-box {
       width: 100%;
-      height: 180px;
+      height: 200px;
       background: #000000;
       position: relative;
       overflow: hidden;
@@ -488,7 +488,7 @@
                   </button>
                   <button class="vid-btn" type="button" onclick="resetSimulation()">⟲ RESTART</button>
                 </div>
-                <div class="time-display" id="timeDisplay">00:00 / 00:12</div>
+                <div class="time-display" id="timeDisplay">00:00 / 00:18</div>
               </div>
             </div>
           </div>
@@ -547,7 +547,6 @@
       setTimeout(() => {
         splashScreen.classList.add('fade-out');
         mainContainer.classList.add('active');
-        // Pastikan ukuran canvas blockchain disesuaikan saat container utama muncul
         resizeCanvas();
       }, 50);
 
@@ -578,7 +577,6 @@
         event.currentTarget.classList.add('active');
       }
 
-      // Jika tab blockchain dibuka, paksa update ukuran canvas agar langsung muncul
       if (tabId === 'blockchain') {
         setTimeout(resizeCanvas, 50);
       }
@@ -592,7 +590,7 @@
       });
     });
 
-    // --- BLOCKCHAIN VISUAL ANIMATION SIMULATOR ---
+    // --- ENHANCED BLOCKCHAIN & COMPUTER SIMULATOR (18 SECONDS) ---
     const canvas = document.getElementById('simCanvas');
     const ctx = canvas.getContext('2d');
 
@@ -605,14 +603,14 @@
     window.addEventListener('resize', resizeCanvas);
 
     const stages = [
-      { time: 0, title: "[01] Inisiasi Transaksi (Broadcasting)", desc: "User mengirim permintaan data atau aset. Transaksi dibungkus dan disiarkan ke seluruh node di dalam jaringan peer-to-peer." },
-      { time: 3, title: "[02] Proses Verifikasi Kriptografi", desc: "Node di jaringan memeriksa keabsahan transaksi menggunakan tanda tangan digital dan aturan konsensus yang berlaku." },
-      { time: 6, title: "[03] Pembentukan Blok Baru (Mining/Validation)", desc: "Transaksi yang valid dikumpulkan ke dalam satu blok data baru dan diproses untuk menghasilkan kode Hash unik." },
-      { time: 9, title: "[04] Pengikatan Rantai (Chain Integration)", desc: "Blok baru ditautkan secara permanen ke blok sebelumnya menggunakan Hash kriptografis, menghasilkan buku besar yang aman." }
+      { time: 0, title: "[01] Inisiasi Transaksi & Paket Data", desc: "User mengirim data/aset melalui terminal. Paket data dienkripsi sebelum disiarkan ke jaringan P2P." },
+      { time: 4.5, title: "[02] Validasi Kriptografi Multi-Node", desc: "Node komputer di berbagai server memverifikasi tanda tangan digital dan validitas transaksi secara paralel." },
+      { time: 9.5, title: "[03] Pembentukan Blok & Hash Generation", desc: "Transaksi yang sah dikumpulkan ke dalam struktur data blok baru, lalu diproses untuk menghasilkan kode Hash unik." },
+      { time: 14, title: "[04] Integrasi Rantai Permanen (Blockchain)", desc: "Blok baru dikunci dan dirantai secara kriptografis ke blok sebelumnya, memastikan buku besar aman dan abadi." }
     ];
 
     let simTime = 0;
-    const maxSimTime = 12;
+    const maxSimTime = 18;
     let isPlaying = false;
     let simInterval = null;
 
@@ -625,22 +623,24 @@
     const stageTitle = document.getElementById('stageTitle');
     const stageDesc = document.getElementById('stageDesc');
 
+    // Koordinat Node komputer yang lebih futuristik
     const nodes = [
-      { x: 50, y: 90 },
-      { x: 130, y: 40 },
-      { x: 210, y: 110 },
-      { x: 290, y: 50 },
-      { x: 370, y: 100 }
+      { x: 45, y: 100, label: "PC-01" },
+      { x: 120, y: 50, label: "SRV-A" },
+      { x: 195, y: 120, label: "NODE-X" },
+      { x: 270, y: 60, label: "SRV-B" },
+      { x: 345, y: 110, label: "CORE-0" }
     ];
 
     function drawSimulation() {
       if (!ctx || canvas.width === 0 || canvas.height === 0) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      let scaleX = canvas.width / 420;
-      let scaleY = canvas.height / 180;
+      let scaleX = canvas.width / 400;
+      let scaleY = canvas.height / 200;
 
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+      // Gambar koneksi antar komputer / node
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
       ctx.lineWidth = 1.5;
       for (let i = 0; i < nodes.length - 1; i++) {
         ctx.beginPath();
@@ -649,74 +649,115 @@
         ctx.stroke();
       }
 
+      // Render Node Komputer / Server
       nodes.forEach((node, index) => {
         let nx = node.x * scaleX;
         let ny = node.y * scaleY;
 
-        ctx.fillStyle = '#111';
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(nx, ny, 10, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
+        // Kotak Komputer / Terminal
+        ctx.fillStyle = '#0a0a0a';
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.fillRect(nx - 14, ny - 12, 28, 24);
+        ctx.strokeRect(nx - 14, ny - 12, 28, 24);
 
-        if (simTime >= 3 && simTime < 6 && index > 0 && index < 4) {
-          ctx.fillStyle = 'rgba(255, 255, 255, ' + (Math.sin(Date.now() * 0.01) * 0.5 + 0.5) + ')';
-          ctx.beginPath();
-          ctx.arc(nx, ny, 6, 0, Math.PI * 2);
-          ctx.fill();
+        // Layar kecil di dalam komputer
+        ctx.fillStyle = (simTime >= 4.5 && simTime < 9.5) ? '#58a6ff' : 'rgba(255,255,255,0.3)';
+        ctx.fillRect(nx - 10, ny - 8, 20, 12);
+
+        // Efek aktif saat verifikasi
+        if (simTime >= 4.5 && simTime < 9.5) {
+          ctx.strokeStyle = 'rgba(88, 166, 255, ' + (Math.sin(Date.now() * 0.015) * 0.4 + 0.6) + ')';
+          ctx.lineWidth = 2;
+          ctx.strokeRect(nx - 16, ny - 14, 32, 28);
         }
 
-        ctx.fillStyle = '#888';
-        ctx.font = '9px monospace';
-        ctx.fillText(`N-${index+1}`, nx - 10, ny + 22);
+        ctx.fillStyle = '#888888';
+        ctx.font = '8px monospace';
+        ctx.fillText(node.label, nx - 14, ny + 22);
       });
 
-      if (simTime < 3) {
-        let progress = (simTime / 3);
+      // TAHAP 1: Aliran Data / Paket dari PC-01 broadcast ke node lain (0s - 4.5s)
+      if (simTime < 4.5) {
+        let progress = (simTime / 4.5);
         let currX = (nodes[0].x + (nodes[2].x - nodes[0].x) * progress) * scaleX;
         let currY = (nodes[0].y + (nodes[2].y - nodes[0].y) * progress) * scaleY;
 
         ctx.fillStyle = '#ffffff';
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = '#ffffff';
         ctx.beginPath();
         ctx.arc(currX, currY, 5, 0, Math.PI * 2);
         ctx.fill();
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = '#fff';
-      } else if (simTime >= 3 && simTime < 6) {
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+
+        // Teks data packet
+        ctx.font = '8px monospace';
+        ctx.fillText("DATA_TX", currX + 8, currY - 5);
+      } 
+      // TAHAP 2: Proses Verifikasi Kriptografi (Gelombang enkripsi antar node) (4.5s - 9.5s)
+      else if (simTime >= 4.5 && simTime < 9.5) {
+        ctx.strokeStyle = 'rgba(88, 166, 255, 0.5)';
         ctx.lineWidth = 1;
         nodes.forEach(node => {
           let nx = node.x * scaleX;
           let ny = node.y * scaleY;
-          let radius = ((simTime - 3) * 20) % 25;
+          let radius = ((simTime - 4.5) * 15) % 22;
           ctx.beginPath();
           ctx.arc(nx, ny, radius, 0, Math.PI * 2);
           ctx.stroke();
         });
-      } else if (simTime >= 6 && simTime < 9) {
-        let boxWidth = 50 * scaleX;
-        let boxHeight = 40 * scaleY;
+
+        ctx.fillStyle = '#58a6ff';
+        ctx.font = '9px monospace';
+        ctx.fillText(">> HASH VERIFICATION ACTIVE <<", canvas.width / 2 - 75, 20);
+      } 
+      // TAHAP 3: Pembentukan Blok Baru (Mining / Validated Block) (9.5s - 14s)
+      else if (simTime >= 9.5 && simTime < 14) {
+        let boxWidth = 70 * scaleX;
+        let boxHeight = 45 * scaleY;
         let boxX = (canvas.width / 2) - (boxWidth / 2);
         let boxY = (canvas.height / 2) - (boxHeight / 2);
 
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
         ctx.strokeStyle = '#ffffff';
         ctx.lineWidth = 2;
         ctx.fillRect(boxX, boxY, boxWidth, boxHeight);
         ctx.strokeRect(boxX, boxY, boxWidth, boxHeight);
 
         ctx.fillStyle = '#ffffff';
-        ctx.font = '10px monospace';
-        ctx.fillText('BLOCK #', boxX + 5, boxY + 22);
-      } else if (simTime >= 9 && simTime <= 12) {
-        let startX = canvas.width / 2 - 60 * scaleX;
+        ctx.font = '9px monospace';
+        ctx.fillText("NEW BLOCK #849", boxX + 6, boxY + 16);
+        ctx.fillStyle = '#888888';
+        ctx.font = '8px monospace';
+        ctx.fillText("Hash: 0x9fA2...3b", boxX + 6, boxY + 32);
+      } 
+      // TAHAP 4: Integrasi Rantai Blok (Blockchain Chains) (14s - 18s)
+      else if (simTime >= 14 && simTime <= 18) {
+        let startX = canvas.width / 2 - 80 * scaleX;
         let yPos = canvas.height / 2;
 
+        // Gambar 3 blok berantai
         for (let i = 0; i < 3; i++) {
-          ctx.fillStyle = i === 2 ? '#ffffff' : 'rgba(255,255,255,0.3)';
-          ctx.fillRect((startX + (i * 45 * scaleX)), yPos - 15, 35 * scaleX, 30 * scaleY);
+          let bx = startX + (i * 55 * scaleX);
+          ctx.fillStyle = i === 2 ? '#ffffff' : 'rgba(255, 255, 255, 0.25)';
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1.5;
+          ctx.fillRect(bx, yPos - 18, 45 * scaleX, 36 * scaleY);
+          ctx.strokeRect(bx, yPos - 18, 45 * scaleX, 36 * scaleY);
+
+          ctx.fillStyle = i === 2 ? '#000000' : '#ffffff';
+          ctx.font = '8px monospace';
+          ctx.fillText(`BLK-${i+1}`, bx + 6, yPos + 4);
+
+          // Garis penghubung rantai antar blok
+          if (i < 2) {
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(bx + 45 * scaleX, yPos);
+            ctx.lineTo(bx + 55 * scaleX, yPos);
+            ctx.stroke();
+          }
         }
       }
       ctx.shadowBlur = 0;
@@ -764,7 +805,8 @@
     function updateSimUI() {
       progressFill.style.width = ((simTime / maxSimTime) * 100) + '%';
       let currentSec = Math.floor(simTime);
-      timeDisplay.textContent = `00:${currentSec < 10 ? '0' + currentSec : currentSec} / 00:12`;
+      let secStr = currentSec < 10 ? '0' + currentSec : currentSec;
+      timeDisplay.textContent = `00:${secStr} / 00:18`;
 
       let currentStage = stages[0];
       stages.forEach(st => { if (simTime >= st.time) currentStage = st; });

@@ -549,7 +549,7 @@
         <div class="blog-card glow-card">
           <div class="glow-spot"></div>
           <span class="blog-tag">Live Feed // Market Watch</span>
-          <input type="text" id="coinSearch" class="terminal-input" placeholder="> Ketik nama koin (contoh: sol, pepe, doge)..." onkeyup="handleSearch(event)">
+          <input type="text" id="coinSearch" class="terminal-input" placeholder="> Ketik nama koin (contoh: SOL, BTC, PEPE)..." onkeyup="handleSearch(event)">
           <div id="market-feed">
             <div class="market-row"><span style="color: var(--text-secondary);">Memuat data pasar utama...</span></div>
           </div>
@@ -563,11 +563,11 @@
           <div class="converter-box">
             <input type="number" id="convertAmount" class="converter-input" value="1" min="0" step="any" oninput="calculateConversion()">
             <select id="convertCoin" class="converter-select" onchange="calculateConversion()">
-              <option value="bitcoin">BTC</option>
-              <option value="ethereum">ETH</option>
-              <option value="solana" selected>SOL</option>
-              <option value="binancecoin">BNB</option>
-              <option value="ripple">XRP</option>
+              <option value="BTCUSDT">BTC</option>
+              <option value="ETHUSDT">ETH</option>
+              <option value="SOLUSDT" selected>SOL</option>
+              <option value="BNBUSDT">BNB</option>
+              <option value="XRPUSDT">XRP</option>
             </select>
           </div>
           <div id="convertResult" class="converter-result">Hasil: Mengambil data...</div>
@@ -679,17 +679,22 @@
       });
     });
 
-    let defaultCoinsCache = [];
+    let allTickersCache = [];
     let searchTimeout = null;
+
+    const defaultSymbols = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 'DOGEUSDT', 'PEPEUSDT', 'ADAUSDT', 'AVAXUSDT', 'NEARUSDT'];
 
     async function loadDefaultMarket() {
       try {
-        const res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=15&page=1&sparkline=false');
+        const res = await fetch('https://api.binance.com/api/v3/ticker/24hr');
         if (!res.ok) throw new Error("Network response was not ok");
         
         const json = await res.json();
-        defaultCoinsCache = json;
-        renderMarketList(defaultCoinsCache.slice(0, 10));
+        allTickersCache = json;
+
+        // Filter untuk menampilkan koin default utama
+        const defaultData = json.filter(item => defaultSymbols.includes(item.symbol));
+        renderMarketList(defaultData);
         calculateConversion();
       } catch (e) {
         console.error("Gagal memuat API market:", e);
@@ -709,18 +714,18 @@
 
       let htmlContent = '';
       coins.forEach(coin => {
-        const symbol = coin.symbol.toUpperCase() + '/USD';
-        const priceNum = parseFloat(coin.current_price);
+        const symbolDisplay = coin.symbol.replace('USDT', '/USD');
+        const priceNum = parseFloat(coin.lastPrice);
         const price = !isNaN(priceNum) ? priceNum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: priceNum < 1 ? 6 : 2 }) : '0.00';
         
-        const changeNum = parseFloat(coin.price_change_percentage_24h);
+        const changeNum = parseFloat(coin.priceChangePercent);
         const change = !isNaN(changeNum) ? changeNum.toFixed(2) : '0.00';
         const color = change >= 0 ? '#56d364' : '#f85149';
         const sign = change >= 0 ? '+' : '';
 
         htmlContent += `
           <div class="market-row">
-            <span style="color: var(--text-primary);">${symbol} (${coin.name})</span> 
+            <span style="color: var(--text-primary);">${symbolDisplay}</span> 
             <span>$${price} <b style="color:${color}">${sign}${change}%</b></span>
           </div>
         `;
@@ -730,40 +735,33 @@
     }
 
     function handleSearch(event) {
-      const query = document.getElementById('coinSearch').value.trim().toLowerCase();
+      const query = document.getElementById('coinSearch').value.trim().toUpperCase();
       clearTimeout(searchTimeout);
 
       if (query === '') {
-        renderMarketList(defaultCoinsCache.slice(0, 10));
+        const defaultData = allTickersCache.filter(item => defaultSymbols.includes(item.symbol));
+        renderMarketList(defaultData);
         return;
       }
 
-      searchTimeout = setTimeout(async () => {
+      searchTimeout = setTimeout(() => {
         document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color: var(--text-secondary);">Mencari koin di jaringan global...</span></div>`;
-        try {
-          const res = await fetch(`https://api.coingecko.com/api/v3/search?query=${encodeURIComponent(query)}`);
-          const json = await res.json();
-          const coinsList = json.coins ? json.coins.slice(0, 6) : [];
+        
+        // Cari pasangan yang mengandung query dan berakhiran USDT
+        const filtered = allTickersCache.filter(item => item.symbol.includes(query) && item.symbol.endsWith('USDT')).slice(0, 8);
 
-          if (coinsList.length === 0) {
-            document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color: var(--text-secondary);">Koin "${query}" tidak ditemukan</span></div>`;
-            return;
-          }
-
-          const ids = coinsList.map(c => c.id).join(',');
-          const detailRes = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids}&sparkline=false`);
-          const detailJson = await detailRes.json();
-
-          renderMarketList(detailJson);
-        } catch (err) {
-          document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color:#f85149">Gagal mencari aset.</span></div>`;
+        if (filtered.length === 0) {
+          document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color: var(--text-secondary);">Koin "${query}" tidak ditemukan</span></div>`;
+          return;
         }
-      }, 400);
+
+        renderMarketList(filtered);
+      }, 300);
     }
 
     async function calculateConversion() {
       const amountInput = document.getElementById('convertAmount').value;
-      const selectedCoinId = document.getElementById('convertCoin').value;
+      const selectedSymbol = document.getElementById('convertCoin').value;
       const resultDiv = document.getElementById('convertResult');
 
       const amount = parseFloat(amountInput);
@@ -772,19 +770,16 @@
         return;
       }
 
-      let coinObj = defaultCoinsCache.find(c => c.id === selectedCoinId);
+      let coinObj = allTickersCache.find(c => c.symbol === selectedSymbol);
 
       try {
         if (!coinObj) {
-          const res = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${selectedCoinId}&sparkline=false`);
-          const json = await res.json();
-          if (json && json.length > 0) {
-            coinObj = json[0];
-          }
+          const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${selectedSymbol}`);
+          coinObj = await res.json();
         }
 
-        if (coinObj && (coinObj.current_price !== undefined || coinObj.priceUsd)) {
-          const priceInUSD = parseFloat(coinObj.current_price || coinObj.priceUsd);
+        if (coinObj && coinObj.lastPrice) {
+          const priceInUSD = parseFloat(coinObj.lastPrice);
           const total = amount * priceInUSD;
           const formattedTotal = total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
           resultDiv.textContent = `Hasil: $${formattedTotal} USD`;

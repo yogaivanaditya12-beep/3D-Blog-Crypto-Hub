@@ -122,40 +122,42 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 22px;
-      flex-wrap: wrap;
-      gap: 10px;
+      flex-wrap: nowrap;
+      gap: 8px;
     }
 
     .status-badge {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--border-color);
-      padding: 6px 14px;
+      padding: 6px 12px;
       border-radius: 20px;
-      font-size: 0.7rem;
-      letter-spacing: 2px;
+      font-size: 0.62rem;
+      letter-spacing: 1px;
       text-transform: uppercase;
       color: var(--text-secondary);
+      white-space: nowrap;
     }
 
     .audio-btn {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--border-color);
-      padding: 6px 14px;
+      padding: 6px 12px;
       border-radius: 20px;
-      font-size: 0.7rem;
-      letter-spacing: 2px;
+      font-size: 0.62rem;
+      letter-spacing: 1px;
       text-transform: uppercase;
       color: var(--text-secondary);
       cursor: pointer;
       transition: all 0.3s ease;
       position: relative;
       z-index: 20;
+      white-space: nowrap;
     }
 
     .audio-btn:hover {
@@ -165,8 +167,8 @@
     }
 
     .audio-icon {
-      width: 6px;
-      height: 6px;
+      width: 5px;
+      height: 5px;
       background-color: var(--text-secondary);
       border-radius: 50%;
       transition: all 0.3s ease;
@@ -179,8 +181,8 @@
     }
 
     .pulse-dot {
-      width: 6px;
-      height: 6px;
+      width: 5px;
+      height: 5px;
       background-color: #ffffff;
       border-radius: 50%;
       box-shadow: 0 0 8px #ffffff;
@@ -319,13 +321,14 @@
       border: none;
       color: var(--text-secondary);
       padding: 10px 12px;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-weight: 800;
-      letter-spacing: 1.5px;
+      letter-spacing: 1.2px;
       text-transform: uppercase;
       border-radius: 12px;
       cursor: pointer;
       transition: all 0.3s ease;
+      white-space: nowrap;
     }
 
     .tab-btn:hover {
@@ -386,74 +389,6 @@
       font-size: 0.90rem;
       line-height: 1.5;
     }
-
-    .terminal-input {
-      width: 100%;
-      background-color: rgba(0, 0, 0, 0.4);
-      border: 1px solid var(--border-color);
-      color: #7ee787;
-      padding: 8px 10px;
-      font-family: 'Courier New', Courier, monospace;
-      border-radius: 8px;
-      box-sizing: border-box;
-      margin-bottom: 12px;
-      font-size: 0.8rem;
-    }
-    .terminal-input:focus {
-      outline: none;
-      border-color: rgba(255, 255, 255, 0.6);
-    }
-    .market-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 7px 0;
-      border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 0.82rem;
-    }
-    .market-row:last-child {
-      border-bottom: none;
-    }
-
-    .converter-box {
-      display: flex;
-      background-color: rgba(0, 0, 0, 0.5);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      overflow: hidden;
-      margin-bottom: 12px;
-    }
-    .converter-input {
-      flex: 1;
-      background: transparent;
-      border: none;
-      color: #ffffff;
-      padding: 12px 16px;
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 0.95rem;
-    }
-    .converter-input:focus {
-      outline: none;
-    }
-    .converter-select {
-      background: rgba(255, 255, 255, 0.05);
-      border: none;
-      border-left: 1px solid var(--border-color);
-      color: #ffffff;
-      padding: 0 16px;
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 0.85rem;
-      cursor: pointer;
-    }
-    .converter-select:focus {
-      outline: none;
-    }
-    .converter-result {
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 0.9rem;
-      color: #7ee787;
-      padding: 4px 2px;
-    }
     
     .news-item {
       margin-bottom: 12px;
@@ -488,7 +423,7 @@
       .social-grid { grid-template-columns: 1fr; }
       h1 { font-size: 1.8rem; }
       .tab-nav { flex-wrap: wrap; }
-      .tab-btn { font-size: 0.65rem; padding: 8px 6px; }
+      .tab-btn { font-size: 0.62rem; padding: 8px 4px; }
     }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -513,7 +448,7 @@
     <div class="top-bar">
       <div class="status-badge">
         <div class="pulse-dot"></div>
-        System Operational (Binance Live API)
+        System Operational (Live)
       </div>
       <button class="audio-btn" id="audioToggle">
         <div class="audio-icon"></div>
@@ -538,46 +473,46 @@
     </header>
 
     <nav class="tab-nav">
-      <button class="tab-btn active" onclick="switchTab('markets')">Markets</button>
-      <button class="tab-btn" onclick="switchTab('converter')">Converter</button>
+      <button class="tab-btn active" onclick="switchTab('philosophy')">Philosophy</button>
+      <button class="tab-btn" onclick="switchTab('tools')">Tools</button>
       <button class="tab-btn" onclick="switchTab('news')">News Wire</button>
       <button class="tab-btn" onclick="switchTab('logs')">Logs</button>
     </nav>
 
     <main>
-      <div id="tab-markets" class="tab-pane active">
+      <!-- Tab 1: Philosophy -->
+      <div id="tab-philosophy" class="tab-pane active">
         <div class="blog-card glow-card">
           <div class="glow-spot"></div>
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <span class="blog-tag" style="margin-bottom: 0;">Live Feed // Binance Market</span>
-            <button onclick="fetchCryptoData()" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-secondary); padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; cursor: pointer; font-family: 'Courier New', Courier, monospace;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-secondary)'">⟳ Sync Prices</button>
-          </div>
-          <input type="text" id="coinSearch" class="terminal-input" placeholder="> Ketik nama koin (contoh: SOL, BTC, PEPE)..." onkeyup="handleSearch()">
-          <div id="market-feed">
-            <div class="market-row"><span style="color: var(--text-secondary);">Mengambil data harga live dari Binance...</span></div>
-          </div>
+          <span class="blog-tag">Core Rule // 01</span>
+          <h2>Akumulasi Aset & Kebebasan Waktu</h2>
+          <p>Selagi muda dan produktif, fokus utama adalah mengumpulkan aset yang menghasilkan arus kas untuk membangun kebebasan waktu jangka panjang bersama keluarga.</p>
+        </div>
+        <div class="blog-card glow-card">
+          <div class="glow-spot"></div>
+          <span class="blog-tag">Core Rule // 02</span>
+          <h2>Mentalitas Tanpa Manipulasi</h2>
+          <p>Menjaga prinsip independen, berpikir rasional, dan tidak mudah terpengaruh oleh kebisingan emosional atau opini publik di luar kendali.</p>
         </div>
       </div>
 
-      <div id="tab-converter" class="tab-pane">
+      <!-- Tab 2: Tools -->
+      <div id="tab-tools" class="tab-pane">
         <div class="blog-card glow-card">
           <div class="glow-spot"></div>
-          <span class="blog-tag">Quick Converter</span>
-          <div class="converter-box">
-            <input type="number" id="convertAmount" class="converter-input" value="1" min="0" step="any" oninput="calculateConversion()">
-            <select id="convertCoin" class="converter-select" onchange="calculateConversion()">
-              <option value="BTC">BTC</option>
-              <option value="ETH">ETH</option>
-              <option value="SOL" selected>SOL</option>
-              <option value="BNB">BNB</option>
-              <option value="XRP">XRP</option>
-              <option value="PEPE">PEPE</option>
-            </select>
-          </div>
-          <div id="convertResult" class="converter-result">Hasil: $0.00 USD</div>
+          <span class="blog-tag">Resource // 01</span>
+          <h2>Charting & Analytics Platform</h2>
+          <p>Perangkat utama yang digunakan untuk memindai struktur pasar secara mendalam dan menyaring sinyal palsu secara objektif.</p>
+        </div>
+        <div class="blog-card glow-card">
+          <div class="glow-spot"></div>
+          <span class="blog-tag">Resource // 02</span>
+          <h2>Secure Asset Storage</h2>
+          <p>Standar penyimpanan dingin mandiri untuk memastikan keamanan aset digital jangka panjang dari risiko pihak ketiga.</p>
         </div>
       </div>
 
+      <!-- Tab 3: News Wire -->
       <div id="tab-news" class="tab-pane">
         <div class="blog-card glow-card">
           <div class="glow-spot"></div>
@@ -591,20 +526,21 @@
         </div>
       </div>
 
+      <!-- Tab 4: Logs -->
       <div id="tab-logs" class="tab-pane">
-        <a href="#" class="blog-card glow-card" style="text-decoration: none; color: inherit; display: block;" onclick="event.preventDefault();">
+        <div class="blog-card glow-card">
           <div class="glow-spot"></div>
           <span class="blog-tag">Security Protocol</span>
           <h2>Algorithmic Token Filtering & Security Protocol</h2>
           <p>Sistem pemantauan pasar secara real-time untuk menyaring sinyal palsu dan pergerakan whale secara otomatis.</p>
-        </a>
+        </div>
 
-        <a href="#" class="blog-card glow-card" style="text-decoration: none; color: inherit; display: block;" onclick="event.preventDefault();">
+        <div class="blog-card glow-card">
           <div class="glow-spot"></div>
           <span class="blog-tag">Asset Strategy</span>
           <h2>Model Kebebasan Waktu & Manajemen Risiko</h2>
           <p>Prinsip personal mengenai akumulasi aset produktif dan strategi alokasi dana trading yang terukur.</p>
-        </a>
+        </div>
       </div>
     </main>
   </div>
@@ -683,99 +619,6 @@
       });
     });
 
-    // Ambil Data Live dari Binance Public API
-    let liveCryptoData = [];
-
-    async function fetchCryptoData() {
-      try {
-        const response = await fetch('https://api.binance.com/api/v3/ticker/24hr');
-        if (!response.ok) throw new Error('Gagal mengambil data dari server Binance');
-        const data = await response.json();
-        
-        // Daftar koin yang akan ditampilkan di market feed
-        const targetCoins = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 'PEPEUSDT', 'DOGEUSDT', 'ADAUSDT', 'AVAXUSDT', 'LINKUSDT'];
-        
-        liveCryptoData = data
-          .filter(coin => targetCoins.includes(coin.symbol))
-          .map(coin => ({
-            symbol: coin.symbol.replace('USDT', ''),
-            name: coin.symbol.replace('USDT', ''),
-            current_price: parseFloat(coin.lastPrice),
-            price_change_percentage_24h: parseFloat(coin.priceChangePercent)
-          }));
-
-        renderMarketList(liveCryptoData);
-        calculateConversion();
-      } catch (error) {
-        console.error("Error fetching live prices:", error);
-        document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color: #f85149;">Gagal memuat harga live. Periksa koneksi internet Anda.</span></div>`;
-      }
-    }
-
-    function renderMarketList(coins) {
-      if (!coins || coins.length === 0) {
-        document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color: var(--text-secondary);">Aset tidak ditemukan</span></div>`;
-        return;
-      }
-
-      let htmlContent = '';
-      coins.forEach(coin => {
-        const symbolDisplay = coin.symbol + '/USD';
-        const priceNum = parseFloat(coin.current_price);
-        const price = priceNum.toLocaleString('en-US', { minimumFractionDigits: priceNum < 1 ? 6 : 2, maximumFractionDigits: priceNum < 1 ? 8 : 2 });
-        
-        const changeNum = parseFloat(coin.price_change_percentage_24h);
-        const change = changeNum.toFixed(2);
-        const color = change >= 0 ? '#56d364' : '#f85149';
-        const sign = change >= 0 ? '+' : '';
-
-        htmlContent += `
-          <div class="market-row">
-            <span style="color: var(--text-primary);">${symbolDisplay} (${coin.name})</span> 
-            <span>$${price} <b style="color:${color}">${sign}${change}%</b></span>
-          </div>
-        `;
-      });
-
-      document.getElementById('market-feed').innerHTML = htmlContent;
-    }
-
-    function handleSearch() {
-      const query = document.getElementById('coinSearch').value.trim().toLowerCase();
-      if (query === '') {
-        renderMarketList(liveCryptoData);
-        return;
-      }
-
-      const filtered = liveCryptoData.filter(item => 
-        item.symbol.toLowerCase().includes(query) || 
-        item.name.toLowerCase().includes(query)
-      );
-
-      renderMarketList(filtered);
-    }
-
-    function calculateConversion() {
-      const amountInput = document.getElementById('convertAmount').value;
-      const selectedSymbol = document.getElementById('convertCoin').value;
-      const resultDiv = document.getElementById('convertResult');
-
-      const amount = parseFloat(amountInput);
-      if (isNaN(amount) || amount < 0) {
-        resultDiv.textContent = "Hasil: Masukkan nominal valid";
-        return;
-      }
-
-      const coinObj = liveCryptoData.find(c => c.symbol === selectedSymbol);
-      if (coinObj) {
-        const total = amount * coinObj.current_price;
-        const formattedTotal = total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        resultDiv.textContent = `Hasil: $${formattedTotal} USD`;
-      } else {
-        resultDiv.textContent = "Hasil: Harga koin sedang disinkronkan...";
-      }
-    }
-
     function loadNews() {
       const newsContainer = document.getElementById('news-feed');
       const mockNews = [
@@ -797,9 +640,6 @@
       newsContainer.innerHTML = htmlContent;
     }
 
-    // Jalankan pengambilan data live saat halaman dimuat dan perbarui otomatis setiap 60 detik
-    fetchCryptoData();
-    setInterval(fetchCryptoData, 60000);
     loadNews();
 
     const container = document.getElementById('canvas-container');

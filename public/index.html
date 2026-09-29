@@ -124,7 +124,7 @@
       display: none;
       flex-direction: column;
       justify-content: space-between;
-      padding: 20px;
+      padding: 16px;
       opacity: 0;
       transition: opacity 0.4s ease;
     }
@@ -150,11 +150,11 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(10, 10, 18, 0.85);
+      background: rgba(10, 10, 18, 0.9);
       backdrop-filter: blur(15px);
       border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 14px 20px;
-      border-radius: 16px;
+      padding: 12px 18px;
+      border-radius: 14px;
     }
 
     .universe-title {
@@ -175,53 +175,45 @@
     .universe-grid-container {
       position: relative;
       z-index: 10;
-      max-width: 800px;
+      max-width: 750px;
       width: 100%;
       margin: auto;
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 12px;
-      max-height: 62vh;
+      max-height: 65vh;
       overflow-y: auto;
-      padding: 5px;
+      padding: 4px;
     }
 
     .universe-node-card {
-      background: rgba(15, 15, 25, 0.85);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 16px;
-      padding: 16px;
+      background: rgba(15, 15, 25, 0.88);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 14px;
+      padding: 15px;
       cursor: pointer;
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
       overflow: hidden;
-      animation: floatCard 4s ease-in-out infinite;
-    }
-
-    .universe-node-card:nth-child(even) { animation-delay: 2s; }
-
-    @keyframes floatCard {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-4px); }
     }
 
     .universe-node-card:hover {
       background: rgba(30, 30, 50, 0.95);
       border-color: rgba(255, 255, 255, 0.6);
-      transform: translateY(-5px) scale(1.02);
-      box-shadow: 0 15px 35px rgba(0, 150, 255, 0.25);
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 10px 30px rgba(0, 150, 255, 0.25);
     }
 
     .universe-node-card h3 {
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       color: #fff;
-      margin-bottom: 5px;
+      margin-bottom: 4px;
       letter-spacing: 1px;
     }
 
     .universe-node-card p {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       color: var(--text-secondary);
       line-height: 1.4;
     }
@@ -230,7 +222,7 @@
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.3);
       color: #fff;
-      padding: 8px 16px;
+      padding: 8px 14px;
       border-radius: 10px;
       font-weight: bold;
       font-size: 0.7rem;
@@ -576,7 +568,7 @@
     .time-display { font-size: 0.72rem; color: var(--text-secondary); }
 
     @media (max-width: 768px) {
-      .universe-grid-container { grid-template-columns: repeat(1, 1fr); max-height: 58vh; }
+      .universe-grid-container { grid-template-columns: repeat(1, 1fr); max-height: 60vh; }
       h1 { font-size: 1.8rem; }
     }
   </style>
@@ -828,7 +820,7 @@
     }
     drawWarp();
 
-    // --- UNIVERSE HYPERSPACE WARP ANIMATION (DENGAN BACKGROUND BINTANG + KARTU MATERI DI ATASNYA) ---
+    // --- UNIVERSE HYPERSPACE WARP ANIMATION ---
     const universeWarpCanvas = document.getElementById('universeWarpCanvas');
     const uWarpCtx = universeWarpCanvas.getContext('2d');
     let uwW, uwH;
@@ -841,22 +833,21 @@
     window.addEventListener('resize', resizeUniverseWarp);
 
     const uStars = [];
-    for (let i = 0; i < 350; i++) {
+    for (let i = 0; i < 300; i++) {
       uStars.push({
         x: (Math.random() - 0.5) * uwW * 2,
         y: (Math.random() - 0.5) * uwH * 2,
         z: Math.random() * uwW,
-        size: Math.random() * 1.5
+        size: Math.random() * 1.2
       });
     }
 
-    let uWarpSpeed = 1.2;
+    let uWarpSpeed = 1.5;
     let isEnteringHyperspace = false;
     let universeAnimFrame;
 
     function drawUniverseWarp() {
-      // Background sedikit transparan agar efek warp bintang tetap terlihat lembut di belakang kotak materi
-      uWarpCtx.fillStyle = 'rgba(2, 2, 5, 0.25)';
+      uWarpCtx.fillStyle = 'rgba(2, 2, 5, 0.3)';
       uWarpCtx.fillRect(0, 0, uwW, uwH);
 
       let cx = uwW / 2;
@@ -894,17 +885,16 @@
     function openSpaceUniverse() {
       spaceUniverseOverlay.style.display = 'flex';
       isEnteringHyperspace = true;
-      uWarpSpeed = 45; // Kilat sesaat saat tombol diklik
+      uWarpSpeed = 35;
 
       setTimeout(() => {
         spaceUniverseOverlay.classList.add('active');
       }, 10);
 
-      // Setelah 0.8 detik, kecepatan warp kembali normal, menampilkan stasiun materi di atas animasi bintang
       setTimeout(() => {
         isEnteringHyperspace = false;
-        uWarpSpeed = 1.2;
-      }, 800);
+        uWarpSpeed = 1.5;
+      }, 600);
     }
 
     function closeSpaceUniverse() {

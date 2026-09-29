@@ -191,7 +191,6 @@
       color: #000;
     }
 
-    /* Petunjuk Game di Layar Angkasa */
     .game-hint-overlay {
       position: absolute;
       bottom: 30px;
@@ -327,30 +326,10 @@
       white-space: nowrap;
     }
 
-    .audio-btn {
-      cursor: pointer;
-      transition: all 0.3s ease;
-      z-index: 20;
-    }
-
-    .audio-btn:hover {
-      border-color: rgba(255, 255, 255, 0.6);
-      color: #ffffff;
-      background: rgba(255, 255, 255, 0.08);
-    }
-
-    .audio-icon {
-      width: 5px;
-      height: 5px;
-      background-color: var(--text-secondary);
-      border-radius: 50%;
-    }
-
-    .audio-btn.playing .audio-icon {
-      background-color: #ffffff;
-      box-shadow: 0 0 8px #ffffff;
-      animation: pulse 1.5s infinite;
-    }
+    .audio-btn { cursor: pointer; transition: all 0.3s ease; z-index: 20; }
+    .audio-btn:hover { border-color: rgba(255, 255, 255, 0.6); color: #ffffff; background: rgba(255, 255, 255, 0.08); }
+    .audio-icon { width: 5px; height: 5px; background-color: var(--text-secondary); border-radius: 50%; }
+    .audio-btn.playing .audio-icon { background-color: #ffffff; box-shadow: 0 0 8px #ffffff; animation: pulse 1.5s infinite; }
 
     .pulse-dot {
       width: 5px;
@@ -378,125 +357,45 @@
       transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
     }
 
-    .glow-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9);
-    }
-
+    .glow-card:hover { transform: translateY(-3px); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9); }
     .glow-card .glow-spot {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0; width: 100%; height: 100%;
       pointer-events: none;
       background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(255, 255, 255, 0.12), transparent 40%);
-      z-index: 3;
-      opacity: 0;
-      transition: opacity 0.3s ease;
+      z-index: 3; opacity: 0; transition: opacity 0.3s ease;
     }
-
     .glow-card:hover .glow-spot { opacity: 1; }
 
-    .profile-card {
-      padding: 45px 30px;
-      text-align: center;
-      margin-bottom: 30px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
-    }
-
+    .profile-card { padding: 45px 30px; text-align: center; margin-bottom: 30px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8); }
     .avatar-box {
-      width: 85px;
-      height: 85px;
-      margin: 0 auto 20px;
-      border-radius: 50%;
-      border: 2px solid #ffffff;
-      overflow: hidden;
-      background: #000000;
-      box-shadow: 0 0 25px rgba(255, 255, 255, 0.25);
+      width: 85px; height: 85px; margin: 0 auto 20px;
+      border-radius: 50%; border: 2px solid #ffffff;
+      overflow: hidden; background: #000000; box-shadow: 0 0 25px rgba(255, 255, 255, 0.25);
     }
-
     .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
 
-    h1 {
-      font-size: 2.3rem;
-      font-weight: 900;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-      text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-    }
+    h1 { font-size: 2.3rem; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px; text-shadow: 0 0 20px rgba(255, 255, 255, 0.2); }
+    .bio { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; max-width: 500px; margin: 0 auto 30px; }
 
-    .bio {
-      color: var(--text-secondary);
-      font-size: 0.95rem;
-      line-height: 1.6;
-      max-width: 500px;
-      margin: 0 auto 30px;
-    }
-
-    .social-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      position: relative;
-      z-index: 20;
-    }
-
+    .social-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; position: relative; z-index: 20; }
     .social-btn {
-      padding: 14px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--border-color);
-      border-radius: 14px;
-      color: #ffffff;
-      text-decoration: none;
-      font-weight: 700;
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 14px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color);
+      border-radius: 14px; color: #ffffff; text-decoration: none; font-weight: 700;
+      font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.5px; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
+    .social-btn:hover { background: #ffffff; color: #000000; border-color: #ffffff; transform: translateY(-2px); box-shadow: 0 10px 25px rgba(255, 255, 255, 0.25); }
 
-    .social-btn:hover {
-      background: #ffffff;
-      color: #000000;
-      border-color: #ffffff;
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(255, 255, 255, 0.25);
-    }
-
-    /* --- TAB NAV --- */
     .tab-nav {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 25px;
-      background: rgba(255, 255, 255, 0.03);
-      padding: 6px;
-      border: 1px solid var(--border-color);
-      border-radius: 18px;
-      position: relative;
-      z-index: 20;
+      display: flex; justify-content: space-around; align-items: center; gap: 6px;
+      margin-bottom: 25px; background: rgba(255, 255, 255, 0.03); padding: 6px;
+      border: 1px solid var(--border-color); border-radius: 18px; position: relative; z-index: 20;
     }
-
     .tab-btn {
-      flex: 1;
-      background: transparent;
-      border: none;
-      color: var(--text-secondary);
-      padding: 10px 8px;
-      font-size: 0.68rem;
-      font-weight: 800;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      white-space: nowrap;
-      text-align: center;
+      flex: 1; background: transparent; border: none; color: var(--text-secondary);
+      padding: 10px 8px; font-size: 0.68rem; font-weight: 800; letter-spacing: 1px;
+      text-transform: uppercase; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; white-space: nowrap; text-align: center;
     }
-
     .tab-btn:hover { color: #ffffff; }
     .tab-btn.active { background: #ffffff; color: #000000; box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2); }
 
@@ -508,67 +407,26 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .blog-card {
-      padding: 26px;
-      margin-bottom: 18px;
-      text-decoration: none;
-      color: inherit;
-      display: block;
-      position: relative;
-      z-index: 20;
-    }
-
+    .blog-card { padding: 26px; margin-bottom: 18px; text-decoration: none; color: inherit; display: block; position: relative; z-index: 20; }
     .blog-tag {
-      font-size: 0.7rem;
-      font-weight: 800;
-      color: #ffffff;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      margin-bottom: 10px;
-      display: inline-block;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-      padding-bottom: 2px;
+      font-size: 0.7rem; font-weight: 800; color: #ffffff; text-transform: uppercase;
+      letter-spacing: 2px; margin-bottom: 10px; display: inline-block; border-bottom: 1px solid rgba(255, 255, 255, 0.5); padding-bottom: 2px;
     }
-
     .blog-card h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
     .blog-card p { color: var(--text-secondary); font-size: 0.90rem; line-height: 1.5; }
 
     .crypto-portal-box {
       background: radial-gradient(circle at center, #0f0f1a 0%, #030308 100%);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 16px;
-      padding: 24px 20px;
-      text-align: center;
-      margin-top: 15px;
-      position: relative;
-      overflow: hidden;
-      z-index: 20;
+      border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 16px; padding: 24px 20px;
+      text-align: center; margin-top: 15px; position: relative; overflow: hidden; z-index: 20;
     }
-
     .portal-trigger-btn {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      color: #ffffff;
-      padding: 12px 24px;
-      border-radius: 12px;
-      font-weight: bold;
-      font-size: 0.75rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      cursor: pointer;
-      margin-top: 12px;
-      transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+      background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff; padding: 12px 24px; border-radius: 12px; font-weight: bold;
+      font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; cursor: pointer;
+      margin-top: 12px; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px;
     }
-
-    .portal-trigger-btn:hover {
-      background: #ffffff;
-      color: #000000;
-      border-color: #ffffff;
-      box-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
-    }
+    .portal-trigger-btn:hover { background: #ffffff; color: #000000; border-color: #ffffff; box-shadow: 0 0 25px rgba(255, 255, 255, 0.4); }
   </style>
 </head>
 <body>
@@ -586,13 +444,12 @@
   <div id="space-universe-overlay">
     <div class="universe-header">
       <div>
-        <div class="universe-title">CRYPTO HUB // 3D KOSMIK</div>
-        <div class="universe-subtitle">Klik Judul Materi yang Meluncur Mendekat</div>
+        <div class="universe-title">CRYPTO HUB // KOSMIK 3D</div>
+        <div class="universe-subtitle">Tangkup & Ketuk Kartu Materi yang Meluncur dari Jauh</div>
       </div>
       <button class="universe-exit-btn" onclick="closeSpaceUniverse()">KEMBALI</button>
     </div>
 
-    <!-- Canvas 3D Three.js untuk Kartu Meluncur -->
     <canvas id="universe3dCanvas"></canvas>
     <div class="game-hint-overlay">Siap-siap! Klik Kartu Materi Saat Mendekat</div>
   </div>
@@ -640,7 +497,6 @@
       </div>
     </header>
 
-    <!-- NAVIGATION TABS -->
     <nav class="tab-nav">
       <button class="tab-btn active" onclick="switchTab('crypto101', event)">Crypto 101</button>
       <button class="tab-btn" onclick="switchTab('logs', event)">Logs</button>
@@ -743,7 +599,7 @@
     }
     drawWarp();
 
-    // --- 3D UNIVERSE MINI-GAME ENGINE (THREE.JS) ---
+    // --- 3D UNIVERSE SEQUENTIAL WARP ENGINE ---
     const cardData = [
       { title: "Cryptocurrency", desc: "Mata uang digital terdesentralisasi yang diamankan dengan kriptografi, sehingga hampir tidak mungkin dipalsukan." },
       { title: "Blockchain", desc: "Buku besar digital terdistribusi yang mencatat seluruh transaksi lintas jaringan komputer secara permanen." },
@@ -754,13 +610,14 @@
     ];
 
     let u3dScene, u3dCamera, u3dRenderer, u3dAnimFrame;
-    let floatingMeshes = [];
+    let activeCardMesh = null;
     let raycaster = new THREE.Raycaster();
     let mouse = new THREE.Vector2();
     let isUniverseActive = false;
+    let currentCardIndex = 0;
+    let cardZDepth = -60;
 
     function initUniverse3D() {
-      const container = document.getElementById('space-universe-overlay');
       const canvas = document.getElementById('universe3dCanvas');
 
       u3dScene = new THREE.Scene();
@@ -771,35 +628,32 @@
       u3dRenderer.setSize(window.innerWidth, window.innerHeight);
       u3dRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-      // Buat bintang latar belakang luar angkasa
       const starGeo = new THREE.BufferGeometry();
-      const starCount = 500;
+      const starCount = 400;
       const starPos = new Float32Array(starCount * 3);
       for(let i=0; i<starCount*3; i+=3) {
-        starPos[i] = (Math.random() - 0.5) * 60;
-        starPos[i+1] = (Math.random() - 0.5) * 60;
-        starPos[i+2] = (Math.random() - 0.5) * 60 - 20;
+        starPos[i] = (Math.random() - 0.5) * 50;
+        starPos[i+1] = (Math.random() - 0.5) * 50;
+        starPos[i+2] = (Math.random() - 0.5) * 50 - 20;
       }
       starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
-      const starMat = new THREE.PointsMaterial({ size: 0.05, color: 0xffffff, transparent: true, opacity: 0.6 });
+      const starMat = new THREE.PointsMaterial({ size: 0.04, color: 0xffffff, transparent: true, opacity: 0.5 });
       const bgStars = new THREE.Points(starGeo, starMat);
       u3dScene.add(bgStars);
 
-      spawnCardsInSpace();
+      spawnNextSequentialCard();
 
       window.addEventListener('resize', onUniverseResize);
       canvas.addEventListener('pointerdown', onUniverseClick);
     }
 
-    // Fungsi membuat kanvas tekstur untuk judul kartu 3D
     function createCardTexture(text) {
       const c = document.createElement('canvas');
       c.width = 512;
       c.height = 256;
       const ctx = c.getContext('2d');
 
-      // Desain Tampilan Kartu di 3D
-      ctx.fillStyle = 'rgba(15, 15, 25, 0.85)';
+      ctx.fillStyle = 'rgba(12, 12, 20, 0.9)';
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
       ctx.lineWidth = 8;
       ctx.beginPath();
@@ -807,78 +661,71 @@
       ctx.fill();
       ctx.stroke();
 
-      // Label Subtitle
       ctx.fillStyle = '#888888';
       ctx.font = 'bold 22px sans-serif';
-      ctx.letterSpacing = '4px';
       ctx.fillText("MATERI KOSMIK", 40, 65);
 
-      // Judul Materi Utama
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 36px sans-serif';
+      ctx.font = 'bold 38px sans-serif';
       ctx.fillText(text, 40, 130);
 
-      // Petunjuk Klik
       ctx.fillStyle = '#58a6ff';
       ctx.font = 'bold 20px sans-serif';
-      ctx.fillText("[ KLIK UNTUK MEMBACA ]", 40, 195);
+      ctx.fillText("[ KLIK SEKARANG ]", 40, 195);
 
       return new THREE.CanvasTexture(c);
     }
 
-    function spawnCardsInSpace() {
-      floatingMeshes.forEach(m => u3dScene.remove(m));
-      floatingMeshes = [];
+    function spawnNextSequentialCard() {
+      if (activeCardMesh) {
+        u3dScene.remove(activeCardMesh);
+      }
 
-      cardData.forEach((item, index) => {
-        const texture = createCardTexture(item.title);
-        const geometry = new THREE.PlaneGeometry(3.6, 1.8);
-        const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, side: THREE.DoubleSide });
-        
-        const mesh = new THREE.Mesh(geometry, material);
-        
-        // Posisi awal: Datang dari kejauhan (Z negatif yang jauh), menyebar secara acak di layar
-        mesh.position.x = (Math.random() - 0.5) * 8;
-        mesh.position.y = (Math.random() - 0.5) * 5;
-        mesh.position.z = -30 - (index * 8); // Berbaris berurutan dari kejauhan
+      const item = cardData[currentCardIndex];
+      const texture = createCardTexture(item.title);
+      const geometry = new THREE.PlaneGeometry(4.2, 2.1);
+      const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, side: THREE.DoubleSide });
+      
+      activeCardMesh = new THREE.Mesh(geometry, material);
+      
+      cardZDepth = -70;
+      activeCardMesh.position.set(0, 0, cardZDepth);
+      activeCardMesh.scale.set(0.15, 0.15, 0.15);
 
-        mesh.userData = { title: item.title, desc: item.desc, speed: 0.08 + Math.random() * 0.04 };
-        
-        u3dScene.add(mesh);
-        floatingMeshes.push(mesh);
-      });
+      activeCardMesh.userData = { title: item.title, desc: item.desc };
+      u3dScene.add(activeCardMesh);
     }
 
     function animateUniverse3D() {
       if (!isUniverseActive) return;
       u3dAnimFrame = requestAnimationFrame(animateUniverse3D);
 
-      // Gerakkan kartu satu persatu dari ujung menghampiri pembaca (Z bertambah mendekati 0 / positif)
-      floatingMeshes.forEach(mesh => {
-        mesh.position.z += mesh.userData.speed;
-        mesh.rotation.y = Math.sin(Date.now() * 0.001) * 0.1;
+      if (activeCardMesh) {
+        cardZDepth += 0.35;
+        activeCardMesh.position.z = cardZDepth;
 
-        // Jika kartu sudah terlalu dekat melewati pembaca (Z > 4), reset kembali ke kejauhan belakang
-        if (mesh.position.z > 5) {
-          mesh.position.z = -40;
-          mesh.position.x = (Math.random() - 0.5) * 8;
-          mesh.position.y = (Math.random() - 0.5) * 5;
+        let progressScale = Math.min(Math.max((cardZDepth + 70) / 72, 0.15), 1.35);
+        activeCardMesh.scale.set(progressScale, progressScale, progressScale);
+
+        if (cardZDepth > 4) {
+          currentCardIndex = (currentCardIndex + 1) % cardData.length;
+          spawnNextSequentialCard();
         }
-      });
+      }
 
       u3dRenderer.render(u3dScene, u3dCamera);
     }
 
     function onUniverseClick(e) {
+      if (!activeCardMesh) return;
       mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
       mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
 
       raycaster.setFromCamera(mouse, u3dCamera);
-      const intersects = raycaster.intersectObjects(floatingMeshes);
+      const intersects = raycaster.intersectObject(activeCardMesh);
 
       if (intersects.length > 0) {
-        const clickedCard = intersects[0].object;
-        openCardDetail(clickedCard.userData.title, clickedCard.userData.desc);
+        openCardDetail(activeCardMesh.userData.title, activeCardMesh.userData.desc);
       }
     }
 
@@ -890,7 +737,8 @@
         if (!u3dScene) {
           initUniverse3D();
         } else {
-          spawnCardsInSpace();
+          currentCardIndex = 0;
+          spawnNextSequentialCard();
         }
         cancelAnimationFrame(u3dAnimFrame);
         animateUniverse3D();
@@ -907,7 +755,7 @@
     }
 
     function openCardDetail(title, desc) {
-      isUniverseActive = false; // Jeda animasi saat modal dibuka
+      isUniverseActive = false;
       document.getElementById('modalTitle').textContent = title;
       document.getElementById('modalDesc').textContent = desc;
       const modal = document.getElementById('card-detail-modal');
@@ -920,8 +768,10 @@
       modal.classList.remove('active');
       setTimeout(() => {
         modal.style.display = 'none';
+        currentCardIndex = (currentCardIndex + 1) % cardData.length;
+        spawnNextSequentialCard();
         isUniverseActive = true;
-        animateUniverse3D(); // Lanjutkan kembali penjelajahan kartu meluncur
+        animateUniverse3D();
       }, 300);
     }
 
@@ -976,7 +826,7 @@
       card.addEventListener('mousemove', e => {
         const rect = card.getBoundingClientRect();
         card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
-        card.style.setProperty('--mouse-y`, `${e.clientY - rect.top}px`);
+        card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
       });
     });
 

@@ -389,6 +389,77 @@
       font-size: 0.90rem;
       line-height: 1.5;
     }
+
+    /* MINI GAME STYLING */
+    .game-container {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      background: #000000;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.05);
+      cursor: crosshair;
+    }
+
+    #gameCanvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .game-ui-overlay {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      right: 15px;
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.85rem;
+      color: #ffffff;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+      z-index: 5;
+    }
+
+    .game-start-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(3, 3, 3, 0.85);
+      backdrop-filter: blur(5px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .game-start-btn {
+      margin-top: 15px;
+      background: #ffffff;
+      color: #000000;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .game-start-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+    }
     
     .news-item {
       margin-bottom: 12px;
@@ -473,46 +544,39 @@
     </header>
 
     <nav class="tab-nav">
-      <button class="tab-btn active" onclick="switchTab('philosophy')">Philosophy</button>
-      <button class="tab-btn" onclick="switchTab('tools')">Tools</button>
+      <button class="tab-btn active" onclick="switchTab('arcade')">Arcade Game</button>
       <button class="tab-btn" onclick="switchTab('news')">News Wire</button>
       <button class="tab-btn" onclick="switchTab('logs')">Logs</button>
     </nav>
 
     <main>
-      <!-- Tab 1: Philosophy -->
-      <div id="tab-philosophy" class="tab-pane active">
-        <div class="blog-card glow-card">
+      <!-- Tab 1: Arcade Game (Tembak Pesawat) -->
+      <div id="tab-arcade" class="tab-pane active">
+        <div class="glow-card" style="padding: 20px;">
           <div class="glow-spot"></div>
-          <span class="blog-tag">Core Rule // 01</span>
-          <h2>Akumulasi Aset & Kebebasan Waktu</h2>
-          <p>Selagi muda dan produktif, fokus utama adalah mengumpulkan aset yang menghasilkan arus kas untuk membangun kebebasan waktu jangka panjang bersama keluarga.</p>
-        </div>
-        <div class="blog-card glow-card">
-          <div class="glow-spot"></div>
-          <span class="blog-tag">Core Rule // 02</span>
-          <h2>Mentalitas Tanpa Manipulasi</h2>
-          <p>Menjaga prinsip independen, berpikir rasional, dan tidak mudah terpengaruh oleh kebisingan emosional atau opini publik di luar kendali.</p>
+          <div style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <span class="blog-tag" style="margin-bottom:0;">MINI GAME // SKY DEFENDER</span>
+            <span style="font-size: 0.75rem; color: var(--text-secondary); font-family: 'Courier New', Courier, monospace;">Move: Mouse/Touch | Shoot: Click</span>
+          </div>
+          
+          <div class="game-container" id="gameContainer">
+            <div class="game-ui-overlay">
+              <div>SCORE: <span id="scoreVal">0</span></div>
+              <div>HP: <span id="hpVal">3</span></div>
+            </div>
+            
+            <div id="gameStartScreen" class="game-start-screen">
+              <h2 style="font-size: 1.4rem; margin-bottom: 8px; letter-spacing: 2px;">SKY DEFENDER</h2>
+              <p style="color: var(--text-secondary); font-size: 0.8rem; max-width: 300px; margin-bottom: 15px;">Hancurkan pesawat musuh sebanyak mungkin dan raih skor tertinggi!</p>
+              <button class="game-start-btn" onclick="startMiniGame()">START GAME</button>
+            </div>
+
+            <canvas id="gameCanvas"></canvas>
+          </div>
         </div>
       </div>
 
-      <!-- Tab 2: Tools -->
-      <div id="tab-tools" class="tab-pane">
-        <div class="blog-card glow-card">
-          <div class="glow-spot"></div>
-          <span class="blog-tag">Resource // 01</span>
-          <h2>Charting & Analytics Platform</h2>
-          <p>Perangkat utama yang digunakan untuk memindai struktur pasar secara mendalam dan menyaring sinyal palsu secara objektif.</p>
-        </div>
-        <div class="blog-card glow-card">
-          <div class="glow-spot"></div>
-          <span class="blog-tag">Resource // 02</span>
-          <h2>Secure Asset Storage</h2>
-          <p>Standar penyimpanan dingin mandiri untuk memastikan keamanan aset digital jangka panjang dari risiko pihak ketiga.</p>
-        </div>
-      </div>
-
-      <!-- Tab 3: News Wire -->
+      <!-- Tab 2: News Wire -->
       <div id="tab-news" class="tab-pane">
         <div class="blog-card glow-card">
           <div class="glow-spot"></div>
@@ -526,7 +590,7 @@
         </div>
       </div>
 
-      <!-- Tab 4: Logs -->
+      <!-- Tab 3: Logs -->
       <div id="tab-logs" class="tab-pane">
         <div class="blog-card glow-card">
           <div class="glow-spot"></div>
@@ -618,6 +682,180 @@
         card.style.setProperty('--mouse-y', `${y}px`);
       });
     });
+
+    // --- MINI GAME LOGIC ---
+    const gameCanvas = document.getElementById('gameCanvas');
+    const ctx = gameCanvas.getContext('2d');
+    let gameInterval = null;
+    let gameRunning = false;
+    let score = 0;
+    let hp = 3;
+
+    let player = { x: 0, y: 0, size: 18, speed: 5 };
+    let bullets = [];
+    let enemies = [];
+    let stars = [];
+
+    function initGameCanvasSize() {
+      gameCanvas.width = gameCanvas.parentElement.clientWidth;
+      gameCanvas.height = gameCanvas.parentElement.clientHeight;
+      player.x = gameCanvas.width / 2;
+      player.y = gameCanvas.height - 40;
+    }
+
+    // Buat latar belakang bintang mini game
+    for(let i=0; i<50; i++) {
+      stars.push({
+        x: Math.random() * 400,
+        y: Math.random() * 400,
+        size: Math.random() * 1.5,
+        speed: Math.random() * 2 + 0.5
+      });
+    }
+
+    function startMiniGame() {
+      initGameCanvasSize();
+      score = 0;
+      hp = 3;
+      bullets = [];
+      enemies = [];
+      document.getElementById('scoreVal').innerText = score;
+      document.getElementById('hpVal').innerText = hp;
+      document.getElementById('gameStartScreen').style.display = 'none';
+      gameRunning = true;
+
+      if(gameInterval) clearInterval(gameInterval);
+      gameInterval = setInterval(updateGame, 1000 / 60);
+    }
+
+    // Kontrol Pesawat Player dengan Mouse / Touch di dalam area game
+    gameCanvas.addEventListener('mousemove', (e) => {
+      if(!gameRunning) return;
+      const rect = gameCanvas.getBoundingClientRect();
+      player.x = e.clientX - rect.left;
+      player.y = e.clientY - rect.top;
+    });
+
+    gameCanvas.addEventListener('touchmove', (e) => {
+      if(!gameRunning) return;
+      const rect = gameCanvas.getBoundingClientRect();
+      if(e.touches.length > 0) {
+        player.x = e.touches[0].clientX - rect.left;
+        player.y = e.touches[0].clientY - rect.top;
+      }
+    });
+
+    gameCanvas.addEventListener('click', () => {
+      if(!gameRunning) return;
+      // Tembak peluru
+      bullets.push({ x: player.x, y: player.y - 15, radius: 3, speed: 8 });
+    });
+
+    function updateGame() {
+      ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+      // Gambar & gerakkan bintang latar belakang game
+      ctx.fillStyle = '#ffffff';
+      stars.forEach(star => {
+        star.y += star.speed;
+        if(star.y > gameCanvas.height) star.y = 0;
+        ctx.fillRect(star.x, star.y, star.size, star.size);
+      });
+
+      // Spawn Musuh secara periodik
+      if(Math.random() < 0.03) {
+        enemies.push({
+          x: Math.random() * (gameCanvas.width - 30) + 15,
+          y: -20,
+          size: 16,
+          speed: Math.random() * 1.5 + 1.2
+        });
+      }
+
+      // Update & Gambar Peluru
+      ctx.fillStyle = '#58a6ff';
+      for(let i = bullets.length - 1; i >= 0; i--) {
+        let b = bullets[i];
+        b.y -= b.speed;
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        if(b.y < 0) {
+          bullets.splice(i, 1);
+        }
+      }
+
+      // Update & Gambar Musuh
+      ctx.fillStyle = '#ff5555';
+      for(let i = enemies.length - 1; i >= 0; i--) {
+        let en = enemies[i];
+        en.y += en.speed;
+
+        // Gambar bentuk pesawat musuh (segitiga terbalik)
+        ctx.beginPath();
+        ctx.moveTo(en.x, en.y + en.size);
+        ctx.lineTo(en.x - en.size, en.y - en.size);
+        ctx.lineTo(en.x + en.size, en.y - en.size);
+        ctx.closePath();
+        ctx.fill();
+
+        // Cek tabrakan dengan Player
+        let distPlayer = Math.hypot(player.x - en.x, player.y - en.y);
+        if(distPlayer < player.size + en.size) {
+          hp--;
+          document.getElementById('hpVal').innerText = hp;
+          enemies.splice(i, 1);
+          if(hp <= 0) {
+            endGame();
+          }
+          continue;
+        }
+
+        // Cek tabrakan peluru dengan Musuh
+        let hit = false;
+        for(let j = bullets.length - 1; j >= 0; j--) {
+          let b = bullets[j];
+          let distBullet = Math.hypot(b.x - en.x, b.y - en.y);
+          if(distBullet < b.radius + en.size) {
+            hit = true;
+            bullets.splice(j, 1);
+            score += 10;
+            document.getElementById('scoreVal').innerText = score;
+            break;
+          }
+        }
+
+        if(hit) {
+          enemies.splice(i, 1);
+          continue;
+        }
+
+        // Jika musuh lewat bawah layar
+        if(en.y > gameCanvas.height + 20) {
+          enemies.splice(i, 1);
+        }
+      }
+
+      // Gambar Pesawat Player (Segitiga putih elegan)
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.moveTo(player.x, player.y - player.size);
+      ctx.lineTo(player.x - player.size, player.y + player.size);
+      ctx.lineTo(player.x + player.size, player.y + player.size);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function endGame() {
+      gameRunning = false;
+      clearInterval(gameInterval);
+      const startScreen = document.getElementById('gameStartScreen');
+      startScreen.style.display = 'flex';
+      startScreen.querySelector('h2').innerText = 'GAME OVER';
+      startScreen.querySelector('p').innerText = `Skor Akhir Anda: ${score}. Coba lagi untuk cetak rekor!`;
+      startScreen.querySelector('button').innerText = 'PLAY AGAIN';
+    }
 
     function loadNews() {
       const newsContainer = document.getElementById('news-feed');

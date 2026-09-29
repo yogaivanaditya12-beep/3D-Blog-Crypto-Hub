@@ -390,75 +390,84 @@
       line-height: 1.5;
     }
 
-    /* MINI GAME STYLING */
-    .game-container {
-      position: relative;
-      width: 100%;
-      height: 400px;
+    /* BLOCKCHAIN SIMULATION STYLING */
+    .sim-container {
       background: #000000;
       border-radius: 16px;
-      overflow: hidden;
+      padding: 20px;
       border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.05);
-      cursor: crosshair;
-    }
-
-    #gameCanvas {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-
-    .game-ui-overlay {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      right: 15px;
-      display: flex;
-      justify-content: space-between;
-      pointer-events: none;
       font-family: 'Courier New', Courier, monospace;
-      font-size: 0.85rem;
-      color: #ffffff;
-      text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
-      z-index: 5;
     }
 
-    .game-start-screen {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(3, 3, 3, 0.85);
-      backdrop-filter: blur(5px);
+    .blockchain-flow {
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 10;
-      text-align: center;
-      padding: 20px;
+      gap: 15px;
+      margin-top: 15px;
+      max-height: 350px;
+      overflow-y: auto;
+      padding-right: 5px;
     }
 
-    .game-start-btn {
-      margin-top: 15px;
-      background: #ffffff;
-      color: #000000;
-      border: none;
-      padding: 10px 24px;
-      border-radius: 8px;
+    .block-node {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .block-node:hover {
+      border-color: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .block-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: #58a6ff;
+      margin-bottom: 8px;
       font-weight: bold;
-      font-size: 0.85rem;
+    }
+
+    .block-data {
+      font-size: 0.8rem;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .block-hash {
+      font-size: 0.68rem;
+      color: var(--text-secondary);
+      word-break: break-all;
+    }
+
+    .sim-controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .sim-btn {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: bold;
       text-transform: uppercase;
-      letter-spacing: 2px;
       cursor: pointer;
+      font-family: 'Courier New', Courier, monospace;
       transition: all 0.2s ease;
     }
 
-    .game-start-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+    .sim-btn:hover {
+      background: #ffffff;
+      color: #000000;
+      border-color: #ffffff;
     }
     
     .news-item {
@@ -544,34 +553,34 @@
     </header>
 
     <nav class="tab-nav">
-      <button class="tab-btn active" onclick="switchTab('arcade')">Arcade Game</button>
+      <button class="tab-btn active" onclick="switchTab('blockchain')">Blockchain Sim</button>
       <button class="tab-btn" onclick="switchTab('news')">News Wire</button>
       <button class="tab-btn" onclick="switchTab('logs')">Logs</button>
     </nav>
 
     <main>
-      <!-- Tab 1: Arcade Game (Tembak Pesawat) -->
-      <div id="tab-arcade" class="tab-pane active">
-        <div class="glow-card" style="padding: 20px;">
+      <!-- Tab 1: Blockchain Simulation -->
+      <div id="tab-blockchain" class="tab-pane active">
+        <div class="glow-card" style="padding: 24px;">
           <div class="glow-spot"></div>
-          <div style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
-            <span class="blog-tag" style="margin-bottom:0;">MINI GAME // SKY DEFENDER</span>
-            <span style="font-size: 0.75rem; color: var(--text-secondary); font-family: 'Courier New', Courier, monospace;">Move: Mouse/Touch | Shoot: Click</span>
-          </div>
+          <span class="blog-tag">Interactive Protocol</span>
+          <h2>Live Blockchain Ledger Simulation</h2>
+          <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 15px;">Simulasi bagaimana transaksi dicatat, di-hash secara kriptografis, dan dirantai secara aman ke blok sebelumnya.</p>
           
-          <div class="game-container" id="gameContainer">
-            <div class="game-ui-overlay">
-              <div>SCORE: <span id="scoreVal">0</span></div>
-              <div>HP: <span id="hpVal">3</span></div>
+          <div class="sim-container">
+            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary); border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 8px;">
+              <span>STATUS: SECURE & SYNCED</span>
+              <span>NODE: HONALABS-VAL-01</span>
             </div>
             
-            <div id="gameStartScreen" class="game-start-screen">
-              <h2 style="font-size: 1.4rem; margin-bottom: 8px; letter-spacing: 2px;">SKY DEFENDER</h2>
-              <p style="color: var(--text-secondary); font-size: 0.8rem; max-width: 300px; margin-bottom: 15px;">Hancurkan pesawat musuh sebanyak mungkin dan raih skor tertinggi!</p>
-              <button class="game-start-btn" onclick="startMiniGame()">START GAME</button>
+            <div class="blockchain-flow" id="blockchainFlow">
+              <!-- Blok akan dimasukkan lewat JS -->
             </div>
 
-            <canvas id="gameCanvas"></canvas>
+            <div class="sim-controls">
+              <button class="sim-btn" onclick="addNewBlock()">+ Mine New Block</button>
+              <button class="sim-btn" onclick="resetBlockchain()">Reset Chain</button>
+            </div>
           </div>
         </div>
       </div>
@@ -683,179 +692,72 @@
       });
     });
 
-    // --- MINI GAME LOGIC ---
-    const gameCanvas = document.getElementById('gameCanvas');
-    const ctx = gameCanvas.getContext('2d');
-    let gameInterval = null;
-    let gameRunning = false;
-    let score = 0;
-    let hp = 3;
+    // --- BLOCKCHAIN SIMULATION LOGIC ---
+    let blockchain = [];
 
-    let player = { x: 0, y: 0, size: 18, speed: 5 };
-    let bullets = [];
-    let enemies = [];
-    let stars = [];
-
-    function initGameCanvasSize() {
-      gameCanvas.width = gameCanvas.parentElement.clientWidth;
-      gameCanvas.height = gameCanvas.parentElement.clientHeight;
-      player.x = gameCanvas.width / 2;
-      player.y = gameCanvas.height - 40;
+    function generateRandomHash() {
+      const chars = '0123456789abcdef';
+      let hash = '0x';
+      for(let i=0; i<32; i++) {
+        hash += chars[Math.floor(Math.random() * chars.length)];
+      }
+      return hash;
     }
 
-    // Buat latar belakang bintang mini game
-    for(let i=0; i<50; i++) {
-      stars.push({
-        x: Math.random() * 400,
-        y: Math.random() * 400,
-        size: Math.random() * 1.5,
-        speed: Math.random() * 2 + 0.5
+    function initBlockchain() {
+      blockchain = [
+        { index: 1, data: "Genesis Block // Honalabs Core Initialized", prevHash: "0x00000000000000000000000000000000", hash: generateRandomHash() }
+      ];
+      renderBlockchain();
+    }
+
+    function addNewBlock() {
+      const lastBlock = blockchain[blockchain.length - 1];
+      const newIndex = lastBlock.index + 1;
+      const sampleTxs = [
+        "Asset Allocation: Crypto & Yield Vault Verified",
+        "Smart Contract Executed: Inner Circle Access Granted",
+        "Liquidity Proof Verified & Synced with Node Network",
+        "Time-Freedom Protocol: Milestone Asset Logged"
+      ];
+      const randomTx = sampleTxs[Math.floor(Math.random() * sampleTxs.length)];
+      
+      const newBlock = {
+        index: newIndex,
+        data: randomTx,
+        prevHash: lastBlock.hash,
+        hash: generateRandomHash()
+      };
+
+      blockchain.push(newBlock);
+      renderBlockchain();
+    }
+
+    function resetBlockchain() {
+      initBlockchain();
+    }
+
+    function renderBlockchain() {
+      const flow = document.getElementById('blockchainFlow');
+      let html = '';
+      blockchain.forEach((b) => {
+        html += `
+          <div class="block-node">
+            <div class="block-header">
+              <span>BLOCK #${b.index}</span>
+              <span>VALIDATED ✓</span>
+            </div>
+            <div class="block-data">DATA: ${b.data}</div>
+            <div class="block-hash">PREV: ${b.prevHash}</div>
+            <div class="block-hash" style="color: #58a6ff; margin-top: 2px;">HASH: ${b.hash}</div>
+          </div>
+        `;
       });
+      flow.innerHTML = html;
+      flow.scrollTop = flow.scrollHeight;
     }
 
-    function startMiniGame() {
-      initGameCanvasSize();
-      score = 0;
-      hp = 3;
-      bullets = [];
-      enemies = [];
-      document.getElementById('scoreVal').innerText = score;
-      document.getElementById('hpVal').innerText = hp;
-      document.getElementById('gameStartScreen').style.display = 'none';
-      gameRunning = true;
-
-      if(gameInterval) clearInterval(gameInterval);
-      gameInterval = setInterval(updateGame, 1000 / 60);
-    }
-
-    // Kontrol Pesawat Player dengan Mouse / Touch di dalam area game
-    gameCanvas.addEventListener('mousemove', (e) => {
-      if(!gameRunning) return;
-      const rect = gameCanvas.getBoundingClientRect();
-      player.x = e.clientX - rect.left;
-      player.y = e.clientY - rect.top;
-    });
-
-    gameCanvas.addEventListener('touchmove', (e) => {
-      if(!gameRunning) return;
-      const rect = gameCanvas.getBoundingClientRect();
-      if(e.touches.length > 0) {
-        player.x = e.touches[0].clientX - rect.left;
-        player.y = e.touches[0].clientY - rect.top;
-      }
-    });
-
-    gameCanvas.addEventListener('click', () => {
-      if(!gameRunning) return;
-      // Tembak peluru
-      bullets.push({ x: player.x, y: player.y - 15, radius: 3, speed: 8 });
-    });
-
-    function updateGame() {
-      ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
-
-      // Gambar & gerakkan bintang latar belakang game
-      ctx.fillStyle = '#ffffff';
-      stars.forEach(star => {
-        star.y += star.speed;
-        if(star.y > gameCanvas.height) star.y = 0;
-        ctx.fillRect(star.x, star.y, star.size, star.size);
-      });
-
-      // Spawn Musuh secara periodik
-      if(Math.random() < 0.03) {
-        enemies.push({
-          x: Math.random() * (gameCanvas.width - 30) + 15,
-          y: -20,
-          size: 16,
-          speed: Math.random() * 1.5 + 1.2
-        });
-      }
-
-      // Update & Gambar Peluru
-      ctx.fillStyle = '#58a6ff';
-      for(let i = bullets.length - 1; i >= 0; i--) {
-        let b = bullets[i];
-        b.y -= b.speed;
-        ctx.beginPath();
-        ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
-        ctx.fill();
-
-        if(b.y < 0) {
-          bullets.splice(i, 1);
-        }
-      }
-
-      // Update & Gambar Musuh
-      ctx.fillStyle = '#ff5555';
-      for(let i = enemies.length - 1; i >= 0; i--) {
-        let en = enemies[i];
-        en.y += en.speed;
-
-        // Gambar bentuk pesawat musuh (segitiga terbalik)
-        ctx.beginPath();
-        ctx.moveTo(en.x, en.y + en.size);
-        ctx.lineTo(en.x - en.size, en.y - en.size);
-        ctx.lineTo(en.x + en.size, en.y - en.size);
-        ctx.closePath();
-        ctx.fill();
-
-        // Cek tabrakan dengan Player
-        let distPlayer = Math.hypot(player.x - en.x, player.y - en.y);
-        if(distPlayer < player.size + en.size) {
-          hp--;
-          document.getElementById('hpVal').innerText = hp;
-          enemies.splice(i, 1);
-          if(hp <= 0) {
-            endGame();
-          }
-          continue;
-        }
-
-        // Cek tabrakan peluru dengan Musuh
-        let hit = false;
-        for(let j = bullets.length - 1; j >= 0; j--) {
-          let b = bullets[j];
-          let distBullet = Math.hypot(b.x - en.x, b.y - en.y);
-          if(distBullet < b.radius + en.size) {
-            hit = true;
-            bullets.splice(j, 1);
-            score += 10;
-            document.getElementById('scoreVal').innerText = score;
-            break;
-          }
-        }
-
-        if(hit) {
-          enemies.splice(i, 1);
-          continue;
-        }
-
-        // Jika musuh lewat bawah layar
-        if(en.y > gameCanvas.height + 20) {
-          enemies.splice(i, 1);
-        }
-      }
-
-      // Gambar Pesawat Player (Segitiga putih elegan)
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.moveTo(player.x, player.y - player.size);
-      ctx.lineTo(player.x - player.size, player.y + player.size);
-      ctx.lineTo(player.x + player.size, player.y + player.size);
-      ctx.closePath();
-      ctx.fill();
-    }
-
-    function endGame() {
-      gameRunning = false;
-      clearInterval(gameInterval);
-      const startScreen = document.getElementById('gameStartScreen');
-      startScreen.style.display = 'flex';
-      startScreen.querySelector('h2').innerText = 'GAME OVER';
-      startScreen.querySelector('p').innerText = `Skor Akhir Anda: ${score}. Coba lagi untuk cetak rekor!`;
-      startScreen.querySelector('button').innerText = 'PLAY AGAIN';
-    }
+    initBlockchain();
 
     function loadNews() {
       const newsContainer = document.getElementById('news-feed');

@@ -429,9 +429,10 @@
         <div class="pulse-dot"></div>
         System Operational (Live)
       </div>
-      <button class="audio-btn" id="audioToggle">
+      <!-- Tombol Audio diset default ON dengan class playing -->
+      <button class="audio-btn playing" id="audioToggle">
         <div class="audio-icon"></div>
-        <span id="audioText">Sound: OFF</span>
+        <span id="audioText">Sound: ON</span>
       </button>
     </div>
 
@@ -533,7 +534,7 @@
     const mainContainer = document.getElementById('mainContainer');
     const audioToggleBtn = document.getElementById('audioToggle');
     const audioText = document.getElementById('audioText');
-    let isPlayingAudio = false;
+    let isPlayingAudio = true; // Status awal diset ON saat masuk
     let appInitialized = false;
 
     bgAudio.volume = 0.5;
@@ -541,6 +542,9 @@
     function initApp() {
       if (appInitialized) return;
       appInitialized = true;
+
+      // Langsung mainkan audio saat splash screen diklik
+      bgAudio.play().catch(() => {});
 
       initThreeJS();
 
@@ -555,6 +559,7 @@
       }, 1050);
     }
 
+    // Tombol On/Off interaktif manual
     audioToggleBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       isPlayingAudio = !isPlayingAudio;
@@ -623,7 +628,6 @@
     const stageTitle = document.getElementById('stageTitle');
     const stageDesc = document.getElementById('stageDesc');
 
-    // Koordinat Node komputer yang lebih futuristik
     const nodes = [
       { x: 45, y: 100, label: "PC-01" },
       { x: 120, y: 50, label: "SRV-A" },
@@ -639,7 +643,6 @@
       let scaleX = canvas.width / 400;
       let scaleY = canvas.height / 200;
 
-      // Gambar koneksi antar komputer / node
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
       ctx.lineWidth = 1.5;
       for (let i = 0; i < nodes.length - 1; i++) {
@@ -649,23 +652,19 @@
         ctx.stroke();
       }
 
-      // Render Node Komputer / Server
       nodes.forEach((node, index) => {
         let nx = node.x * scaleX;
         let ny = node.y * scaleY;
 
-        // Kotak Komputer / Terminal
         ctx.fillStyle = '#0a0a0a';
         ctx.strokeStyle = '#ffffff';
         ctx.lineWidth = 1.5;
         ctx.fillRect(nx - 14, ny - 12, 28, 24);
         ctx.strokeRect(nx - 14, ny - 12, 28, 24);
 
-        // Layar kecil di dalam komputer
         ctx.fillStyle = (simTime >= 4.5 && simTime < 9.5) ? '#58a6ff' : 'rgba(255,255,255,0.3)';
         ctx.fillRect(nx - 10, ny - 8, 20, 12);
 
-        // Efek aktif saat verifikasi
         if (simTime >= 4.5 && simTime < 9.5) {
           ctx.strokeStyle = 'rgba(88, 166, 255, ' + (Math.sin(Date.now() * 0.015) * 0.4 + 0.6) + ')';
           ctx.lineWidth = 2;
@@ -677,7 +676,6 @@
         ctx.fillText(node.label, nx - 14, ny + 22);
       });
 
-      // TAHAP 1: Aliran Data / Paket dari PC-01 broadcast ke node lain (0s - 4.5s)
       if (simTime < 4.5) {
         let progress = (simTime / 4.5);
         let currX = (nodes[0].x + (nodes[2].x - nodes[0].x) * progress) * scaleX;
@@ -690,11 +688,9 @@
         ctx.arc(currX, currY, 5, 0, Math.PI * 2);
         ctx.fill();
 
-        // Teks data packet
         ctx.font = '8px monospace';
         ctx.fillText("DATA_TX", currX + 8, currY - 5);
       } 
-      // TAHAP 2: Proses Verifikasi Kriptografi (Gelombang enkripsi antar node) (4.5s - 9.5s)
       else if (simTime >= 4.5 && simTime < 9.5) {
         ctx.strokeStyle = 'rgba(88, 166, 255, 0.5)';
         ctx.lineWidth = 1;
@@ -711,7 +707,6 @@
         ctx.font = '9px monospace';
         ctx.fillText(">> HASH VERIFICATION ACTIVE <<", canvas.width / 2 - 75, 20);
       } 
-      // TAHAP 3: Pembentukan Blok Baru (Mining / Validated Block) (9.5s - 14s)
       else if (simTime >= 9.5 && simTime < 14) {
         let boxWidth = 70 * scaleX;
         let boxHeight = 45 * scaleY;
@@ -731,12 +726,10 @@
         ctx.font = '8px monospace';
         ctx.fillText("Hash: 0x9fA2...3b", boxX + 6, boxY + 32);
       } 
-      // TAHAP 4: Integrasi Rantai Blok (Blockchain Chains) (14s - 18s)
       else if (simTime >= 14 && simTime <= 18) {
         let startX = canvas.width / 2 - 80 * scaleX;
         let yPos = canvas.height / 2;
 
-        // Gambar 3 blok berantai
         for (let i = 0; i < 3; i++) {
           let bx = startX + (i * 55 * scaleX);
           ctx.fillStyle = i === 2 ? '#ffffff' : 'rgba(255, 255, 255, 0.25)';
@@ -749,7 +742,6 @@
           ctx.font = '8px monospace';
           ctx.fillText(`BLK-${i+1}`, bx + 6, yPos + 4);
 
-          // Garis penghubung rantai antar blok
           if (i < 2) {
             ctx.strokeStyle = '#ffffff';
             ctx.lineWidth = 2;

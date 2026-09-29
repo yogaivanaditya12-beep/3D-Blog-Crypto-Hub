@@ -42,6 +42,7 @@
       pointer-events: none;
     }
 
+    /* --- CINEMATIC SPLASH SCREEN ANIMATION --- */
     #splash-screen {
       position: fixed;
       top: 0;
@@ -55,12 +56,12 @@
       justify-content: center;
       align-items: center;
       cursor: pointer;
-      opacity: 1;
-      transition: opacity 1s ease-in-out;
+      transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.8s ease;
     }
 
-    #splash-screen.fade-out {
-      opacity: 0;
+    #splash-screen.slide-up {
+      transform: translateY(-100%);
+      opacity: 0.8;
       pointer-events: none;
     }
 
@@ -71,7 +72,13 @@
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 20px;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
-      animation: pulseGlow 2s infinite ease-in-out;
+      animation: pulseGlow 2s infinite ease-in-out, glitchEntry 0.6s ease-out;
+    }
+
+    @keyframes glitchEntry {
+      0% { transform: scale(0.8); opacity: 0; filter: blur(10px); }
+      50% { transform: scale(1.05); filter: blur(0px); }
+      100% { transform: scale(1); opacity: 1; }
     }
 
     .splash-title {
@@ -97,6 +104,7 @@
       100% { transform: scale(0.98); border-color: rgba(255, 255, 255, 0.15); }
     }
 
+    /* --- MAIN CONTAINER ENTRY ANIMATION --- */
     .container {
       position: relative;
       z-index: 10;
@@ -104,14 +112,14 @@
       margin: 0 auto;
       padding: 50px 20px;
       opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: scale(0.95) translateY(30px);
+      transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
       display: none;
     }
 
     .container.active {
       opacity: 1;
-      transform: translateY(0);
+      transform: scale(1) translateY(0);
       display: block;
     }
 
@@ -409,7 +417,7 @@
 </head>
 <body>
 
-  <!-- Layar Splash -->
+  <!-- Layar Splash dengan Animasi Masuk -->
   <div id="splash-screen" onclick="initApp()">
     <div class="splash-content">
       <div class="splash-title">BLACKOUT</div>
@@ -429,7 +437,6 @@
         <div class="pulse-dot"></div>
         System Operational (Live)
       </div>
-      <!-- Tombol Audio diset default ON dengan class playing -->
       <button class="audio-btn playing" id="audioToggle">
         <div class="audio-icon"></div>
         <span id="audioText">Sound: ON</span>
@@ -534,7 +541,7 @@
     const mainContainer = document.getElementById('mainContainer');
     const audioToggleBtn = document.getElementById('audioToggle');
     const audioText = document.getElementById('audioText');
-    let isPlayingAudio = true; // Status awal diset ON saat masuk
+    let isPlayingAudio = true;
     let appInitialized = false;
 
     bgAudio.volume = 0.5;
@@ -543,23 +550,21 @@
       if (appInitialized) return;
       appInitialized = true;
 
-      // Langsung mainkan audio saat splash screen diklik
+      // Putar musik ambient otomatis
       bgAudio.play().catch(() => {});
 
       initThreeJS();
 
-      setTimeout(() => {
-        splashScreen.classList.add('fade-out');
-        mainContainer.classList.add('active');
-        resizeCanvas();
-      }, 50);
+      // Memicu animasi geser ke atas untuk splash screen dan zoom in untuk container utama
+      splashScreen.classList.add('slide-up');
+      mainContainer.classList.add('active');
+      resizeCanvas();
 
       setTimeout(() => {
         splashScreen.remove();
-      }, 1050);
+      }, 850);
     }
 
-    // Tombol On/Off interaktif manual
     audioToggleBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       isPlayingAudio = !isPlayingAudio;
@@ -595,7 +600,7 @@
       });
     });
 
-    // --- ENHANCED BLOCKCHAIN & COMPUTER SIMULATOR (18 SECONDS) ---
+    // --- BLOCKCHAIN SIMULATOR (18 SECONDS) ---
     const canvas = document.getElementById('simCanvas');
     const ctx = canvas.getContext('2d');
 

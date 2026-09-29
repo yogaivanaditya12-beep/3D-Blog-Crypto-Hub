@@ -124,9 +124,9 @@
       display: none;
       flex-direction: column;
       justify-content: space-between;
-      padding: 25px;
+      padding: 20px;
       opacity: 0;
-      transition: opacity 0.5s ease;
+      transition: opacity 0.4s ease;
     }
 
     #space-universe-overlay.active {
@@ -146,7 +146,7 @@
 
     .universe-header, .universe-footer {
       position: relative;
-      z-index: 5;
+      z-index: 10;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -158,7 +158,7 @@
     }
 
     .universe-title {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 800;
       letter-spacing: 2px;
       text-transform: uppercase;
@@ -174,24 +174,24 @@
 
     .universe-grid-container {
       position: relative;
-      z-index: 5;
-      max-width: 850px;
+      z-index: 10;
+      max-width: 800px;
       width: 100%;
       margin: auto;
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 12px;
-      max-height: 65vh;
+      max-height: 62vh;
       overflow-y: auto;
       padding: 5px;
     }
 
     .universe-node-card {
-      background: rgba(15, 15, 25, 0.8);
+      background: rgba(15, 15, 25, 0.85);
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 16px;
-      padding: 18px;
+      padding: 16px;
       cursor: pointer;
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
@@ -209,19 +209,19 @@
     .universe-node-card:hover {
       background: rgba(30, 30, 50, 0.95);
       border-color: rgba(255, 255, 255, 0.6);
-      transform: translateY(-6px) scale(1.02);
+      transform: translateY(-5px) scale(1.02);
       box-shadow: 0 15px 35px rgba(0, 150, 255, 0.25);
     }
 
     .universe-node-card h3 {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: #fff;
-      margin-bottom: 6px;
+      margin-bottom: 5px;
       letter-spacing: 1px;
     }
 
     .universe-node-card p {
-      font-size: 0.73rem;
+      font-size: 0.7rem;
       color: var(--text-secondary);
       line-height: 1.4;
     }
@@ -497,7 +497,7 @@
       background: radial-gradient(circle at center, #0f0f1a 0%, #030308 100%);
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 16px;
-      padding: 30px 20px;
+      padding: 24px 20px;
       text-align: center;
       margin-top: 15px;
       position: relative;
@@ -509,14 +509,14 @@
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.3);
       color: #ffffff;
-      padding: 14px 28px;
+      padding: 12px 24px;
       border-radius: 12px;
       font-weight: bold;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       letter-spacing: 2px;
       text-transform: uppercase;
       cursor: pointer;
-      margin-top: 15px;
+      margin-top: 12px;
       transition: all 0.3s ease;
       display: inline-flex;
       align-items: center;
@@ -576,7 +576,7 @@
     .time-display { font-size: 0.72rem; color: var(--text-secondary); }
 
     @media (max-width: 768px) {
-      .universe-grid-container { grid-template-columns: repeat(1, 1fr); max-height: 60vh; }
+      .universe-grid-container { grid-template-columns: repeat(1, 1fr); max-height: 58vh; }
       h1 { font-size: 1.8rem; }
     }
   </style>
@@ -592,46 +592,47 @@
     </div>
   </div>
 
-  <!-- DEEP SPACE UNIVERSE SELECTION OVERLAY DENGAN KANVAS WARP TERPISAH -->
+  <!-- DEEP SPACE UNIVERSE SELECTION OVERLAY -->
   <div id="space-universe-overlay">
     <canvas id="universeWarpCanvas"></canvas>
+    
     <div class="universe-header">
       <div>
-        <div class="universe-title">DEEP SPACE KNOWLEDGE HUB</div>
-        <div class="universe-subtitle">Navigasi Galaksi Kripto</div>
+        <div class="universe-title">CRYPTO HUB</div>
+        <div class="universe-subtitle">Pilih Sektor Stasiun</div>
       </div>
       <button class="universe-exit-btn" onclick="closeSpaceUniverse()">KEMBALI</button>
     </div>
 
     <div class="universe-grid-container">
-      <div class="universe-node-card" onclick="alert('Stasiun Terpilih: Cryptocurrency — Mata uang digital terdesentralisasi tanpa otoritas pusat.')">
+      <div class="universe-node-card" onclick="alert('Stasiun Terpilih: Cryptocurrency')">
         <h3>Cryptocurrency</h3>
-        <p>Mata uang digital yang diamankan kriptografi untuk transaksi global instan.</p>
+        <p>Mata uang digital terdesentralisasi.</p>
       </div>
-      <div class="universe-node-card" onclick="alert('Stasiun Terpilih: Blockchain — Buku besar digital terdistribusi dan permanen.')">
+      <div class="universe-node-card" onclick="alert('Stasiun Terpilih: Blockchain')">
         <h3>Blockchain</h3>
-        <p>Infrastruktur rantai blok pencatat seluruh data transaksi secara transparan.</p>
+        <p>Buku besar digital dan permanen.</p>
       </div>
-      <div class="universe-node-card" onclick="alert('Stasiun Terpilih: DeFi Hub — Layanan finansial peer-to-peer.')">
+      <div class="universe-node-card" onclick="alert('Stasiun Terpilih: DeFi Hub')">
         <h3>DeFi Hub</h3>
-        <p>Sistem keuangan tanpa perantara bank atau otoritas tunggal.</p>
+        <p>Sistem keuangan tanpa perantara.</p>
       </div>
-      <div class="universe-node-card" onclick="alert('Stasiun Terpilih: Whale Movement — Analisis aktivitas holder paus pasar.')">
+      <div class="universe-node-card" onclick="alert('Stasiun Terpilih: Whale Movement')">
         <h3>Whale Movement</h3>
-        <p>Pemantauan pergerakan aset skala besar yang mampu menggerakkan market.</p>
+        <p>Pemantauan pergerakan aset skala besar.</p>
       </div>
-      <div class="universe-node-card" onclick="alert('Stasiun Terpilih: Smart Contract — Kontrak otomatis berbasis kode.')">
+      <div class="universe-node-card" onclick="alert('Stasiun Terpilih: Smart Contract')">
         <h3>Smart Contract</h3>
-        <p>Program otomatis di atas jaringan untuk mengeksekusi perjanjian secara aman.</p>
+        <p>Program otomatis berbasis kode.</p>
       </div>
-      <div class="universe-node-card" onclick="alert('Stasiun Terpilih: Private & Public Keys — Keamanan kepemilikan aset.')">
+      <div class="universe-node-card" onclick="alert('Stasiun Terpilih: Private & Public Keys')">
         <h3>Private & Public Keys</h3>
-        <p>Sistem kunci enkripsi mutlak untuk otorisasi kepemilikan dompet kripto.</p>
+        <p>Keamanan mutlak dompet kripto.</p>
       </div>
     </div>
 
     <div class="universe-footer" style="justify-content: center;">
-      <div class="universe-subtitle">[ Status: Melayang di Galaksi Kripto — Pilih Sektor ]</div>
+      <div class="universe-subtitle">[ Status: Melayang di Galaksi Kripto ]</div>
     </div>
   </div>
 
@@ -685,8 +686,8 @@
           <h2>Crypto 101 // Panduan Dasar Kripto</h2>
           
           <div class="crypto-portal-box">
-            <span class="blog-tag" style="margin-bottom: 5px;">Eksplorasi Kosmik</span>
-            <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 10px;">Masuk ke luasnya galaksi luar angkasa untuk memilih berbagai stasiun materi kripto, DeFi, dan Whale.</p>
+            <span class="blog-tag" style="margin-bottom: 4px;">Eksplorasi Kosmik</span>
+            <p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 10px;">Jelajahi galaksi dan pilih stasiun materi kripto.</p>
             <button class="portal-trigger-btn" onclick="openSpaceUniverse()">
               <span>MASUK RUANG LUAR ANGKASA</span>
             </button>
@@ -827,7 +828,7 @@
     }
     drawWarp();
 
-    // --- UNIVERSE HYPERSPACE WARP ANIMATION (SAAT MASUK KE STASIUN KRIPTO) ---
+    // --- UNIVERSE HYPERSPACE WARP ANIMATION (DENGAN BACKGROUND BINTANG + KARTU MATERI DI ATASNYA) ---
     const universeWarpCanvas = document.getElementById('universeWarpCanvas');
     const uWarpCtx = universeWarpCanvas.getContext('2d');
     let uwW, uwH;
@@ -849,12 +850,13 @@
       });
     }
 
-    let uWarpSpeed = 1.5;
+    let uWarpSpeed = 1.2;
     let isEnteringHyperspace = false;
     let universeAnimFrame;
 
     function drawUniverseWarp() {
-      uWarpCtx.fillStyle = 'rgba(2, 2, 5, 0.35)';
+      // Background sedikit transparan agar efek warp bintang tetap terlihat lembut di belakang kotak materi
+      uWarpCtx.fillStyle = 'rgba(2, 2, 5, 0.25)';
       uWarpCtx.fillRect(0, 0, uwW, uwH);
 
       let cx = uwW / 2;
@@ -892,24 +894,24 @@
     function openSpaceUniverse() {
       spaceUniverseOverlay.style.display = 'flex';
       isEnteringHyperspace = true;
-      uWarpSpeed = 60; // Kecepatan kilat melesat menembus luar angkasa
+      uWarpSpeed = 45; // Kilat sesaat saat tombol diklik
 
       setTimeout(() => {
         spaceUniverseOverlay.classList.add('active');
       }, 10);
 
-      // Setelah 1.2 detik melesat, perlambat kecepatan jadi mode melayang santai di galaksi
+      // Setelah 0.8 detik, kecepatan warp kembali normal, menampilkan stasiun materi di atas animasi bintang
       setTimeout(() => {
         isEnteringHyperspace = false;
         uWarpSpeed = 1.2;
-      }, 1200);
+      }, 800);
     }
 
     function closeSpaceUniverse() {
       spaceUniverseOverlay.classList.remove('active');
       setTimeout(() => {
         spaceUniverseOverlay.style.display = 'none';
-      }, 500);
+      }, 400);
     }
 
     function initApp() {

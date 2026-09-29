@@ -551,7 +551,7 @@
           <span class="blog-tag">Live Feed // Market Watch</span>
           <input type="text" id="coinSearch" class="terminal-input" placeholder="> Ketik nama koin (contoh: SOL, BTC, PEPE)..." onkeyup="handleSearch(event)">
           <div id="market-feed">
-            <div class="market-row"><span style="color: var(--text-secondary);">Memuat data pasar utama...</span></div>
+            <div class="market-row"><span style="color: var(--text-secondary);">Memuat data pasar global...</span></div>
           </div>
         </div>
       </div>
@@ -563,11 +563,11 @@
           <div class="converter-box">
             <input type="number" id="convertAmount" class="converter-input" value="1" min="0" step="any" oninput="calculateConversion()">
             <select id="convertCoin" class="converter-select" onchange="calculateConversion()">
-              <option value="BTCUSDT">BTC</option>
-              <option value="ETHUSDT">ETH</option>
-              <option value="SOLUSDT" selected>SOL</option>
-              <option value="BNBUSDT">BNB</option>
-              <option value="XRPUSDT">XRP</option>
+              <option value="BTC">BTC</option>
+              <option value="ETH">ETH</option>
+              <option value="SOL" selected>SOL</option>
+              <option value="BNB">BNB</option>
+              <option value="XRP">XRP</option>
             </select>
           </div>
           <div id="convertResult" class="converter-result">Hasil: Mengambil data...</div>
@@ -679,30 +679,57 @@
       });
     });
 
-    let allTickersCache = [];
+    let allCoinsCache = [];
     let searchTimeout = null;
-
-    const defaultSymbols = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 'DOGEUSDT', 'PEPEUSDT', 'ADAUSDT', 'AVAXUSDT', 'NEARUSDT'];
+    const defaultCoinIds = ['bitcoin', 'ethereum', 'solana', 'binancecoin', 'ripple', 'dogecoin', 'pepe', 'cardano', 'avalanche-2', 'near'];
 
     async function loadDefaultMarket() {
       try {
-        const res = await fetch('https://api.binance.com/api/v3/ticker/24hr');
-        if (!res.ok) throw new Error("Network response was not ok");
-        
+        // Menggunakan multi-proxy publik untuk melewati pembatasan jaringan / CORS / AdBlock
+        const res = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_rank_desc&per_page=50&page=1&sparkline=false'));
+        if (!res.ok) throw new Error("Gagal mengambil via AllOrigins");
         const json = await res.json();
-        allTickersCache = json;
-
-        // Filter untuk menampilkan koin default utama
-        const defaultData = json.filter(item => defaultSymbols.includes(item.symbol));
-        renderMarketList(defaultData);
+        const data = JSON.parse(json.contents);
+        
+        allCoinsCache = data;
+        const defaultData = data.filter(item => defaultCoinIds.includes(item.id));
+        renderMarketList(defaultData.length > 0 ? defaultData : data.slice(0, 10));
         calculateConversion();
       } catch (e) {
-        console.error("Gagal memuat API market:", e);
-        document.getElementById('market-feed').innerHTML = `
-          <div class="market-row" style="flex-direction: column; align-items: flex-start; gap: 4px; padding: 10px 0;">
-            <span style="color:#f85149">> Gagal memuat data pasar.</span>
-            <span style="color: var(--text-secondary); font-size: 0.75rem;">Periksa koneksi internet Anda atau coba beberapa saat lagi.</span>
-          </div>`;
+        console.warn("Mencoba jalur alternatif kedua...", e);
+        try {
+          const resAlt = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_rank_desc&per_page=50&page=1&sparkline=false'));
+          const dataAlt = await resAlt.json();
+
+          allCoinsCache = dataAlt;
+          const defaultDataAlt = dataAlt.filter(item => defaultCoinIds.includes(item.id));
+          renderMarketList(defaultDataAlt.length > 0 ? defaultDataAlt : dataAlt.slice(0, 10));
+          calculateConversion();
+        } catch (errAlt) {
+          // Fallback terakhir menggunakan Binance Public Data
+          try {
+            const binanceRes = await fetch('https://data.binance.vision/api/v3/ticker/24hr');
+            const binanceData = await binanceRes.json();
+            
+            allCoinsCache = binanceData.map(item => ({
+              symbol: item.symbol.replace('USDT', '').toLowerCase(),
+              name: item.symbol,
+              current_price: parseFloat(item.lastPrice),
+              price_change_percentage_24h: parseFloat(item.priceChangePercent)
+            })).filter(i => i.symbol);
+
+            const defaultSymbols = ['btc', 'eth', 'sol', 'bnb', 'xrp', 'doge', 'pepe', 'ada', 'avax', 'near'];
+            const defaultDataBinance = allCoinsCache.filter(item => defaultSymbols.includes(item.symbol));
+            renderMarketList(defaultDataBinance);
+            calculateConversion();
+          } catch (finalErr) {
+            document.getElementById('market-feed').innerHTML = `
+              <div class="market-row" style="flex-direction: column; align-items: flex-start; gap: 4px; padding: 10px 0;">
+                <span style="color:#f85149">> Gagal memuat data pasar.</span>
+                <span style="color: var(--text-secondary); font-size: 0.75rem;">Periksa koneksi internet Anda atau coba refresh beberapa saat lagi.</span>
+              </div>`;
+          }
+        }
       }
     }
 
@@ -714,11 +741,11 @@
 
       let htmlContent = '';
       coins.forEach(coin => {
-        const symbolDisplay = coin.symbol.replace('USDT', '/USD');
-        const priceNum = parseFloat(coin.lastPrice);
+        const symbolDisplay = (coin.symbol ? coin.symbol : coin.name).toUpperCase() + '/USD';
+        const priceNum = parseFloat(coin.current_price);
         const price = !isNaN(priceNum) ? priceNum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: priceNum < 1 ? 6 : 2 }) : '0.00';
         
-        const changeNum = parseFloat(coin.priceChangePercent);
+        const changeNum = parseFloat(coin.price_change_percentage_24h);
         const change = !isNaN(changeNum) ? changeNum.toFixed(2) : '0.00';
         const color = change >= 0 ? '#56d364' : '#f85149';
         const sign = change >= 0 ? '+' : '';
@@ -735,23 +762,25 @@
     }
 
     function handleSearch(event) {
-      const query = document.getElementById('coinSearch').value.trim().toUpperCase();
+      const query = document.getElementById('coinSearch').value.trim().toLowerCase();
       clearTimeout(searchTimeout);
 
       if (query === '') {
-        const defaultData = allTickersCache.filter(item => defaultSymbols.includes(item.symbol));
-        renderMarketList(defaultData);
+        const defaultData = allCoinsCache.filter(item => defaultCoinIds.includes(item.id) || ['btc','eth','sol','bnb','xrp','doge','pepe'].includes(item.symbol));
+        renderMarketList(defaultData.length > 0 ? defaultData.slice(0, 10) : allCoinsCache.slice(0, 10));
         return;
       }
 
       searchTimeout = setTimeout(() => {
         document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color: var(--text-secondary);">Mencari koin di jaringan global...</span></div>`;
         
-        // Cari pasangan yang mengandung query dan berakhiran USDT
-        const filtered = allTickersCache.filter(item => item.symbol.includes(query) && item.symbol.endsWith('USDT')).slice(0, 8);
+        const filtered = allCoinsCache.filter(item => 
+          (item.symbol && item.symbol.toLowerCase().includes(query)) || 
+          (item.name && item.name.toLowerCase().includes(query))
+        ).slice(0, 8);
 
         if (filtered.length === 0) {
-          document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color: var(--text-secondary);">Koin "${query}" tidak ditemukan</span></div>`;
+          document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color: var(--text-secondary);">Koin "${query.toUpperCase()}" tidak ditemukan</span></div>`;
           return;
         }
 
@@ -759,9 +788,9 @@
       }, 300);
     }
 
-    async function calculateConversion() {
+    function calculateConversion() {
       const amountInput = document.getElementById('convertAmount').value;
-      const selectedSymbol = document.getElementById('convertCoin').value;
+      const selectedSymbol = document.getElementById('convertCoin').value.toLowerCase();
       const resultDiv = document.getElementById('convertResult');
 
       const amount = parseFloat(amountInput);
@@ -770,24 +799,15 @@
         return;
       }
 
-      let coinObj = allTickersCache.find(c => c.symbol === selectedSymbol);
+      let coinObj = allCoinsCache.find(c => c.symbol === selectedSymbol || (c.id && c.id.includes(selectedSymbol)));
 
-      try {
-        if (!coinObj) {
-          const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${selectedSymbol}`);
-          coinObj = await res.json();
-        }
-
-        if (coinObj && coinObj.lastPrice) {
-          const priceInUSD = parseFloat(coinObj.lastPrice);
-          const total = amount * priceInUSD;
-          const formattedTotal = total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-          resultDiv.textContent = `Hasil: $${formattedTotal} USD`;
-        } else {
-          resultDiv.textContent = "Hasil: Gagal memuat harga";
-        }
-      } catch (err) {
-        resultDiv.textContent = "Hasil: Kesalahan koneksi";
+      if (coinObj && coinObj.current_price) {
+        const priceInUSD = parseFloat(coinObj.current_price);
+        const total = amount * priceInUSD;
+        const formattedTotal = total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        resultDiv.textContent = `Hasil: $${formattedTotal} USD`;
+      } else {
+        resultDiv.textContent = "Hasil: Mengalkulasi harga...";
       }
     }
 
@@ -796,10 +816,10 @@
       newsContainer.innerHTML = `<div style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: var(--text-secondary);">Menyinkronkan berita real-time terbaru...</div>`;
 
       try {
-        const res = await fetch('https://cryptopanic.com/api/v1/posts/?auth_token=free&public=true&kind=news');
+        const res = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://cryptopanic.com/api/v1/posts/?auth_token=free&public=true&kind=news'));
         if (!res.ok) throw new Error("Network response was not ok");
-        
-        const data = await res.json();
+        const json = await res.json();
+        const data = JSON.parse(json.contents);
         const results = data.results;
 
         if (results && results.length > 0) {

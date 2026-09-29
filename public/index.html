@@ -568,7 +568,7 @@
     </div>
   </div>
 
-  <audio id="bgAudio" loop preload="auto">
+  <audio id="bgAudio" loop preload="none">
     <source src="ambient.mp3" type="audio/mpeg">
   </audio>
 
@@ -582,7 +582,7 @@
       </div>
       <button class="audio-btn" id="audioToggle">
         <div class="audio-icon"></div>
-        <span id="audioText">Sound: ON</span>
+        <span id="audioText">Sound: OFF</span>
       </button>
     </div>
 
@@ -682,26 +682,15 @@
     const mainContainer = document.getElementById('mainContainer');
     const audioToggleBtn = document.getElementById('audioToggle');
     const audioText = document.getElementById('audioText');
-    let isPlaying = false;
+    let isPlayingAudio = false;
     let isWarping = false;
 
-    bgAudio.volume = 0.8;
+    bgAudio.volume = 0.5;
 
-    function playAudio() {
-      bgAudio.play().then(() => {
-        isPlayingAudio = true;
-        audioToggleBtn.classList.add('playing');
-        audioText.textContent = 'Sound: ON';
-      }).catch(err => {
-        console.log("Audio play blocked:", err);
-      });
-    }
-
-    let isPlayingAudio = false;
+    // Mengatasi masalah macet di splash screen dengan tidak memaksa audio auto-play di awal
     splashScreen.addEventListener('click', () => {
       if (isWarping) return;
       isWarping = true;
-      playAudio();
 
       warpSpeed = 0.25;
       splashScreen.classList.add('warp-active');
@@ -719,7 +708,7 @@
       e.stopPropagation();
       isPlayingAudio = !isPlayingAudio;
       if (isPlayingAudio) {
-        bgAudio.play();
+        bgAudio.play().catch(() => {});
         audioToggleBtn.classList.add('playing');
         audioText.textContent = 'Sound: ON';
       } else {
@@ -776,7 +765,8 @@
     ];
 
     let simTime = 0;
-    const maxSimTime = 12; // 12 detik durasi video simulasi
+    const maxSimTime = 12;
+    let isPlaying = false;
     let simInterval = null;
 
     const playPauseBtn = document.getElementById('playPauseBtn');
@@ -834,16 +824,13 @@
     }
 
     function updateSimUI() {
-      // Update progress bar
       let percent = (simTime / maxSimTime) * 100;
       progressFill.style.width = percent + '%';
 
-      // Format time display
       let currentSec = Math.floor(simTime);
       let formattedSec = currentSec < 10 ? '0' + currentSec : currentSec;
       timeDisplay.textContent = `00:${formattedSec} / 00:12`;
 
-      // Update active stage based on time
       let currentStage = stages[0];
       for (let i = 0; i < stages.length; i++) {
         if (simTime >= stages[i].time) {
@@ -854,15 +841,34 @@
       stageDesc.textContent = currentStage.desc;
     }
 
-    // Klik pada progress bar untuk seek waktu
     document.getElementById('progressTrack').addEventListener('click', (e) => {
       const rect = e.currentTarget.getBoundingClientRect();
       const clickX = e.clientX - rect.left;
-      const width = rect.width;
-      let ratio = clickX / width;
+      let ratio = clickX / rect.width;
       simTime = ratio * maxSimTime;
       updateSimUI();
     });
+
+    function loadNews() {
+      const newsContainer = document.getElementById('news-feed');
+      const mockNews = [
+        { title: "Bitcoin Menembus Level Kunci Di Tengah Lonjakan Aktivitas Whale", source: "CoinDesk", time: "15m ago" },
+        { title: "Analisis Tren Pasar Altcoin dan Proyeksi Likuiditas Kuartal Ini", source: "CryptoSlate", time: "42m ago" },
+        { title: "Pembaruan Protokol Keamanan Jaringan Desentralisasi Global", source: "Decrypt", time: "2h ago" },
+        { title: "Strategi Akumulasi Aset Produktif untuk Kebebasan Finansial Jangka Panjang", source: "Honalabs Research", time: "4h ago" }
+      ];
+
+      let htmlContent = '';
+      mockNews.forEach(item => {
+        htmlContent += `
+          <div class="news-item">
+            <a href="#" onclick="event.preventDefault();" class="news-title">> ${item.title}</a>
+            <div class="news-meta">Sumber: ${item.source} | ${item.time}</div>
+          </div>
+        `;
+      });
+      newsContainer.innerHTML = htmlContent;
+    }
 
     loadNews();
 
@@ -889,7 +895,7 @@
     const innerMesh = new THREE.Mesh(innerGeo, innerMat);
     group.add(innerMesh);
 
-    const particlesCount = 600;
+    const particlesCount = 400;
     const posArray = new Float32Array(particlesCount * 3);
     const velocities = new Float32Array(particlesCount);
 
@@ -941,7 +947,7 @@
       innerMesh.rotation.x -= 0.004;
       innerMesh.rotation.y -= 0.007;
 
-      const positions = particlesGeo.attributes.position.array;
+      const positions = particlesGeo.attributes.property || particlesGeo.attributes.position.array;
       for(let i = 0; i < particlesCount; i++) {
         positions[i * 3 + 2] += velocities[i] + (warpSpeed * 15);
         if (positions[i * 3 + 2] > 10) {

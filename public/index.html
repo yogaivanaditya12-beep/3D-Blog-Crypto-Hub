@@ -42,7 +42,7 @@
       pointer-events: none;
     }
 
-    /* Splash Screen dengan durasi transisi yang pas agar animasi fade-out kelihatan halus */
+    /* Splash Screen dengan durasi transisi mulus */
     #splash-screen {
       position: fixed;
       top: 0;
@@ -56,11 +56,14 @@
       justify-content: center;
       align-items: center;
       cursor: pointer;
-      transition: opacity 0.8s ease-in-out;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;
     }
 
     #splash-screen.fade-out {
       opacity: 0;
+      visibility: hidden;
       pointer-events: none;
     }
 
@@ -531,7 +534,6 @@
     </main>
   </div>
 
-  <!-- Load Three.js secara async di bawah -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
     const bgAudio = document.getElementById('bgAudio');
@@ -548,14 +550,15 @@
       if (appInitialized) return;
       appInitialized = true;
 
+      // Picu animasi fade-out CSS
       splashScreen.classList.add('fade-out');
       mainContainer.classList.add('active');
 
-      // Jeda waktu 750ms agar animasi fade-out hitamnya sempat terlihat mulus sebelum elemen di-hide
-      setTimeout(() => {
+      // Tunggu sampai animasi CSS benar-benar selesai (0.8 detik), baru jalankan Three.js dan hapus elemen
+      splashScreen.addEventListener('transitionend', function() {
         splashScreen.style.display = 'none';
         initThreeJS();
-      }, 750);
+      }, { once: true });
     }
 
     audioToggleBtn.addEventListener('click', (e) => {

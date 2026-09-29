@@ -299,12 +299,12 @@
       box-shadow: 0 10px 25px rgba(255, 255, 255, 0.25);
     }
 
-    /* --- TAB NAV --- */
+    /* --- TAB NAV (SAMA RATA KIRI, TENGAH, KANAN) --- */
     .tab-nav {
       display: flex;
-      justify-content: space-around;
+      justify-content: space-between;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       margin-bottom: 25px;
       background: rgba(255, 255, 255, 0.03);
       padding: 6px;
@@ -320,7 +320,7 @@
       background: transparent;
       border: none;
       color: var(--text-secondary);
-      padding: 10px 8px;
+      padding: 10px 6px;
       font-size: 0.68rem;
       font-weight: 800;
       letter-spacing: 1px;
@@ -592,7 +592,7 @@
       </div>
     </header>
 
-    <!-- NAVIGATION TABS -->
+    <!-- NAVIGATION TABS (SAMA RATA) -->
     <nav class="tab-nav">
       <button class="tab-btn active" onclick="switchTab('crypto101', event)">Crypto 101</button>
       <button class="tab-btn" onclick="switchTab('blockchain', event)">Blockchain Sim</button>
@@ -613,7 +613,7 @@
             
             <div class="space-overlay-ui">
               <div class="space-header">
-                <h3>PORTAL KRIPTO</h3>
+                <h3>PORTAL</h3>
                 <p>[ Klik Materi yang Melintas di Layar ]</p>
               </div>
             </div>
@@ -845,15 +845,14 @@
       }
     ];
 
-    // Inisialisasi posisi 8 materi secara berurutan di sumbu Z agar terbang satu per satu
     let activeMatterIndex = 0;
-    const matterZDistance = 250; // Jarak antar materi saat terbang
+    const matterZDistance = 250;
     
     const mattersState = mattersData.map((item, idx) => ({
       ...item,
       x: 0.2 + Math.random() * 0.6,
       y: 0.25 + Math.random() * 0.5,
-      z: 100 + (idx * matterZDistance), // Jarak Z bertingkat agar muncul bergiliran
+      z: 100 + (idx * matterZDistance),
       speed: 0.8
     }));
 
@@ -867,7 +866,6 @@
         let cx = spaceW / 2;
         let cy = spaceH / 2;
 
-        // Render bintang latar belakang
         for (let i = 0; i < spaceStars.length; i++) {
           let s = spaceStars[i];
           s.z -= 1.2;
@@ -887,13 +885,11 @@
           }
         }
 
-        // Render & gerakkan node materi satu persatu dari belakang ke depan
         const nodesDOM = document.querySelectorAll('.matter-node');
         
         mattersState.forEach((m, idx) => {
           m.z -= m.speed;
           
-          // Jika materi sudah sampai di depan (z <= 10), reset ke belakang antrean
           if (m.z <= 10) {
             m.z = mattersState.length * matterZDistance;
             m.x = 0.2 + Math.random() * 0.6;
@@ -905,14 +901,12 @@
           let nx = (m.x - 0.5) * spaceW * k + cx;
           let ny = (m.y - 0.5) * spaceH * k + cy;
 
-          // Hanya tampilkan node jika berada dalam jangkauan pandang (Z antara 10 dan 350)
           if (m.z < 350 && nx >= -80 && nx <= spaceW + 80 && ny >= -50 && ny <= spaceH + 50) {
             nodeEl.style.display = 'block';
             nodeEl.style.left = `${nx}px`;
             nodeEl.style.top = `${ny}px`;
             let scale = Math.max(0.5, Math.min(1.5, k * 1.1));
             nodeEl.style.transform = `translate(-50%, -50%) scale(${scale})`;
-            // Efek fade-in & fade-out berdasarkan jarak z
             let opacity = 1;
             if (m.z > 280) opacity = (350 - m.z) / 70;
             if (m.z < 50) opacity = m.z / 50;

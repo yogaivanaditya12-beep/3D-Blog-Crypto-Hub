@@ -684,14 +684,25 @@
 
     async function loadDefaultMarket() {
       try {
+        // Jika Anda memiliki API Key CoinGecko, masukkan header 'x-cg-demo-api-key' di bawah ini
         const res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=15&page=1&sparkline=false');
+        
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
         let data = await res.json();
         data = data.filter(coin => coin.id !== 'figure-heloc');
         defaultCoinsCache = data.slice(0, 10);
         renderMarketList(defaultCoinsCache);
         calculateConversion();
       } catch (e) {
-        document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color:#f85149">Gagal memuat pasar.</span></div>`;
+        console.error("Gagal memuat API market:", e);
+        document.getElementById('market-feed').innerHTML = `
+          <div class="market-row" style="flex-direction: column; align-items: flex-start; gap: 4px; padding: 10px 0;">
+            <span style="color:#f85149">> Gagal memuat data pasar.</span>
+            <span style="color: var(--text-secondary); font-size: 0.75rem;">Batas akses publik CoinGecko tercapai (Rate Limit). Silakan coba beberapa saat lagi atau gunakan API Key pribadi.</span>
+          </div>`;
       }
     }
 
@@ -733,6 +744,8 @@
         document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color: var(--text-secondary);">Mencari koin di jaringan global...</span></div>`;
         try {
           const searchRes = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false`);
+          if (!searchRes.ok) throw new Error("Rate limit exceeded");
+          
           const allCoins = await searchRes.json();
 
           const filtered = allCoins.filter(coin => 
@@ -757,7 +770,7 @@
             }
           } catch(e) {}
 
-          document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color:#f85149">Gagal mencari aset.</span></div>`;
+          document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color:#f85149">Gagal mencari aset (Rate Limit).</span></div>`;
         }
       }, 400);
     }

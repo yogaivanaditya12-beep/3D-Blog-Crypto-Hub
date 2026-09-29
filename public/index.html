@@ -112,7 +112,7 @@
       100% { transform: scale(0.98); border-color: rgba(255, 255, 255, 0.15); }
     }
 
-    /* --- DEEP SPACE UNIVERSE INTERACTIVE PORTAL --- */
+    /* --- DEEP SPACE 3D UNIVERSE PORTAL --- */
     #space-universe-overlay {
       position: fixed;
       top: 0;
@@ -133,14 +133,14 @@
       opacity: 1;
     }
 
-    #universeWarpCanvas {
-      position: fixed;
+    #universe3dCanvas {
+      position: absolute;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      z-index: 1;
-      pointer-events: none;
+      z-index: 2;
+      cursor: crosshair;
     }
 
     .universe-header {
@@ -154,6 +154,7 @@
       backdrop-filter: blur(15px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.15);
       padding: 16px 24px;
+      pointer-events: auto;
     }
 
     .universe-title {
@@ -190,50 +191,23 @@
       color: #000;
     }
 
-    /* Area bermain kartu melayang */
-    #floating-universe-area {
-      position: relative;
-      z-index: 10;
-      width: 100vw;
-      height: calc(100vh - 70px);
-      overflow: hidden;
-      touch-action: none;
-    }
-
-    .floating-card {
+    /* Petunjuk Game di Layar Angkasa */
+    .game-hint-overlay {
       position: absolute;
-      width: 220px;
-      background: rgba(15, 15, 25, 0.88);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      border-radius: 14px;
-      padding: 16px;
-      cursor: pointer;
-      user-select: none;
-      transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    }
-
-    .floating-card:hover {
-      background: rgba(30, 30, 50, 0.95);
-      border-color: rgba(255, 255, 255, 0.8);
-      box-shadow: 0 0 25px rgba(0, 150, 255, 0.4);
-      z-index: 100;
-    }
-
-    .floating-card h3 {
-      font-size: 0.85rem;
-      color: #fff;
-      margin-bottom: 4px;
-      letter-spacing: 1px;
-    }
-
-    .floating-card p {
-      font-size: 0.68rem;
-      color: var(--text-secondary);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      background: rgba(15, 15, 25, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 0.72rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #aaa;
+      pointer-events: none;
+      backdrop-filter: blur(10px);
     }
 
     /* Modal Detail Kartu */
@@ -243,7 +217,7 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(2, 2, 5, 0.85);
+      background: rgba(2, 2, 5, 0.88);
       backdrop-filter: blur(15px);
       z-index: 9999;
       display: none;
@@ -595,51 +569,6 @@
       border-color: #ffffff;
       box-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
     }
-
-    .video-sim-wrapper {
-      background: #000000;
-      border-radius: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      overflow: hidden;
-      font-family: 'Courier New', Courier, monospace;
-      position: relative;
-      z-index: 20;
-    }
-
-    .sim-canvas-box {
-      width: 100%;
-      height: 200px;
-      background: #000000;
-      position: relative;
-      overflow: hidden;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .sim-canvas-box canvas { width: 100%; height: 100%; display: block; }
-
-    .video-screen {
-      background: radial-gradient(circle at center, #111 0%, #000 100%);
-      display: flex;
-      flex-direction: column;
-      padding: 16px 20px;
-      text-align: left;
-      position: relative;
-    }
-
-    .video-stage-title { font-size: 0.95rem; font-weight: bold; color: #ffffff; margin-bottom: 4px; }
-    .video-stage-desc { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.4; }
-    .watermark { position: absolute; top: 15px; left: 15px; font-size: 0.65rem; color: rgba(255, 255, 255, 0.3); letter-spacing: 2px; z-index: 5; }
-    .live-indicator { position: absolute; top: 15px; right: 15px; display: flex; align-items: center; gap: 5px; font-size: 0.65rem; color: #58a6ff; z-index: 5; }
-    .live-dot { width: 6px; height: 6px; background-color: #58a6ff; border-radius: 50%; box-shadow: 0 0 6px #58a6ff; animation: pulse 1.5s infinite; }
-
-    .video-controls-bar { padding: 12px 16px; background: rgba(18, 18, 18, 0.95); display: flex; flex-direction: column; gap: 8px; }
-    .progress-track { width: 100%; height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 3px; cursor: pointer; position: relative; }
-    .progress-fill { width: 0%; height: 100%; background: #ffffff; transition: width 0.1s linear; border-radius: 3px; }
-    .controls-row { display: flex; justify-content: space-between; align-items: center; }
-    .control-group { display: flex; align-items: center; gap: 12px; }
-    .vid-btn { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff; cursor: pointer; font-size: 0.8rem; font-family: 'Courier New', Courier, monospace; font-weight: bold; display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 8px; transition: all 0.2s ease; z-index: 30; }
-    .vid-btn:hover { background: #ffffff; color: #000000; border-color: #ffffff; }
-    .time-display { font-size: 0.72rem; color: var(--text-secondary); }
   </style>
 </head>
 <body>
@@ -653,20 +582,19 @@
     </div>
   </div>
 
-  <!-- DEEP SPACE UNIVERSE INTERACTIVE PORTAL -->
+  <!-- DEEP SPACE 3D UNIVERSE PORTAL -->
   <div id="space-universe-overlay">
-    <canvas id="universeWarpCanvas"></canvas>
-    
     <div class="universe-header">
       <div>
-        <div class="universe-title">CRYPTO HUB // KOSMIK</div>
-        <div class="universe-subtitle">Tangkap & Ketuk Kartu Melayang di Angkasa</div>
+        <div class="universe-title">CRYPTO HUB // 3D KOSMIK</div>
+        <div class="universe-subtitle">Klik Judul Materi yang Meluncur Mendekat</div>
       </div>
       <button class="universe-exit-btn" onclick="closeSpaceUniverse()">KEMBALI</button>
     </div>
 
-    <!-- Area Kartu Melayang Berterbangan -->
-    <div id="floating-universe-area"></div>
+    <!-- Canvas 3D Three.js untuk Kartu Meluncur -->
+    <canvas id="universe3dCanvas"></canvas>
+    <div class="game-hint-overlay">Siap-siap! Klik Kartu Materi Saat Mendekat</div>
   </div>
 
   <!-- MODAL DETAIL MATERI KARTU -->
@@ -674,7 +602,7 @@
     <div class="modal-box">
       <h2 id="modalTitle">Judul Materi</h2>
       <p id="modalDesc">Pengertian materi akan muncul di sini...</p>
-      <button class="modal-close-btn" onclick="closeModalAndReturn()">KEMBALI KE RUANG ANGKASA</button>
+      <button class="modal-close-btn" onclick="closeModalAndReturn()">LANJUTKAN PENJELAJAHAN</button>
     </div>
   </div>
 
@@ -715,12 +643,10 @@
     <!-- NAVIGATION TABS -->
     <nav class="tab-nav">
       <button class="tab-btn active" onclick="switchTab('crypto101', event)">Crypto 101</button>
-      <button class="tab-btn" onclick="switchTab('blockchain', event)">Blockchain Sim</button>
       <button class="tab-btn" onclick="switchTab('logs', event)">Logs</button>
     </nav>
 
     <main>
-      <!-- TAB 1: CRYPTO 101 -->
       <div id="tab-crypto101" class="tab-pane active">
         <div class="glow-card" style="padding: 24px;">
           <div class="glow-spot"></div>
@@ -728,8 +654,8 @@
           <h2>Crypto 101 // Panduan Dasar Kripto</h2>
           
           <div class="crypto-portal-box">
-            <span class="blog-tag" style="margin-bottom: 4px;">Eksplorasi Kosmik Interaktif</span>
-            <p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 10px;">Masuk ke ruang angkasa dan temukan kartu materi yang melayang bebas.</p>
+            <span class="blog-tag" style="margin-bottom: 4px;">Mini-Game Kosmik 3D</span>
+            <p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 10px;">Masuk ke ruang angkasa dan tangkap materi yang melayang mendekat ke arah Anda.</p>
             <button class="portal-trigger-btn" onclick="openSpaceUniverse()">
               <span>MASUK RUANG LUAR ANGKASA</span>
             </button>
@@ -737,58 +663,12 @@
         </div>
       </div>
 
-      <!-- TAB 2: BLOCKCHAIN SIM -->
-      <div id="tab-blockchain" class="tab-pane">
-        <div class="glow-card" style="padding: 24px;">
-          <div class="glow-spot"></div>
-          <span class="blog-tag">Visual Walkthrough</span>
-          <h2>Alur Kerja Sistem Blockchain</h2>
-          <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 15px;">Simulasi animasi interaktif cara kerja transfer data hingga validasi blok di jaringan terdesentralisasi.</p>
-          
-          <div class="video-sim-wrapper">
-            <div class="sim-canvas-box">
-              <canvas id="simCanvas"></canvas>
-              <div class="watermark">HONALABS.VISUAL</div>
-              <div class="live-indicator"><div class="live-dot"></div> <span id="statusPlayText">PAUSED</span></div>
-            </div>
-
-            <div class="video-screen">
-              <div id="stageTitle" class="video-stage-title">[01] Inisiasi Transaksi (Broadcasting)</div>
-              <div id="stageDesc" class="video-stage-desc">User mengirim permintaan data/aset. Transaksi disiarkan ke seluruh node di dalam jaringan peer-to-peer.</div>
-            </div>
-
-            <div class="video-controls-bar">
-              <div class="progress-track" id="progressTrack">
-                <div class="progress-fill" id="progressFill"></div>
-              </div>
-              <div class="controls-row">
-                <div class="control-group">
-                  <button class="vid-btn" id="playPauseBtn" type="button" onclick="togglePlaySimulation()">
-                    <span id="playIcon">▶</span> <span id="playText">PLAY</span>
-                  </button>
-                  <button class="vid-btn" type="button" onclick="resetSimulation()">⟲ RESTART</button>
-                </div>
-                <div class="time-display" id="timeDisplay">00:00 / 00:18</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- TAB 3: LOGS -->
       <div id="tab-logs" class="tab-pane">
         <div class="blog-card glow-card">
           <div class="glow-spot"></div>
           <span class="blog-tag">Security Protocol</span>
           <h2>Algorithmic Token Filtering & Security Protocol</h2>
-          <p>Sistem pemantauan pasar secara real-time untuk menyaring sinyal palsu dan pergerakan whale secara otomatis.</p>
-        </div>
-
-        <div class="blog-card glow-card">
-          <div class="glow-spot"></div>
-          <span class="blog-tag">Asset Strategy</span>
-          <h2>Model Kebebasan Waktu & Manajemen Risiko</h2>
-          <p>Prinsip personal mengenai akumulasi aset produktif dan strategi alokasi dana trading yang terukur.</p>
+          <p>Sistem pemantauan pasar secara real-time untuk menyaring sinyal palsu secara otomatis.</p>
         </div>
       </div>
     </main>
@@ -819,9 +699,8 @@
     resizeWarp();
     window.addEventListener('resize', resizeWarp);
 
-    const numStars = 400;
     const stars = [];
-    for (let i = 0; i < numStars; i++) {
+    for (let i = 0; i < 400; i++) {
       stars.push({
         x: (Math.random() - 0.5) * warpW * 2,
         y: (Math.random() - 0.5) * warpH * 2,
@@ -837,9 +716,7 @@
     function drawWarp() {
       warpCtx.fillStyle = 'rgba(3, 3, 3, 0.3)';
       warpCtx.fillRect(0, 0, warpW, warpH);
-
-      let cx = warpW / 2;
-      let cy = warpH / 2;
+      let cx = warpW / 2, cy = warpH / 2;
 
       for (let i = 0; i < stars.length; i++) {
         let s = stars[i];
@@ -849,15 +726,11 @@
           s.x = (Math.random() - 0.5) * warpW * 2;
           s.y = (Math.random() - 0.5) * warpH * 2;
         }
-
         let k = 250 / s.z;
-        let px = s.x * k + cx;
-        let py = s.y * k + cy;
-
+        let px = s.x * k + cx, py = s.y * k + cy;
         if (px >= 0 && px <= warpW && py >= 0 && py <= warpH) {
           let p2x = s.x * (250 / (s.z + warpSpeed * 2)) + cx;
           let p2y = s.y * (250 / (s.z + warpSpeed * 2)) + cy;
-
           warpCtx.strokeStyle = 'rgba(255, 255, 255, ' + (1 - s.z / warpW) + ')';
           warpCtx.lineWidth = s.size * (isWarping ? k * 1.5 : k);
           warpCtx.beginPath();
@@ -870,160 +743,163 @@
     }
     drawWarp();
 
-    // --- UNIVERSE HYPERSPACE WARP ANIMATION ---
-    const universeWarpCanvas = document.getElementById('universeWarpCanvas');
-    const uWarpCtx = universeWarpCanvas.getContext('2d');
-    let uwW, uwH;
-
-    function resizeUniverseWarp() {
-      uwW = universeWarpCanvas.width = window.innerWidth;
-      uwH = universeWarpCanvas.height = window.innerHeight;
-    }
-    resizeUniverseWarp();
-    window.addEventListener('resize', resizeUniverseWarp);
-
-    const uStars = [];
-    for (let i = 0; i < 300; i++) {
-      uStars.push({
-        x: (Math.random() - 0.5) * uwW * 2,
-        y: (Math.random() - 0.5) * uwH * 2,
-        z: Math.random() * uwW,
-        size: Math.random() * 1.2
-      });
-    }
-
-    let uWarpSpeed = 1.5;
-    let isEnteringHyperspace = false;
-    let universeAnimFrame;
-
-    function drawUniverseWarp() {
-      uWarpCtx.fillStyle = 'rgba(2, 2, 5, 0.3)';
-      uWarpCtx.fillRect(0, 0, uwW, uwH);
-
-      let cx = uwW / 2;
-      let cy = uwH / 2;
-
-      for (let i = 0; i < uStars.length; i++) {
-        let s = uStars[i];
-        s.z -= uWarpSpeed;
-        if (s.z <= 0) {
-          s.z = uwW;
-          s.x = (Math.random() - 0.5) * uwW * 2;
-          s.y = (Math.random() - 0.5) * uwH * 2;
-        }
-
-        let k = 250 / s.z;
-        let px = s.x * k + cx;
-        let py = s.y * k + cy;
-
-        if (px >= 0 && px <= uwW && py >= 0 && py <= uwH) {
-          let p2x = s.x * (250 / (s.z + uWarpSpeed * 2)) + cx;
-          let p2y = s.y * (250 / (s.z + uWarpSpeed * 2)) + cy;
-
-          uWarpCtx.strokeStyle = 'rgba(255, 255, 255, ' + (1 - s.z / uwW) + ')';
-          uWarpCtx.lineWidth = s.size * (isEnteringHyperspace ? k * 2 : k);
-          uWarpCtx.beginPath();
-          uWarpCtx.moveTo(px, py);
-          uWarpCtx.lineTo(p2x, p2y);
-          uWarpCtx.stroke();
-        }
-      }
-      universeAnimFrame = requestAnimationFrame(drawUniverseWarp);
-    }
-    drawUniverseWarp();
-
-    // --- FLOATING CARDS GAME ENGINE ---
+    // --- 3D UNIVERSE MINI-GAME ENGINE (THREE.JS) ---
     const cardData = [
-      { title: "Cryptocurrency", desc: "Mata uang digital terdesentralisasi yang diamankan dengan kriptografi, sehingga hampir tidak mungkin dipalsukan atau dikendalikan oleh otoritas tunggal." },
-      { title: "Blockchain", desc: "Buku besar digital terdistribusi yang mencatat seluruh transaksi lintas jaringan komputer secara permanen, transparan, dan tidak dapat diubah." },
-      { title: "DeFi Hub", desc: "Ekosistem keuangan terdesentralisasi (Decentralized Finance) yang memungkinkan peminjaman, perdagangan, dan investasi tanpa melalui bank atau perantara." },
-      { title: "Whale Movement", desc: "Pemantauan aktivitas pemegang aset berskala besar (whale) yang pergerakan dananya sering kali menjadi indikator arah tren pasar kripto." },
-      { title: "Smart Contract", desc: "Program otomatis berbasis kode di dalam blockchain yang mengeksekusi perjanjian secara otomatis begitu syarat dan ketentuannya terpenuhi." },
-      { title: "Private & Public Keys", desc: "Pasangan kunci kriptografi di mana Public Key berfungsi sebagai alamat publik (nomor rekening), sedangkan Private Key adalah kata sandi mutlak kepemilikan aset." }
+      { title: "Cryptocurrency", desc: "Mata uang digital terdesentralisasi yang diamankan dengan kriptografi, sehingga hampir tidak mungkin dipalsukan." },
+      { title: "Blockchain", desc: "Buku besar digital terdistribusi yang mencatat seluruh transaksi lintas jaringan komputer secara permanen." },
+      { title: "DeFi Hub", desc: "Ekosistem keuangan terdesentralisasi (Decentralized Finance) yang memungkinkan peminjaman tanpa perbankan tradisional." },
+      { title: "Whale Movement", desc: "Pemantauan aktivitas pemegang aset berskala besar (whale) yang pergerakan dananya mempengaruhi tren pasar." },
+      { title: "Smart Contract", desc: "Program otomatis berbasis kode di dalam blockchain yang mengeksekusi perjanjian secara otomatis." },
+      { title: "Private & Public Keys", desc: "Pasangan kunci kriptografi di mana Public Key sebagai alamat publik, dan Private Key sebagai kata sandi mutlak." }
     ];
 
-    let floatingCards = [];
-    let isFloatingActive = false;
-    let cardAnimFrame = null;
+    let u3dScene, u3dCamera, u3dRenderer, u3dAnimFrame;
+    let floatingMeshes = [];
+    let raycaster = new THREE.Raycaster();
+    let mouse = new THREE.Vector2();
+    let isUniverseActive = false;
 
-    function initFloatingCards() {
-      const area = document.getElementById('floating-universe-area');
-      area.innerHTML = '';
-      floatingCards = [];
+    function initUniverse3D() {
+      const container = document.getElementById('space-universe-overlay');
+      const canvas = document.getElementById('universe3dCanvas');
 
-      const areaWidth = window.innerWidth;
-      const areaHeight = window.innerHeight - 80;
+      u3dScene = new THREE.Scene();
+      u3dCamera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+      u3dCamera.position.z = 10;
+
+      u3dRenderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+      u3dRenderer.setSize(window.innerWidth, window.innerHeight);
+      u3dRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      // Buat bintang latar belakang luar angkasa
+      const starGeo = new THREE.BufferGeometry();
+      const starCount = 500;
+      const starPos = new Float32Array(starCount * 3);
+      for(let i=0; i<starCount*3; i+=3) {
+        starPos[i] = (Math.random() - 0.5) * 60;
+        starPos[i+1] = (Math.random() - 0.5) * 60;
+        starPos[i+2] = (Math.random() - 0.5) * 60 - 20;
+      }
+      starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+      const starMat = new THREE.PointsMaterial({ size: 0.05, color: 0xffffff, transparent: true, opacity: 0.6 });
+      const bgStars = new THREE.Points(starGeo, starMat);
+      u3dScene.add(bgStars);
+
+      spawnCardsInSpace();
+
+      window.addEventListener('resize', onUniverseResize);
+      canvas.addEventListener('pointerdown', onUniverseClick);
+    }
+
+    // Fungsi membuat kanvas tekstur untuk judul kartu 3D
+    function createCardTexture(text) {
+      const c = document.createElement('canvas');
+      c.width = 512;
+      c.height = 256;
+      const ctx = c.getContext('2d');
+
+      // Desain Tampilan Kartu di 3D
+      ctx.fillStyle = 'rgba(15, 15, 25, 0.85)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+      ctx.lineWidth = 8;
+      ctx.beginPath();
+      ctx.roundRect(10, 10, 492, 236, 24);
+      ctx.fill();
+      ctx.stroke();
+
+      // Label Subtitle
+      ctx.fillStyle = '#888888';
+      ctx.font = 'bold 22px sans-serif';
+      ctx.letterSpacing = '4px';
+      ctx.fillText("MATERI KOSMIK", 40, 65);
+
+      // Judul Materi Utama
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 36px sans-serif';
+      ctx.fillText(text, 40, 130);
+
+      // Petunjuk Klik
+      ctx.fillStyle = '#58a6ff';
+      ctx.font = 'bold 20px sans-serif';
+      ctx.fillText("[ KLIK UNTUK MEMBACA ]", 40, 195);
+
+      return new THREE.CanvasTexture(c);
+    }
+
+    function spawnCardsInSpace() {
+      floatingMeshes.forEach(m => u3dScene.remove(m));
+      floatingMeshes = [];
 
       cardData.forEach((item, index) => {
-        const el = document.createElement('div');
-        el.className = 'floating-card';
-        el.innerHTML = `<h3>${item.title}</h3><p>${item.desc}</p>`;
+        const texture = createCardTexture(item.title);
+        const geometry = new THREE.PlaneGeometry(3.6, 1.8);
+        const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, side: THREE.DoubleSide });
         
-        el.addEventListener('click', () => {
-          openCardDetail(item.title, item.desc);
-        });
+        const mesh = new THREE.Mesh(geometry, material);
+        
+        // Posisi awal: Datang dari kejauhan (Z negatif yang jauh), menyebar secara acak di layar
+        mesh.position.x = (Math.random() - 0.5) * 8;
+        mesh.position.y = (Math.random() - 0.5) * 5;
+        mesh.position.z = -30 - (index * 8); // Berbaris berurutan dari kejauhan
 
-        area.appendChild(el);
-
-        // Posisi dan kecepatan gerak acak melayang
-        let cardObj = {
-          element: el,
-          x: Math.random() * (areaWidth - 240),
-          y: Math.random() * (areaHeight - 120),
-          vx: (Math.random() - 0.5) * 1.2,
-          vy: (Math.random() - 0.5) * 1.2,
-          width: 220,
-          height: 80
-        };
-
-        floatingCards.push(cardObj);
+        mesh.userData = { title: item.title, desc: item.desc, speed: 0.08 + Math.random() * 0.04 };
+        
+        u3dScene.add(mesh);
+        floatingMeshes.push(mesh);
       });
     }
 
-    function updateFloatingCards() {
-      if (!isFloatingActive) return;
+    function animateUniverse3D() {
+      if (!isUniverseActive) return;
+      u3dAnimFrame = requestAnimationFrame(animateUniverse3D);
 
-      const areaWidth = window.innerWidth;
-      const areaHeight = window.innerHeight - 80;
+      // Gerakkan kartu satu persatu dari ujung menghampiri pembaca (Z bertambah mendekati 0 / positif)
+      floatingMeshes.forEach(mesh => {
+        mesh.position.z += mesh.userData.speed;
+        mesh.rotation.y = Math.sin(Date.now() * 0.001) * 0.1;
 
-      floatingCards.forEach(card => {
-        card.x += card.vx;
-        card.y += card.vy;
-
-        // Pantulan dinding batas layar
-        if (card.x <= 10 || card.x + card.width >= areaWidth - 10) {
-          card.vx *= -1;
+        // Jika kartu sudah terlalu dekat melewati pembaca (Z > 4), reset kembali ke kejauhan belakang
+        if (mesh.position.z > 5) {
+          mesh.position.z = -40;
+          mesh.position.x = (Math.random() - 0.5) * 8;
+          mesh.position.y = (Math.random() - 0.5) * 5;
         }
-        if (card.y <= 10 || card.y + card.height >= areaHeight - 10) {
-          card.vy *= -1;
-        }
-
-        card.element.style.transform = `translate(${card.x}px, ${card.y}px)`;
       });
 
-      cardAnimFrame = requestAnimationFrame(updateFloatingCards);
+      u3dRenderer.render(u3dScene, u3dCamera);
+    }
+
+    function onUniverseClick(e) {
+      mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, u3dCamera);
+      const intersects = raycaster.intersectObjects(floatingMeshes);
+
+      if (intersects.length > 0) {
+        const clickedCard = intersects[0].object;
+        openCardDetail(clickedCard.userData.title, clickedCard.userData.desc);
+      }
     }
 
     function openSpaceUniverse() {
       spaceUniverseOverlay.style.display = 'flex';
-      isEnteringHyperspace = true;
-      uWarpSpeed = 35;
-
       setTimeout(() => {
         spaceUniverseOverlay.classList.add('active');
-        isEnteringHyperspace = false;
-        uWarpSpeed = 1.5;
-        
-        initFloatingCards();
-        isFloatingActive = true;
-        cancelAnimationFrame(cardAnimFrame);
-        updateFloatingCards();
-      }, 500);
+        isUniverseActive = true;
+        if (!u3dScene) {
+          initUniverse3D();
+        } else {
+          spawnCardsInSpace();
+        }
+        cancelAnimationFrame(u3dAnimFrame);
+        animateUniverse3D();
+      }, 50);
     }
 
     function closeSpaceUniverse() {
-      isFloatingActive = false;
-      cancelAnimationFrame(cardAnimFrame);
+      isUniverseActive = false;
+      cancelAnimationFrame(u3dAnimFrame);
       spaceUniverseOverlay.classList.remove('active');
       setTimeout(() => {
         spaceUniverseOverlay.style.display = 'none';
@@ -1031,7 +907,7 @@
     }
 
     function openCardDetail(title, desc) {
-      isFloatingActive = false; // Pause kartu melayang saat modal dibuka
+      isUniverseActive = false; // Jeda animasi saat modal dibuka
       document.getElementById('modalTitle').textContent = title;
       document.getElementById('modalDesc').textContent = desc;
       const modal = document.getElementById('card-detail-modal');
@@ -1044,9 +920,16 @@
       modal.classList.remove('active');
       setTimeout(() => {
         modal.style.display = 'none';
-        isFloatingActive = true; // Lanjutkan kembali animasi melayang
-        updateFloatingCards();
+        isUniverseActive = true;
+        animateUniverse3D(); // Lanjutkan kembali penjelajahan kartu meluncur
       }, 300);
+    }
+
+    function onUniverseResize() {
+      if (!u3dCamera || !u3dRenderer) return;
+      u3dCamera.aspect = window.innerWidth / window.innerHeight;
+      u3dCamera.updateProjectionMatrix();
+      u3dRenderer.setSize(window.innerWidth, window.innerHeight);
     }
 
     function initApp() {
@@ -1054,18 +937,15 @@
       appInitialized = true;
 
       bgAudio.play().catch(() => {});
-
       isWarping = true;
       warpSpeed = 70; 
       splashScreen.classList.add('warp-active');
-
       initThreeJS();
 
       setTimeout(() => {
         cancelAnimationFrame(warpAnimFrame);
         splashScreen.style.display = 'none';
         mainContainer.classList.add('active');
-        resizeCanvas();
       }, 800);
     }
 
@@ -1090,217 +970,14 @@
       if (event && event.currentTarget) {
         event.currentTarget.classList.add('active');
       }
-
-      if (tabId === 'blockchain') {
-        setTimeout(resizeCanvas, 50);
-      }
     }
 
     document.querySelectorAll('.glow-card').forEach(card => {
       card.addEventListener('mousemove', e => {
         const rect = card.getBoundingClientRect();
         card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
-        card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+        card.style.setProperty('--mouse-y`, `${e.clientY - rect.top}px`);
       });
-    });
-
-    // --- BLOCKCHAIN SIMULATOR ---
-    const canvas = document.getElementById('simCanvas');
-    const ctx = canvas.getContext('2d');
-
-    let resizeTimeout;
-    function resizeCanvas() {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(() => {
-        if (!canvas.parentElement) return;
-        canvas.width = canvas.parentElement.clientWidth;
-        canvas.height = canvas.parentElement.clientHeight;
-        drawSimulation();
-      }, 50);
-    }
-    window.addEventListener('resize', resizeCanvas);
-
-    const stages = [
-      { time: 0, title: "[01] Inisiasi Transaksi & Paket Data", desc: "User mengirim data/aset melalui terminal. Paket data dienkripsi sebelum disiarkan ke jaringan P2P." },
-      { time: 4.5, title: "[02] Validasi Kriptografi Multi-Node", desc: "Node komputer di berbagai server memverifikasi tanda tangan digital dan validitas transaksi secara paralel." },
-      { time: 9.5, title: "[03] Pembentukan Blok & Hash Generation", desc: "Transaksi yang sah dikumpulkan ke dalam struktur data blok baru, lalu diproses untuk menghasilkan kode Hash unik." },
-      { time: 14, title: "[04] Integrasi Rantai Permanen (Blockchain)", desc: "Blok baru dikunci dan dirantai secara kriptografis ke blok sebelumnya, memastikan buku besar aman dan abadi." }
-    ];
-
-    let simTime = 0;
-    const maxSimTime = 18;
-    let isPlaying = false;
-    let simInterval = null;
-
-    const playPauseBtn = document.getElementById('playPauseBtn');
-    const playIcon = document.getElementById('playIcon');
-    const playText = document.getElementById('playText');
-    const statusPlayText = document.getElementById('statusPlayText');
-    const progressFill = document.getElementById('progressFill');
-    const timeDisplay = document.getElementById('timeDisplay');
-    const stageTitle = document.getElementById('stageTitle');
-    const stageDesc = document.getElementById('stageDesc');
-
-    const nodes = [
-      { x: 45, y: 100, label: "PC-01" },
-      { x: 120, y: 50, label: "SRV-A" },
-      { x: 195, y: 120, label: "NODE-X" },
-      { x: 270, y: 60, label: "SRV-B" },
-      { x: 345, y: 110, label: "CORE-0" }
-    ];
-
-    function drawSimulation() {
-      if (!ctx || canvas.width === 0 || canvas.height === 0) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      let scaleX = canvas.width / 400;
-      let scaleY = canvas.height / 200;
-
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
-      ctx.lineWidth = 1.5;
-      for (let i = 0; i < nodes.length - 1; i++) {
-        ctx.beginPath();
-        ctx.moveTo(nodes[i].x * scaleX, nodes[i].y * scaleY);
-        ctx.lineTo(nodes[i+1].x * scaleX, nodes[i+1].y * scaleY);
-        ctx.stroke();
-      }
-
-      nodes.forEach((node) => {
-        let nx = node.x * scaleX;
-        let ny = node.y * scaleY;
-
-        ctx.fillStyle = '#0a0a0a';
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 1.5;
-        ctx.fillRect(nx - 14, ny - 12, 28, 24);
-        ctx.strokeRect(nx - 14, ny - 12, 28, 24);
-
-        ctx.fillStyle = (simTime >= 4.5 && simTime < 9.5) ? '#58a6ff' : 'rgba(255,255,255,0.3)';
-        ctx.fillRect(nx - 10, ny - 8, 20, 12);
-
-        if (simTime >= 4.5 && simTime < 9.5) {
-          ctx.strokeStyle = 'rgba(88, 166, 255, ' + (Math.sin(Date.now() * 0.015) * 0.4 + 0.6) + ')';
-          ctx.lineWidth = 2;
-          ctx.strokeRect(nx - 16, ny - 14, 32, 28);
-        }
-
-        ctx.fillStyle = '#888888';
-        ctx.font = '8px monospace';
-        ctx.fillText(node.label, nx - 14, ny + 22);
-      });
-
-      if (simTime < 4.5) {
-        let progress = (simTime / 4.5);
-        let currX = (nodes[0].x + (nodes[2].x - nodes[0].x) * progress) * scaleX;
-        let currY = (nodes[0].y + (nodes[2].y - nodes[0].y) * progress) * scaleY;
-
-        ctx.fillStyle = '#ffffff';
-        ctx.shadowBlur = 12;
-        ctx.shadowColor = '#ffffff';
-        ctx.beginPath();
-        ctx.arc(currX, currY, 5, 0, Math.PI * 2);
-        ctx.fill();
-      } 
-      else if (simTime >= 4.5 && simTime < 9.5) {
-        ctx.strokeStyle = 'rgba(88, 166, 255, 0.5)';
-        ctx.lineWidth = 1;
-        nodes.forEach(node => {
-          let nx = node.x * scaleX;
-          let ny = node.y * scaleY;
-          let radius = ((simTime - 4.5) * 15) % 22;
-          ctx.beginPath();
-          ctx.arc(nx, ny, radius, 0, Math.PI * 2);
-          ctx.stroke();
-        });
-      } 
-      else if (simTime >= 9.5 && simTime < 14) {
-        let boxWidth = 70 * scaleX;
-        let boxHeight = 45 * scaleY;
-        let boxX = (canvas.width / 2) - (boxWidth / 2);
-        let boxY = (canvas.height / 2) - (boxHeight / 2);
-
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 2;
-        ctx.fillRect(boxX, boxY, boxWidth, boxHeight);
-        ctx.strokeRect(boxX, boxY, boxWidth, boxHeight);
-
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '9px monospace';
-        ctx.fillText("NEW BLOCK #849", boxX + 6, boxY + 16);
-      } 
-      else if (simTime >= 14 && simTime <= 18) {
-        let startX = canvas.width / 2 - 80 * scaleX;
-        let yPos = canvas.height / 2;
-
-        for (let i = 0; i < 3; i++) {
-          let bx = startX + (i * 55 * scaleX);
-          ctx.fillStyle = i === 2 ? '#ffffff' : 'rgba(255, 255, 255, 0.25)';
-          ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 1.5;
-          ctx.fillRect(bx, yPos - 18, 45 * scaleX, 36 * scaleY);
-          ctx.strokeRect(bx, yPos - 18, 45 * scaleX, 36 * scaleY);
-        }
-      }
-      ctx.shadowBlur = 0;
-    }
-
-    function togglePlaySimulation() {
-      isPlaying = !isPlaying;
-      if (isPlaying) {
-        playIcon.textContent = '❚❚';
-        playText.textContent = 'PAUSE';
-        statusPlayText.textContent = 'PLAYING';
-        clearInterval(simInterval);
-        simInterval = setInterval(() => {
-          simTime += 0.1;
-          if (simTime >= maxSimTime) {
-            simTime = maxSimTime;
-            isPlaying = false;
-            playIcon.textContent = '▶';
-            playText.textContent = 'PLAY';
-            statusPlayText.textContent = 'COMPLETED';
-            clearInterval(simInterval);
-          }
-          updateSimUI();
-          drawSimulation();
-        }, 100);
-      } else {
-        playIcon.textContent = '▶';
-        playText.textContent = 'PLAY';
-        statusPlayText.textContent = 'PAUSED';
-        clearInterval(simInterval);
-      }
-    }
-
-    function resetSimulation() {
-      isPlaying = false;
-      clearInterval(simInterval);
-      simTime = 0;
-      playIcon.textContent = '▶';
-      playText.textContent = 'PLAY';
-      statusPlayText.textContent = 'PAUSED';
-      updateSimUI();
-      drawSimulation();
-    }
-
-    function updateSimUI() {
-      progressFill.style.width = ((simTime / maxSimTime) * 100) + '%';
-      let currentSec = Math.floor(simTime);
-      let secStr = currentSec < 10 ? '0' + currentSec : currentSec;
-      timeDisplay.textContent = `00:${secStr} / 00:18`;
-
-      let currentStage = stages[0];
-      stages.forEach(st => { if (simTime >= st.time) currentStage = st; });
-      stageTitle.textContent = currentStage.title;
-      stageDesc.textContent = currentStage.desc;
-    }
-
-    document.getElementById('progressTrack').addEventListener('click', (e) => {
-      const rect = e.currentTarget.getBoundingClientRect();
-      simTime = ((e.clientX - rect.left) / rect.width) * maxSimTime;
-      updateSimUI();
-      drawSimulation();
     });
 
     function initThreeJS() {
@@ -1323,12 +1000,6 @@
       );
       group.add(mesh);
 
-      const innerMesh = new THREE.Mesh(
-        new THREE.DodecahedronGeometry(1.4, 1),
-        new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.22 })
-      );
-      group.add(innerMesh);
-
       const particlesCount = 300;
       const posArray = new Float32Array(particlesCount * 3);
       const velocities = new Float32Array(particlesCount);
@@ -1349,13 +1020,11 @@
 
       let mouseX = 0, mouseY = 0;
       const halfX = window.innerWidth / 2, halfY = window.innerHeight / 2;
-
       document.addEventListener('mousemove', (e) => { mouseX = e.clientX - halfX; mouseY = e.clientY - halfY; });
 
       function animate() {
         requestAnimationFrame(animate);
         mesh.rotation.x += 0.002; mesh.rotation.y += 0.004;
-        innerMesh.rotation.x -= 0.004; innerMesh.rotation.y -= 0.007;
 
         const positions = particlesGeo.attributes.position.array;
         for(let i = 0; i < particlesCount; i++) {
@@ -1363,7 +1032,6 @@
           if (positions[i * 3 + 2] > 10) positions[i * 3 + 2] = -30;
         }
         particlesGeo.attributes.position.needsUpdate = true;
-        dustParticles.rotation.y += 0.0008;
 
         group.rotation.y += ((mouseX * 0.0008) - group.rotation.y) * 0.05;
         group.rotation.x += ((mouseY * 0.0008) - group.rotation.x) * 0.05;

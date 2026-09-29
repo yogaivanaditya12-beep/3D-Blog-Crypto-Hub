@@ -42,8 +42,8 @@
       pointer-events: none;
     }
 
-    /* --- HYPERSPACE WARP SPLASH & PORTAL --- */
-    #splash-screen, #portal-screen {
+    /* --- HYPERSPACE WARP SPLASH --- */
+    #splash-screen {
       position: fixed;
       top: 0;
       left: 0;
@@ -59,18 +59,7 @@
       cursor: pointer;
     }
 
-    #portal-screen {
-      z-index: 99998;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    #portal-screen.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    #splash-screen canvas, #portal-screen canvas {
+    #splash-screen canvas {
       position: absolute;
       top: 0;
       left: 0;
@@ -80,7 +69,7 @@
       pointer-events: none;
     }
 
-    .splash-content, .portal-content {
+    .splash-content {
       position: relative;
       z-index: 2;
       text-align: center;
@@ -92,19 +81,17 @@
       border-radius: 20px;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
       pointer-events: auto;
+      animation: pulseGlow 2s infinite ease-in-out;
     }
 
-    .splash-content { animation: pulseGlow 2s infinite ease-in-out; }
-
-    #splash-screen.warp-active .splash-content,
-    #portal-screen.warp-active .portal-content {
+    #splash-screen.warp-active .splash-content {
       transform: scale(2.2);
       opacity: 0;
       filter: blur(6px);
       transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.5s ease;
     }
 
-    .splash-title, .portal-title {
+    .splash-title {
       font-size: 1.8rem;
       font-weight: 900;
       letter-spacing: 8px;
@@ -114,7 +101,7 @@
       text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
     }
 
-    .splash-subtitle, .portal-subtitle {
+    .splash-subtitle {
       font-size: 0.75rem;
       letter-spacing: 3px;
       color: var(--text-secondary);
@@ -383,105 +370,128 @@
     .blog-card h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
     .blog-card p { color: var(--text-secondary); font-size: 0.90rem; line-height: 1.5; }
 
-    /* CRYPTO 101 PETUALANGAN KOSMIK INTERAKTIF STYLES */
-    .crypto-portal-box {
-      background: radial-gradient(circle at center, #111 0%, #000 100%);
+    /* CRYPTO 101 SPACE FLOATING MATTER STYLES */
+    .crypto-space-box {
+      background: #000000;
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 16px;
-      padding: 30px 20px;
-      text-align: center;
-      margin-top: 15px;
+      height: 420px;
       position: relative;
       overflow: hidden;
       z-index: 20;
       pointer-events: auto;
     }
 
-    .portal-trigger-btn {
+    #cryptoSpaceCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .space-overlay-ui {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px;
+      pointer-events: none;
+    }
+
+    .space-header {
+      text-align: center;
+      background: rgba(12, 12, 12, 0.75);
+      backdrop-filter: blur(10px);
+      padding: 10px 15px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      pointer-events: auto;
+    }
+
+    .space-header h3 { font-size: 0.95rem; letter-spacing: 2px; margin-bottom: 4px; color: #fff; }
+    .space-header p { font-size: 0.7rem; color: var(--text-secondary); }
+
+    /* Interactive Matter Floating Nodes HTML Overlays */
+    .matter-node {
+      position: absolute;
+      background: rgba(15, 15, 15, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(88, 166, 255, 0.4);
+      padding: 10px 16px;
+      border-radius: 12px;
+      color: #ffffff;
+      font-size: 0.75rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.3s ease;
+      pointer-events: auto;
+      box-shadow: 0 0 15px rgba(88, 166, 255, 0.2);
+      transform: translate(-50%, -50%);
+      white-space: nowrap;
+    }
+
+    .matter-node:hover {
+      background: #58a6ff;
+      color: #000000;
+      border-color: #ffffff;
+      box-shadow: 0 0 25px rgba(88, 166, 255, 0.8);
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    /* Reading Panel */
+    .matter-reading-panel {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(3, 3, 3, 0.92);
+      backdrop-filter: blur(15px);
+      z-index: 20;
+      padding: 30px;
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      pointer-events: auto;
+      text-align: left;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .matter-reading-panel.active { display: flex; }
+
+    .reading-content h4 { font-size: 1.1rem; color: #58a6ff; margin-bottom: 10px; letter-spacing: 1px; }
+    .reading-content p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
+
+    .back-matter-btn {
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.3);
       color: #ffffff;
-      padding: 12px 24px;
-      border-radius: 12px;
+      padding: 10px 20px;
+      border-radius: 10px;
       font-weight: bold;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       letter-spacing: 2px;
       text-transform: uppercase;
       cursor: pointer;
-      margin-top: 15px;
+      align-self: flex-start;
       transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
       pointer-events: auto;
     }
 
-    .portal-trigger-btn:hover {
+    .back-matter-btn:hover {
       background: #ffffff;
       color: #000000;
       border-color: #ffffff;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
-    }
-
-    /* Adventure Stage UI inside Crypto 101 */
-    .adventure-stage {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 24px;
-      margin-top: 15px;
-      text-align: left;
-      position: relative;
-      z-index: 20;
-      pointer-events: auto;
-    }
-
-    .stage-indicator {
-      font-size: 0.65rem;
-      letter-spacing: 2px;
-      color: #58a6ff;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-      font-weight: bold;
-    }
-
-    .adventure-stage h3 {
-      font-size: 1.1rem;
-      color: #ffffff;
-      margin-bottom: 10px;
-      letter-spacing: 1px;
-    }
-
-    .adventure-stage p {
-      font-size: 0.88rem;
-      color: var(--text-secondary);
-      line-height: 1.6;
-      margin-bottom: 20px;
-    }
-
-    .adventure-choices {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .choice-btn {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #ffffff;
-      padding: 12px 16px;
-      border-radius: 10px;
-      text-align: left;
-      font-size: 0.82rem;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      pointer-events: auto;
-    }
-
-    .choice-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: #ffffff;
-      transform: translateX(4px);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
     }
 
     /* BLOCKCHAIN SIMULATOR */
@@ -547,15 +557,6 @@
     </div>
   </div>
 
-  <!-- Layar Masuk Dimensi Khusus (Portal Crypto 101) -->
-  <div id="portal-screen">
-    <canvas id="portalCanvas"></canvas>
-    <div class="portal-content">
-      <div class="portal-title">MEMASUKI DIMENSI KRIPTO</div>
-      <div class="portal-subtitle">[ Sinkronisasi Jaringan Web3... ]</div>
-    </div>
-  </div>
-
   <audio id="bgAudio" loop preload="none">
     <source src="ambient.mp3" type="audio/mpeg">
   </audio>
@@ -598,74 +599,41 @@
     </nav>
 
     <main>
-      <!-- TAB 1: CRYPTO 101 (INTERACTIVE PETUALANGAN / PILIHAN JALUR) -->
+      <!-- TAB 1: CRYPTO 101 (SPACE FLOATING MATTER SYSTEM) -->
       <div id="tab-crypto101" class="tab-pane active">
         <div class="glow-card" style="padding: 24px;">
           <div class="glow-spot"></div>
-          <span class="blog-tag">Interactive Quest</span>
-          <h2>Crypto 101 // Portal Petualangan Kripto</h2>
+          <span class="blog-tag">Space Dimension Portal</span>
+          <h2>Crypto 101 // Dimensi Materi Kripto</h2>
+          <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 15px;">Navigasikan pandangan Anda ke dalam dimensi luar angkasa. Klik materi-materi yang melayang dari belakang ke depan untuk membuka pemahaman.</p>
           
-          <!-- Portal Trigger Box Awal -->
-          <div id="cryptoPortalCard" class="crypto-portal-box">
-            <span class="blog-tag" style="margin-bottom: 5px;">Mulai Misi Pengetahuan</span>
-            <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 10px;">Masuk ke dalam simulasi portal untuk memilih jalur belajar esensi dasar dunia Kripto secara interaktif.</p>
-            <button class="portal-trigger-btn" onclick="triggerCryptoPortal()">
-              <span>Masuk Portal Petualangan</span>
-            </button>
-          </div>
-
-          <!-- Konten Interaktif Petualangan Kripto -->
-          <div id="cryptoAdventureContainer" style="display: none;">
+          <div class="crypto-space-box" id="cryptoSpaceBox">
+            <canvas id="cryptoSpaceCanvas"></canvas>
             
-            <!-- Stage 1 -->
-            <div id="questStage1" class="adventure-stage">
-              <div class="stage-indicator">Misi 01 dari 03 // Titik Awal</div>
-              <h3>Pilih Langkah Pertama Anda di Dunia Kripto</h3>
-              <p>Anda baru saja terbangun di ekosistem Web3. Keputusan pertama menentukan arah penguasaan aset Anda. Apa fokus utama Anda saat ini?</p>
-              <div class="adventure-choices">
-                <button class="choice-btn" onclick="nextQuestStage(2, 'desentralisasi')">1. Memahami Buku Besar & Keamanan Mandiri (Blockchain & Wallet)</button>
-                <button class="choice-btn" onclick="nextQuestStage(2, 'aset')">2. Memburu Aset Potensial & Membaca Pergerakan Whale</button>
+            <div class="space-overlay-ui">
+              <div class="space-header">
+                <h3>PORTAL LUAR ANGKASA KRIPTO</h3>
+                <p>[ Klik Materi yang Melintas di Layar ]</p>
               </div>
             </div>
 
-            <!-- Stage 2 (Cabang A) -->
-            <div id="questStage2-desentralisasi" class="adventure-stage" style="display: none;">
-              <div class="stage-indicator">Misi 02 dari 03 // Jalur Keamanan & Desentralisasi</div>
-              <h3>Pintu Kunci Jaringan (Public vs Private Key)</h3>
-              <p>Anda memilih jalur kedaulatan mandiri. Di dunia kripto, kunci privat adalah nyawa Anda. Bagaimana cara Anda mengamankan aset dari risiko peretasan?</p>
-              <div class="adventure-choices">
-                <button class="choice-btn" onclick="nextQuestStage(3, 'sukses')">Simpan *seed phrase* secara offline di atas baja/kertas rahasia.</button>
-                <button class="choice-btn" onclick="nextQuestStage(3, 'gagal')">Simpan foto tangkapan layar (screenshot) *seed phrase* di galeri cloud.</button>
+            <!-- DOM Matter Nodes yang melayang bersama animasi kanvas -->
+            <div id="matterNodesContainer">
+              <div class="matter-node" data-id="0" onclick="openMatter(0)">01. Blockchain & Ledger</div>
+              <div class="matter-node" data-id="1" onclick="openMatter(1)">02. Public & Private Key</div>
+              <div class="matter-node" data-id="2" onclick="openMatter(2)">03. Decentralization</div>
+              <div class="matter-node" data-id="3" onclick="openMatter(3)">04. Whale & Liquidity</div>
+            </div>
+
+            <!-- Panel Membaca Materi -->
+            <div id="matterReadingPanel" class="matter-reading-panel">
+              <div class="reading-content">
+                <span class="blog-tag" id="readingTag">Materi 01</span>
+                <h4 id="readingTitle">Judul Materi</h4>
+                <p id="readingDesc">Deskripsi lengkap materi akan tampil di sini...</p>
               </div>
-            </div>
-
-            <!-- Stage 2 (Cabang B) -->
-            <div id="questStage2-aset" class="adventure-stage" style="display: none;">
-              <div class="stage-indicator">Misi 02 dari 03 // Jalur Pasar & Aset</div>
-              <h3>Membaca Gelombang Pasar & Whale</h3>
-              <p>Pasar kripto digerakkan oleh likuiditas besar (Whale). Anda melihat akumulasi dana besar secara tiba-tiba di dompet tak dikenal. Apa tindakan strategis Anda?</p>
-              <div class="adventure-choices">
-                <button class="choice-btn" onclick="nextQuestStage(3, 'sukses')">Analisis tren secara terukur dan atur manajemen risiko ketat.</button>
-                <button class="choice-btn" onclick="nextQuestStage(3, 'gagal')">Langsung FOMO masuk seluruh modal tanpa manajemen risiko.</button>
-              </div>
-            </div>
-
-            <!-- Stage 3 (Hasil Akhir Petualangan) -->
-            <div id="questStage3-sukses" class="adventure-stage" style="display: none; border-color: rgba(88,166,255,0.4);">
-              <div class="stage-indicator" style="color: #58a6ff;">Misi Selesai // Akses Terbuka</div>
-              <h3>Anda Berhasil Menguasai Esensi Fundamental!</h3>
-              <p>Keputusan cerdas! Anda memahami bahwa disiplin pengamanan aset dan manajemen risiko adalah kunci utama menuju kebebasan waktu di masa depan.</p>
-              <button class="portal-trigger-btn" onclick="resetCryptoPortal()">
-                <span>Ulangi Petualangan Portal</span>
-              </button>
-            </div>
-
-            <div id="questStage3-gagal" class="adventure-stage" style="display: none; border-color: rgba(255,100,100,0.4);">
-              <div class="stage-indicator" style="color: #ff6464;">Peringatan Sistem // Risiko Tinggi</div>
-              <h3>Simulasi Mengindikasikan Bahaya Likuidasi!</h3>
-              <p>Keputusan tersebut terlalu berisiko di dunia kripto tanpa perlindungan keamanan atau analisis fundamental yang matang. Mari coba jalankan ulang misi ini.</p>
-              <button class="portal-trigger-btn" onclick="resetCryptoPortal()">
-                <span>Coba Jalur Lain</span>
+              <button class="back-matter-btn" onclick="closeMatterPanel()">
+                <span>← Kembali ke Portal Angkasa</span>
               </button>
             </div>
 
@@ -734,7 +702,6 @@
   <script>
     const bgAudio = document.getElementById('bgAudio');
     const splashScreen = document.getElementById('splash-screen');
-    const portalScreen = document.getElementById('portal-screen');
     const mainContainer = document.getElementById('mainContainer');
     const audioToggleBtn = document.getElementById('audioToggle');
     const audioText = document.getElementById('audioText');
@@ -806,112 +773,131 @@
     }
     drawWarp();
 
-    // --- PORTAL CRYPTO 101 ANIMATION SETUP ---
-    const portalCanvas = document.getElementById('portalCanvas');
-    const portalCtx = portalCanvas.getContext('2d');
-    let portalW, portalH;
+    // --- CRYPTO 101 SPACE FLOATING MATTER SYSTEM ---
+    const spaceCanvas = document.getElementById('cryptoSpaceCanvas');
+    const spaceCtx = spaceCanvas.getContext('2d');
+    let spaceW, spaceH;
 
-    function resizePortal() {
-      portalW = portalCanvas.width = window.innerWidth;
-      portalH = portalCanvas.height = window.innerHeight;
+    function resizeSpace() {
+      const box = document.getElementById('cryptoSpaceBox');
+      spaceW = spaceCanvas.width = box.clientWidth;
+      spaceH = spaceCanvas.height = box.clientHeight;
     }
-    resizePortal();
-    window.addEventListener('resize', resizePortal);
+    resizeSpace();
+    window.addEventListener('resize', resizeSpace);
 
-    const portalStars = [];
-    for (let i = 0; i < 300; i++) {
-      portalStars.push({
-        x: (Math.random() - 0.5) * window.innerWidth * 2,
-        y: (Math.random() - 0.5) * window.innerHeight * 2,
-        z: Math.random() * window.innerWidth,
-        size: Math.random() * 1.5
+    const spaceStars = [];
+    for (let i = 0; i < 150; i++) {
+      spaceStars.push({
+        x: (Math.random() - 0.5) * 600,
+        y: (Math.random() - 0.5) * 600,
+        z: Math.random() * 400,
+        size: Math.random() * 1.2
       });
     }
 
-    let portalSpeed = 2;
-    let isPortalWarping = false;
-    let portalAnimFrame;
-
-    function drawPortalWarp() {
-      portalCtx.fillStyle = 'rgba(3, 3, 3, 0.3)';
-      portalCtx.fillRect(0, 0, portalW, portalH);
-
-      let cx = portalW / 2;
-      let cy = portalH / 2;
-
-      for (let i = 0; i < portalStars.length; i++) {
-        let s = portalStars[i];
-        s.z -= portalSpeed;
-        if (s.z <= 0) {
-          s.z = portalW;
-          s.x = (Math.random() - 0.5) * portalW * 2;
-          s.y = (Math.random() - 0.5) * portalH * 2;
-        }
-
-        let k = 250 / s.z;
-        let px = s.x * k + cx;
-        let py = s.y * k + cy;
-
-        if (px >= 0 && px <= portalW && py >= 0 && py <= portalH) {
-          let p2x = s.x * (250 / (s.z + portalSpeed * 2)) + cx;
-          let p2y = s.y * (250 / (s.z + portalSpeed * 2)) + cy;
-
-          portalCtx.strokeStyle = 'rgba(88, 166, 255, ' + (1 - s.z / portalW) + ')';
-          portalCtx.lineWidth = s.size * (isPortalWarping ? k * 1.8 : k);
-          portalCtx.beginPath();
-          portalCtx.moveTo(px, py);
-          portalCtx.lineTo(p2x, p2y);
-          portalCtx.stroke();
-        }
+    // Data Materi Kripto
+    const mattersData = [
+      {
+        tag: "Materi 01 // Fundamental",
+        title: "Blockchain & Buku Besar Terdistribusi",
+        desc: "Blockchain adalah teknologi rantai blok yang mencatat seluruh transaksi secara permanen dan transparan di ribuan komputer (node) tanpa memerlukan otoritas pusat pihak ketiga.",
+        x: 0.25, y: 0.3, z: 250, speed: 0.8
+      },
+      {
+        tag: "Materi 02 // Security",
+        title: "Public Key vs Private Key (Kunci Kriptografi)",
+        desc: "Public key berfungsi seperti nomor rekening bank yang aman dibagikan, sedangkan private key adalah tanda tangan digital rahasia mutlak yang memegang kendali penuh atas aset Anda.",
+        x: 0.75, y: 0.35, z: 180, speed: 1.1
+      },
+      {
+        tag: "Materi 03 // Ecosystem",
+        title: "Desentralisasi & Kedaulatan Mandiri",
+        desc: "Ekosistem tanpa perantara memberikan kebebasan penuh kepada individu untuk mengelola aset, data, dan partisipasi finansial langsung secara peer-to-peer.",
+        x: 0.35, y: 0.7, z: 300, speed: 0.6
+      },
+      {
+        tag: "Materi 04 // Market Strategy",
+        title: "Pergerakan Whale & Likuiditas Pasar",
+        desc: "Whale adalah entitas dengan kepemilikan modal raksasa yang mampu menggerakkan likuiditas pasar. Memahaminya menghindarkan Anda dari jebakan psikologi pasar (FOMO).",
+        x: 0.7, y: 0.75, z: 120, speed: 1.3
       }
-      portalAnimFrame = requestAnimationFrame(drawPortalWarp);
-    }
-    drawPortalWarp();
+    ];
 
-    function triggerCryptoPortal() {
-      portalScreen.classList.add('active');
-      isPortalWarping = true;
-      portalSpeed = 80;
+    let spacePaused = false;
 
-      setTimeout(() => {
-        portalScreen.classList.remove('active');
-        isPortalWarping = false;
-        portalSpeed = 2;
-        document.getElementById('cryptoPortalCard').style.display = 'none';
-        document.getElementById('cryptoAdventureContainer').style.display = 'block';
-        document.getElementById('questStage1').style.display = 'block';
-        document.getElementById('questStage2-desentralisasi').style.display = 'none';
-        document.getElementById('questStage2-aset').style.display = 'none';
-        document.getElementById('questStage3-sukses').style.display = 'none';
-        document.getElementById('questStage3-gagal').style.display = 'none';
-      }, 700);
-    }
+    function drawSpacePortal() {
+      if (!spacePaused) {
+        spaceCtx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+        spaceCtx.fillRect(0, 0, spaceW, spaceH);
 
-    function nextQuestStage(stageNum, pathType) {
-      document.getElementById('questStage1').style.display = 'none';
-      document.getElementById('questStage2-desentralisasi').style.display = 'none';
-      document.getElementById('questStage2-aset').style.display = 'none';
-      document.getElementById('questStage3-sukses').style.display = 'none';
-      document.getElementById('questStage3-gagal').style.display = 'none';
+        let cx = spaceW / 2;
+        let cy = spaceH / 2;
 
-      if (stageNum === 2) {
-        if (pathType === 'desentralisasi') {
-          document.getElementById('questStage2-desentralisasi').style.display = 'block';
-        } else {
-          document.getElementById('questStage2-aset').style.display = 'block';
+        // Render bintang luar angkasa berterbangan
+        for (let i = 0; i < spaceStars.length; i++) {
+          let s = spaceStars[i];
+          s.z -= 1.5;
+          if (s.z <= 0) {
+            s.z = 400;
+            s.x = (Math.random() - 0.5) * 600;
+            s.y = (Math.random() - 0.5) * 600;
+          }
+
+          let k = 200 / s.z;
+          let px = s.x * k + cx;
+          let py = s.y * k + cy;
+
+          if (px >= 0 && px <= spaceW && py >= 0 && py <= spaceH) {
+            spaceCtx.fillStyle = 'rgba(255, 255, 255, ' + (1 - s.z / 400) + ')';
+            spaceCtx.fillRect(px, py, s.size * k * 1.5, s.size * k * 1.5);
+          }
         }
-      } else if (stageNum === 3) {
-        if (pathType === 'sukses') {
-          document.getElementById('questStage3-sukses').style.display = 'block';
-        } else {
-          document.getElementById('questStage3-gagal').style.display = 'block';
-        }
+
+        // Render & gerakkan node materi dari belakang ke depan secara bergantian
+        const nodesDOM = document.querySelectorAll('.matter-node');
+        nodesDOM.forEach((nodeEl, idx) => {
+          let m = mattersData[idx];
+          m.z -= m.speed;
+          if (m.z <= 10) {
+            m.z = 350; // Kembali ke belakang setelah sampai di depan
+            m.x = Math.random() * 0.6 + 0.2;
+            m.y = Math.random() * 0.6 + 0.2;
+          }
+
+          let k = 200 / m.z;
+          let nx = (m.x - 0.5) * spaceW * k + cx;
+          let ny = (m.y - 0.5) * spaceH * k + cy;
+
+          // Atur posisi dan skala elemen HTML berdasarkan koordinat z ruang 3D
+          if (nx >= -50 && nx <= spaceW + 50 && ny >= -50 && ny <= spaceH + 50) {
+            nodeEl.style.display = 'block';
+            nodeEl.style.left = `${nx}px`;
+            nodeEl.style.top = `${ny}px`;
+            let scale = Math.max(0.6, Math.min(1.6, k * 1.2));
+            nodeEl.style.transform = `translate(-50%, -50%) scale(${scale})`;
+            nodeEl.style.opacity = Math.min(1, (350 - m.z) / 80);
+          } else {
+            nodeEl.style.display = 'none';
+          }
+        });
       }
+      requestAnimationFrame(drawSpacePortal);
+    }
+    drawSpacePortal();
+
+    function openMatter(index) {
+      spacePaused = true;
+      let data = mattersData[index];
+      document.getElementById('readingTag').textContent = data.tag;
+      document.getElementById('readingTitle').textContent = data.title;
+      document.getElementById('readingDesc').textContent = data.desc;
+      document.getElementById('matterReadingPanel').classList.add('active');
     }
 
-    function resetCryptoPortal() {
-      document.getElementById('cryptoAdventureContainer').style.display = 'none';
-      document.getElementById('cryptoPortalCard').style.display = 'block';
+    function closeMatterPanel() {
+      document.getElementById('matterReadingPanel').classList.remove('active');
+      spacePaused = false;
     }
 
     function initApp() {
@@ -931,6 +917,7 @@
         splashScreen.style.display = 'none';
         mainContainer.classList.add('active');
         resizeCanvas();
+        resizeSpace();
       }, 800);
     }
 
@@ -958,6 +945,8 @@
 
       if (tabId === 'blockchain') {
         setTimeout(resizeCanvas, 50);
+      } else if (tabId === 'crypto101') {
+        setTimeout(resizeSpace, 50);
       }
     }
 

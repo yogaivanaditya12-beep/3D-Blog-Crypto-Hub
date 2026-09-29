@@ -566,7 +566,7 @@
               <option value="bitcoin">BTC</option>
               <option value="ethereum">ETH</option>
               <option value="solana" selected>SOL</option>
-              <option value="binance-coin">BNB</option>
+              <option value="binancecoin">BNB</option>
               <option value="ripple">XRP</option>
             </select>
           </div>
@@ -684,7 +684,7 @@
 
     async function loadDefaultMarket() {
       try {
-        const res = await fetch('https://api.coincap.io/v2/assets?limit=15');
+        const res = await fetch('https://rest.coincap.io/v3/assets?limit=15');
         if (!res.ok) throw new Error("Network response was not ok");
         
         const json = await res.json();
@@ -741,7 +741,7 @@
       searchTimeout = setTimeout(async () => {
         document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color: var(--text-secondary);">Mencari koin di jaringan global...</span></div>`;
         try {
-          const res = await fetch(`https://api.coincap.io/v2/assets?search=${encodeURIComponent(query)}&limit=6`);
+          const res = await fetch(`https://rest.coincap.io/v3/assets?search=${encodeURIComponent(query)}&limit=6`);
           const json = await res.json();
           const filtered = json.data;
 
@@ -772,7 +772,7 @@
 
       try {
         if (!coinObj) {
-          const res = await fetch(`https://api.coincap.io/v2/assets/${selectedCoinId}`);
+          const res = await fetch(`https://rest.coincap.io/v3/assets/${selectedCoinId}`);
           const json = await res.json();
           if (json && json.data) {
             coinObj = json.data;

@@ -305,7 +305,7 @@
       box-shadow: 0 10px 25px rgba(255, 255, 255, 0.25);
     }
 
-    /* --- TAB NAV (3 MENU PAS DI DALAM GARIS) --- */
+    /* --- TAB NAV --- */
     .tab-nav {
       display: flex;
       justify-content: space-around;
@@ -373,7 +373,7 @@
     .blog-card h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
     .blog-card p { color: var(--text-secondary); font-size: 0.90rem; line-height: 1.5; }
 
-    /* CRYPTO 101 PORTAL INTERAKTIF STYLES */
+    /* CRYPTO 101 PORTAL KOSMIK STYLES */
     .crypto-portal-box {
       background: radial-gradient(circle at center, #111 0%, #000 100%);
       border: 1px solid rgba(255, 255, 255, 0.2);
@@ -496,7 +496,7 @@
 </head>
 <body>
 
-  <!-- Layar Masuk Dimensi Pertama (Splash) -->
+  <!-- Layar Masuk Dimensi Utama (Splash) -->
   <div id="splash-screen" onclick="initApp()">
     <canvas id="warpCanvas"></canvas>
     <div class="splash-content">
@@ -548,7 +548,7 @@
       </div>
     </header>
 
-    <!-- NAVIGATION TABS (3 MENU RAPI DI DALAM GARIS) -->
+    <!-- NAVIGATION TABS -->
     <nav class="tab-nav">
       <button class="tab-btn active" onclick="switchTab('crypto101', event)">Crypto 101</button>
       <button class="tab-btn" onclick="switchTab('blockchain', event)">Blockchain Sim</button>
@@ -556,53 +556,53 @@
     </nav>
 
     <main>
-      <!-- TAB 1: CRYPTO 101 (DENGAN TOMBOL MASUK DIMENSI) -->
+      <!-- TAB 1: CRYPTO 101 (DENGAN TOMBOL PORTAL DIMENSI KOSMIK & TANPA EMOJI) -->
       <div id="tab-crypto101" class="tab-pane active">
         <div class="glow-card" style="padding: 24px;">
           <div class="glow-spot"></div>
           <span class="blog-tag">Beginner Guide</span>
           <h2>Crypto 101 // Panduan Dasar Kripto</h2>
           
-          <!-- Portal Trigger Box -->
+          <!-- Portal Trigger Box (Materi awal tersembunyi dibalik portal) -->
           <div id="cryptoPortalCard" class="crypto-portal-box">
             <span class="blog-tag" style="margin-bottom: 5px;">Portal Eksplorasi</span>
             <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 10px;">Masuk ke dalam dimensi untuk membuka seluruh esensi dan pengetahuan dasar dunia Kripto.</p>
             <button class="portal-trigger-btn" onclick="triggerCryptoPortal()">
-              <span>⚡ MULAI PETUALANGAN KRIPTO</span>
+              <span>Mulai Petualangan Kripto</span>
             </button>
           </div>
 
-          <!-- Konten Definisi (Awalnya tersembunyi, muncul setelah masuk portal) -->
+          <!-- Konten Definisi Materi Kripto (Muncul setelah portal diakses) -->
           <div id="cryptoContentContainer" style="display: none; margin-top: 15px;">
             <div class="crypto-grid">
               <div class="crypto-item">
-                <h3>⚡ Cryptocurrency</h3>
+                <h3>Cryptocurrency</h3>
                 <p>Mata uang digital yang dienkripsi secara kriptografis, berjalan tanpa otoritas terpusat seperti bank sentral.</p>
               </div>
               <div class="crypto-item">
-                <h3>🔗 Blockchain</h3>
+                <h3>Blockchain</h3>
                 <p>Buku besar digital terdesentralisasi tempat mencatat semua transaksi secara permanen dan transparan.</p>
               </div>
               <div class="crypto-item">
-                <h3>📝 Smart Contract</h3>
+                <h3>Smart Contract</h3>
                 <p>Program komputer yang berjalan otomatis di blockchain saat kondisi yang ditentukan terpenuhi.</p>
               </div>
               <div class="crypto-item">
-                <h3>🌐 DeFi</h3>
+                <h3>DeFi Hub</h3>
                 <p>Sistem keuangan tanpa perantara, memungkinkan pinjam-meminjam dan trading langsung secara P2P.</p>
               </div>
               <div class="crypto-item">
-                <h3>🔐 Keys</h3>
-                <p>Public Key berfungsi sebagai nomor rekening, sedangkan Private Key adalah password rahasiamu.</p>
+                <h3>Private & Public Keys</h3>
+                <p>Public Key berfungsi sebagai alamat publik, sedangkan Private Key adalah kata sandi mutlak.</p>
               </div>
               <div class="crypto-item">
-                <h3>🐳 Whale</h3>
+                <h3>Whale Movement</h3>
                 <p>Sebutan untuk individu atau entitas yang memiliki aset kripto dalam jumlah besar yang bisa mempengaruhi pasar.</p>
               </div>
             </div>
             <div style="text-align: center; margin-top: 20px;">
               <button class="portal-trigger-btn" onclick="resetCryptoPortal()" style="font-size: 0.7rem; padding: 8px 16px;">
-                <span>⟲ Tutup & Kembali ke Portal</span>
+                <span>Tutup & Kembali ke Portal</span>
               </button>
             </div>
           </div>
@@ -874,7 +874,7 @@
       card.addEventListener('mousemove', e => {
         const rect = card.getBoundingClientRect();
         card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
-        card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+        card.style.setProperty('--mouse-y`, `${e.clientY - rect.top}px`);
       });
     });
 

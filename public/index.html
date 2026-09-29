@@ -42,7 +42,7 @@
       pointer-events: none;
     }
 
-    /* Splash Screen dengan durasi transisi mulus */
+    /* Splash Screen dengan transisi 1 detik yang mulus */
     #splash-screen {
       position: fixed;
       top: 0;
@@ -57,13 +57,11 @@
       align-items: center;
       cursor: pointer;
       opacity: 1;
-      visibility: visible;
-      transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;
+      transition: opacity 1s ease-in-out;
     }
 
     #splash-screen.fade-out {
       opacity: 0;
-      visibility: hidden;
       pointer-events: none;
     }
 
@@ -75,11 +73,6 @@
       border-radius: 20px;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
       animation: pulseGlow 2s infinite ease-in-out;
-      transition: transform 0.8s ease-in-out;
-    }
-
-    #splash-screen.fade-out .splash-content {
-      transform: scale(1.05);
     }
 
     .splash-title {
@@ -550,15 +543,19 @@
       if (appInitialized) return;
       appInitialized = true;
 
-      // Picu animasi fade-out CSS
-      splashScreen.classList.add('fade-out');
-      mainContainer.classList.add('active');
+      // Inisialisasi Three.js di awal agar langsung siap di balik layar
+      initThreeJS();
 
-      // Tunggu sampai animasi CSS benar-benar selesai (0.8 detik), baru jalankan Three.js dan hapus elemen
-      splashScreen.addEventListener('transitionend', function() {
-        splashScreen.style.display = 'none';
-        initThreeJS();
-      }, { once: true });
+      // Beri jeda kecil (50ms) agar browser sempat memproses state awal opacity: 1
+      setTimeout(() => {
+        splashScreen.classList.add('fade-out');
+        mainContainer.classList.add('active');
+      }, 50);
+
+      // Hapus elemen splash screen secara total setelah animasi CSS selesai (pas 1 detik)
+      setTimeout(() => {
+        splashScreen.remove();
+      }, 1050);
     }
 
     audioToggleBtn.addEventListener('click', (e) => {

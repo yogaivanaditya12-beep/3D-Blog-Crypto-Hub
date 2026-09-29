@@ -57,6 +57,7 @@
       align-items: center;
       transition: opacity 0.5s ease;
       cursor: pointer;
+      pointer-events: auto; /* Memastikan area awal bisa diklik */
     }
 
     #splash-screen canvas {
@@ -493,7 +494,7 @@
       box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
     }
 
-    /* BLOCKCHAIN SIMULATOR (Diperbarui agar pas di Mobile) */
+    /* BLOCKCHAIN SIMULATOR */
     .video-sim-wrapper {
       background: #000000;
       border-radius: 16px;
@@ -590,7 +591,7 @@
       </div>
     </header>
 
-    <!-- NAVIGATION TABS (SAMA RATA) -->
+    <!-- NAVIGATION TABS -->
     <nav class="tab-nav">
       <button class="tab-btn" onclick="switchTab('crypto101', event)">Crypto 101</button>
       <button class="tab-btn active" onclick="switchTab('blockchain', event)">Blockchain Sim</button>
@@ -928,13 +929,19 @@
       if (appInitialized) return;
       appInitialized = true;
 
-      bgAudio.play().catch(() => {});
+      // Optimasi respons klik awal agar langsung memicu audio dan transisi tanpa lag
+      try {
+        bgAudio.play().catch(() => {});
+      } catch(e) {}
 
       isWarping = true;
       warpSpeed = 70; 
       splashScreen.classList.add('warp-active');
 
-      initThreeJS();
+      // Inisialisasi Three.js dan ukuran canvas secara instan setelah klik
+      setTimeout(() => {
+        initThreeJS();
+      }, 50);
 
       setTimeout(() => {
         cancelAnimationFrame(warpAnimFrame);
@@ -978,11 +985,11 @@
       card.addEventListener('mousemove', e => {
         const rect = card.getBoundingClientRect();
         card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
-        card.style.setProperty('--mouse-y`, `${e.clientY - rect.top}px`);
+        card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
       });
     });
 
-    // --- BLOCKCHAIN SIMULATOR (Diperbarui koordinat posisinya agar proporsional di mobile) ---
+    // --- BLOCKCHAIN SIMULATOR ---
     const canvas = document.getElementById('simCanvas');
     const ctx = canvas.getContext('2d');
 
@@ -1019,7 +1026,6 @@
     const stageTitle = document.getElementById('stageTitle');
     const stageDesc = document.getElementById('stageDesc');
 
-    // Koordinat node disesuaikan agar tersebar merata dan tidak bertumpuk di layar kecil
     const nodes = [
       { x: 50, y: 110, label: "PC-01" },
       { x: 125, y: 70, label: "SRV-A" },
@@ -1068,7 +1074,7 @@
         ctx.textAlign = 'center';
         ctx.fillText(node.label, nx, ny + 24);
       });
-      ctx.textAlign = 'left'; // Reset alignment
+      ctx.textAlign = 'left';
 
       if (simTime < 4.5) {
         let progress = (simTime / 4.5);

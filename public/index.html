@@ -42,7 +42,6 @@
       pointer-events: none;
     }
 
-    /* Splash Screen dengan transisi 1 detik yang mulus */
     #splash-screen {
       position: fixed;
       top: 0;
@@ -388,12 +387,12 @@
     .live-dot { width: 6px; height: 6px; background-color: #58a6ff; border-radius: 50%; box-shadow: 0 0 6px #58a6ff; animation: pulse 1.5s infinite; }
 
     .video-controls-bar { padding: 12px 16px; background: rgba(18, 18, 18, 0.95); display: flex; flex-direction: column; gap: 8px; }
-    .progress-track { width: 100%; height: 4px; background: rgba(255, 255, 255, 0.1); border-radius: 2px; cursor: pointer; position: relative; }
-    .progress-fill { width: 0%; height: 100%; background: #ffffff; transition: width 0.1s linear; }
+    .progress-track { width: 100%; height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 3px; cursor: pointer; position: relative; }
+    .progress-fill { width: 0%; height: 100%; background: #ffffff; transition: width 0.1s linear; border-radius: 3px; }
     .controls-row { display: flex; justify-content: space-between; align-items: center; }
     .control-group { display: flex; align-items: center; gap: 12px; }
-    .vid-btn { background: transparent; border: none; color: #ffffff; cursor: pointer; font-size: 0.85rem; font-family: 'Courier New', Courier, monospace; font-weight: bold; display: flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 6px; }
-    .vid-btn:hover { background: rgba(255, 255, 255, 0.1); }
+    .vid-btn { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff; cursor: pointer; font-size: 0.8rem; font-family: 'Courier New', Courier, monospace; font-weight: bold; display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 8px; transition: all 0.2s ease; z-index: 30; }
+    .vid-btn:hover { background: #ffffff; color: #000000; border-color: #ffffff; }
     .time-display { font-size: 0.72rem; color: var(--text-secondary); }
 
     .news-item { margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
@@ -453,9 +452,9 @@
     </header>
 
     <nav class="tab-nav">
-      <button class="tab-btn active" onclick="switchTab('blockchain')">Blockchain Sim</button>
-      <button class="tab-btn" onclick="switchTab('news')">News Wire</button>
-      <button class="tab-btn" onclick="switchTab('logs')">Logs</button>
+      <button class="tab-btn active" onclick="switchTab('blockchain', event)">Blockchain Sim</button>
+      <button class="tab-btn" onclick="switchTab('news', event)">News Wire</button>
+      <button class="tab-btn" onclick="switchTab('logs', event)">Logs</button>
     </nav>
 
     <main>
@@ -484,10 +483,10 @@
               </div>
               <div class="controls-row">
                 <div class="control-group">
-                  <button class="vid-btn" id="playPauseBtn" onclick="togglePlaySimulation()">
+                  <button class="vid-btn" id="playPauseBtn" type="button" onclick="togglePlaySimulation()">
                     <span id="playIcon">▶</span> <span id="playText">PLAY</span>
                   </button>
-                  <button class="vid-btn" onclick="resetSimulation()">⟲ RESTART</button>
+                  <button class="vid-btn" type="button" onclick="resetSimulation()">⟲ RESTART</button>
                 </div>
                 <div class="time-display" id="timeDisplay">00:00 / 00:12</div>
               </div>
@@ -543,16 +542,15 @@
       if (appInitialized) return;
       appInitialized = true;
 
-      // Inisialisasi Three.js di awal agar langsung siap di balik layar
       initThreeJS();
 
-      // Beri jeda kecil (50ms) agar browser sempat memproses state awal opacity: 1
       setTimeout(() => {
         splashScreen.classList.add('fade-out');
         mainContainer.classList.add('active');
+        // Pastikan ukuran canvas blockchain disesuaikan saat container utama muncul
+        resizeCanvas();
       }, 50);
 
-      // Hapus elemen splash screen secara total setelah animasi CSS selesai (pas 1 detik)
       setTimeout(() => {
         splashScreen.remove();
       }, 1050);
@@ -572,11 +570,18 @@
       }
     });
 
-    function switchTab(tabId) {
+    function switchTab(tabId, event) {
       document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       document.getElementById('tab-' + tabId).classList.add('active');
-      event.currentTarget.classList.add('active');
+      if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
+      }
+
+      // Jika tab blockchain dibuka, paksa update ukuran canvas agar langsung muncul
+      if (tabId === 'blockchain') {
+        setTimeout(resizeCanvas, 50);
+      }
     }
 
     document.querySelectorAll('.glow-card').forEach(card => {
@@ -592,12 +597,12 @@
     const ctx = canvas.getContext('2d');
 
     function resizeCanvas() {
+      if (!canvas.parentElement) return;
       canvas.width = canvas.parentElement.clientWidth;
       canvas.height = canvas.parentElement.clientHeight;
       drawSimulation();
     }
     window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
 
     const stages = [
       { time: 0, title: "[01] Inisiasi Transaksi (Broadcasting)", desc: "User mengirim permintaan data atau aset. Transaksi dibungkus dan disiarkan ke seluruh node di dalam jaringan peer-to-peer." },
@@ -629,6 +634,7 @@
     ];
 
     function drawSimulation() {
+      if (!ctx || canvas.width === 0 || canvas.height === 0) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       let scaleX = canvas.width / 420;
@@ -716,14 +722,13 @@
       ctx.shadowBlur = 0;
     }
 
-    drawSimulation();
-
     function togglePlaySimulation() {
       isPlaying = !isPlaying;
       if (isPlaying) {
         playIcon.textContent = '❚❚';
         playText.textContent = 'PAUSE';
         statusPlayText.textContent = 'PLAYING';
+        clearInterval(simInterval);
         simInterval = setInterval(() => {
           simTime += 0.1;
           if (simTime >= maxSimTime) {

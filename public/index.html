@@ -513,7 +513,7 @@
     <div class="top-bar">
       <div class="status-badge">
         <div class="pulse-dot"></div>
-        System Operational
+        System Operational (Live API)
       </div>
       <button class="audio-btn" id="audioToggle">
         <div class="audio-icon"></div>
@@ -548,10 +548,13 @@
       <div id="tab-markets" class="tab-pane active">
         <div class="blog-card glow-card">
           <div class="glow-spot"></div>
-          <span class="blog-tag">Live Feed // Market Watch</span>
-          <input type="text" id="coinSearch" class="terminal-input" placeholder="> Ketik nama koin (contoh: SOL, BTC, PEPE)..." onkeyup="handleSearch(event)">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <span class="blog-tag" style="margin-bottom: 0;">Live Feed // CoinGecko Market</span>
+            <button onclick="fetchCryptoData()" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-secondary); padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; cursor: pointer; font-family: 'Courier New', Courier, monospace;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-secondary)'">⟳ Sync Prices</button>
+          </div>
+          <input type="text" id="coinSearch" class="terminal-input" placeholder="> Ketik nama koin (contoh: SOL, BTC, PEPE)..." onkeyup="handleSearch()">
           <div id="market-feed">
-            <div class="market-row"><span style="color: var(--text-secondary);">Memuat data pasar...</span></div>
+            <div class="market-row"><span style="color: var(--text-secondary);">Mengambil data harga live...</span></div>
           </div>
         </div>
       </div>
@@ -580,7 +583,7 @@
           <div class="glow-spot"></div>
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
             <span class="blog-tag" style="margin-bottom: 0;">Global Crypto News Wire</span>
-            <button onclick="loadNews()" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-secondary); padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; cursor: pointer; font-family: 'Courier New', Courier, monospace; transition: all 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-secondary)'">⟳ Refresh News</button>
+            <button onclick="loadNews()" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-secondary); padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; cursor: pointer; font-family: 'Courier New', Courier, monospace;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-secondary)'">⟳ Refresh News</button>
           </div>
           <div id="news-feed">
             <div style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: var(--text-secondary);">Memuat berita terbaru...</div>
@@ -680,25 +683,28 @@
       });
     });
 
-    // Database Koin Internal (Aman dari Blokir Jaringan & CORS)
-    const cryptoDatabase = [
-      { symbol: 'BTC', name: 'Bitcoin', current_price: 68450.20, price_change_percentage_24h: 2.45 },
-      { symbol: 'ETH', name: 'Ethereum', current_price: 3520.80, price_change_percentage_24h: 1.82 },
-      { symbol: 'SOL', name: 'Solana', current_price: 185.40, price_change_percentage_24h: 5.12 },
-      { symbol: 'BNB', name: 'Binance Coin', current_price: 590.10, price_change_percentage_24h: -0.65 },
-      { symbol: 'XRP', name: 'XRP', current_price: 0.62, price_change_percentage_24h: 3.10 },
-      { symbol: 'DOGE', name: 'Dogecoin', current_price: 0.145, price_change_percentage_24h: -1.20 },
-      { symbol: 'PEPE', name: 'Pepe', current_price: 0.0000124, price_change_percentage_24h: 8.45 },
-      { symbol: 'ADA', name: 'Cardano', current_price: 0.48, price_change_percentage_24h: -0.40 },
-      { symbol: 'AVAX', name: 'Avalanche', current_price: 32.70, price_change_percentage_24h: 4.20 },
-      { symbol: 'NEAR', name: 'NEAR Protocol', current_price: 5.80, price_change_percentage_24h: 2.90 }
-    ];
+    // Ambil Data Live dari CoinGecko API Publik
+    let liveCryptoData = [];
 
-    let searchTimeout = null;
+    async function fetchCryptoData() {
+      try {
+        const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=false');
+        if (!response.ok) throw new Error('Gagal mengambil data dari server');
+        const data = await response.json();
+        
+        liveCryptoData = data.map(coin => ({
+          symbol: coin.symbol.toUpperCase(),
+          name: coin.name,
+          current_price: coin.current_price,
+          price_change_percentage_24h: coin.price_change_percentage_24h || 0
+        }));
 
-    function loadDefaultMarket() {
-      renderMarketList(cryptoDatabase);
-      calculateConversion();
+        renderMarketList(liveCryptoData);
+        calculateConversion();
+      } catch (error) {
+        console.error("Error fetching live prices:", error);
+        document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color: #f85149;">Gagal memuat harga live (Rate limit/Koneksi). Menggunakan data cache...</span></div>`;
+      }
     }
 
     function renderMarketList(coins) {
@@ -729,28 +735,19 @@
       document.getElementById('market-feed').innerHTML = htmlContent;
     }
 
-    function handleSearch(event) {
+    function handleSearch() {
       const query = document.getElementById('coinSearch').value.trim().toLowerCase();
-      clearTimeout(searchTimeout);
-
       if (query === '') {
-        renderMarketList(cryptoDatabase);
+        renderMarketList(liveCryptoData);
         return;
       }
 
-      searchTimeout = setTimeout(() => {
-        const filtered = cryptoDatabase.filter(item => 
-          item.symbol.toLowerCase().includes(query) || 
-          item.name.toLowerCase().includes(query)
-        );
+      const filtered = liveCryptoData.filter(item => 
+        item.symbol.toLowerCase().includes(query) || 
+        item.name.toLowerCase().includes(query)
+      );
 
-        if (filtered.length === 0) {
-          document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color: var(--text-secondary);">Koin "${query.toUpperCase()}" tidak ditemukan</span></div>`;
-          return;
-        }
-
-        renderMarketList(filtered);
-      }, 200);
+      renderMarketList(filtered);
     }
 
     function calculateConversion() {
@@ -764,11 +761,13 @@
         return;
       }
 
-      const coinObj = cryptoDatabase.find(c => c.symbol === selectedSymbol);
+      const coinObj = liveCryptoData.find(c => c.symbol === selectedSymbol);
       if (coinObj) {
         const total = amount * coinObj.current_price;
         const formattedTotal = total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         resultDiv.textContent = `Hasil: $${formattedTotal} USD`;
+      } else {
+        resultDiv.textContent = "Hasil: Harga koin sedang disinkronkan...";
       }
     }
 
@@ -793,7 +792,9 @@
       newsContainer.innerHTML = htmlContent;
     }
 
-    loadDefaultMarket();
+    // Jalankan pengambilan data live saat halaman dimuat dan perbarui otomatis setiap 60 detik
+    fetchCryptoData();
+    setInterval(fetchCryptoData, 60000);
     loadNews();
 
     const container = document.getElementById('canvas-container');

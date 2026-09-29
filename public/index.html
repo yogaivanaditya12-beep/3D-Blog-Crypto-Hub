@@ -42,8 +42,8 @@
       pointer-events: none;
     }
 
-    /* --- HYPERSPACE WARP SPLASH SCREEN --- */
-    #splash-screen {
+    /* --- HYPERSPACE WARP SPLASH SCREEN & PORTAL EFFECT --- */
+    #splash-screen, #portal-screen {
       position: fixed;
       top: 0;
       left: 0;
@@ -55,11 +55,21 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      cursor: pointer;
       transition: opacity 0.5s ease;
     }
 
-    #splash-screen canvas {
+    #portal-screen {
+      z-index: 99998;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #portal-screen.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #splash-screen canvas, #portal-screen canvas {
       position: absolute;
       top: 0;
       left: 0;
@@ -68,7 +78,7 @@
       z-index: 1;
     }
 
-    .splash-content {
+    .splash-content, .portal-content {
       position: relative;
       z-index: 2;
       text-align: center;
@@ -79,17 +89,20 @@
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 20px;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
-      animation: pulseGlow 2s infinite ease-in-out;
-      transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.5s ease;
+      cursor: pointer;
     }
 
-    #splash-screen.warp-active .splash-content {
+    .splash-content { animation: pulseGlow 2s infinite ease-in-out; }
+
+    #splash-screen.warp-active .splash-content,
+    #portal-screen.warp-active .portal-content {
       transform: scale(2.2);
       opacity: 0;
       filter: blur(6px);
+      transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.5s ease;
     }
 
-    .splash-title {
+    .splash-title, .portal-title {
       font-size: 1.8rem;
       font-weight: 900;
       letter-spacing: 8px;
@@ -99,7 +112,7 @@
       text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
     }
 
-    .splash-subtitle {
+    .splash-subtitle, .portal-subtitle {
       font-size: 0.75rem;
       letter-spacing: 3px;
       color: var(--text-secondary);
@@ -112,7 +125,7 @@
       100% { transform: scale(0.98); border-color: rgba(255, 255, 255, 0.15); }
     }
 
-    /* --- MAIN CONTAINER ENTRY ANIMATION --- */
+    /* --- MAIN CONTAINER ENTRY --- */
     .container {
       position: relative;
       z-index: 10;
@@ -223,9 +236,7 @@
       transition: opacity 0.3s ease;
     }
 
-    .glow-card:hover .glow-spot {
-      opacity: 1;
-    }
+    .glow-card:hover .glow-spot { opacity: 1; }
 
     .profile-card {
       padding: 45px 30px;
@@ -245,11 +256,7 @@
       box-shadow: 0 0 25px rgba(255, 255, 255, 0.25);
     }
 
-    .avatar-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
 
     h1 {
       font-size: 2.3rem;
@@ -298,9 +305,12 @@
       box-shadow: 0 10px 25px rgba(255, 255, 255, 0.25);
     }
 
+    /* --- TAB NAV (3 MENU PAS DI DALAM GARIS) --- */
     .tab-nav {
       display: flex;
-      gap: 8px;
+      justify-content: space-around;
+      align-items: center;
+      gap: 6px;
       margin-bottom: 25px;
       background: rgba(255, 255, 255, 0.03);
       padding: 6px;
@@ -315,15 +325,16 @@
       background: transparent;
       border: none;
       color: var(--text-secondary);
-      padding: 10px 12px;
-      font-size: 0.7rem;
+      padding: 10px 8px;
+      font-size: 0.68rem;
       font-weight: 800;
-      letter-spacing: 1.2px;
+      letter-spacing: 1px;
       text-transform: uppercase;
       border-radius: 12px;
       cursor: pointer;
       transition: all 0.3s ease;
       white-space: nowrap;
+      text-align: center;
     }
 
     .tab-btn:hover { color: #ffffff; }
@@ -362,7 +373,44 @@
     .blog-card h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
     .blog-card p { color: var(--text-secondary); font-size: 0.90rem; line-height: 1.5; }
 
-    /* STYLES KHUSUS CRYPTO 101 FITUR BARU */
+    /* CRYPTO 101 PORTAL INTERAKTIF STYLES */
+    .crypto-portal-box {
+      background: radial-gradient(circle at center, #111 0%, #000 100%);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 30px 20px;
+      text-align: center;
+      margin-top: 15px;
+      position: relative;
+      overflow: hidden;
+      z-index: 20;
+    }
+
+    .portal-trigger-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .portal-trigger-btn:hover {
+      background: #ffffff;
+      color: #000000;
+      border-color: #ffffff;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+    }
+
     .crypto-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -387,9 +435,6 @@
       font-size: 0.95rem;
       color: #ffffff;
       margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
 
     .crypto-item p {
@@ -417,11 +462,7 @@
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .sim-canvas-box canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
+    .sim-canvas-box canvas { width: 100%; height: 100%; display: block; }
 
     .video-screen {
       background: radial-gradient(circle at center, #111 0%, #000 100%);
@@ -433,7 +474,7 @@
     }
 
     .video-stage-title { font-size: 0.95rem; font-weight: bold; color: #ffffff; margin-bottom: 4px; }
-    .video-stage-desc { font-size: 0.75rem; color: var(--text-secondary); max-width: 100%; line-height: 1.4; }
+    .video-stage-desc { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.4; }
     .watermark { position: absolute; top: 15px; left: 15px; font-size: 0.65rem; color: rgba(255, 255, 255, 0.3); letter-spacing: 2px; z-index: 5; }
     .live-indicator { position: absolute; top: 15px; right: 15px; display: flex; align-items: center; gap: 5px; font-size: 0.65rem; color: #58a6ff; z-index: 5; }
     .live-dot { width: 6px; height: 6px; background-color: #58a6ff; border-radius: 50%; box-shadow: 0 0 6px #58a6ff; animation: pulse 1.5s infinite; }
@@ -447,26 +488,29 @@
     .vid-btn:hover { background: #ffffff; color: #000000; border-color: #ffffff; }
     .time-display { font-size: 0.72rem; color: var(--text-secondary); }
 
-    .news-item { margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
-    .news-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-    .news-title { color: var(--text-primary); text-decoration: none; display: block; font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; font-weight: bold; margin-bottom: 4px; }
-    .news-title:hover { color: #58a6ff; text-decoration: underline; }
-    .news-meta { font-family: 'Courier New', Courier, monospace; font-size: 0.7rem; color: var(--text-secondary); }
-
     @media (max-width: 600px) {
-      .social-grid, .crypto-grid { grid-template-columns: 1fr; }
+      .crypto-grid { grid-template-columns: 1fr; }
       h1 { font-size: 1.8rem; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Layar Splash Dimensi Luar Angkasa (Warp Tunnel) -->
+  <!-- Layar Masuk Dimensi Pertama (Splash) -->
   <div id="splash-screen" onclick="initApp()">
     <canvas id="warpCanvas"></canvas>
     <div class="splash-content">
       <div class="splash-title">BLACKOUT</div>
       <div class="splash-subtitle">[ Click To Enter Hyperspace ]</div>
+    </div>
+  </div>
+
+  <!-- Layar Masuk Dimensi Khusus (Portal Crypto 101) -->
+  <div id="portal-screen">
+    <canvas id="portalCanvas"></canvas>
+    <div class="portal-content">
+      <div class="portal-title">MEMASUKI DIMENSI KRIPTO</div>
+      <div class="portal-subtitle">[ Sinkronisasi Jaringan Web3... ]</div>
     </div>
   </div>
 
@@ -504,17 +548,69 @@
       </div>
     </header>
 
-    <!-- NAVIGATION TABS (DENGAN CRYPTO 101 BARU) -->
+    <!-- NAVIGATION TABS (3 MENU RAPI DI DALAM GARIS) -->
     <nav class="tab-nav">
-      <button class="tab-btn active" onclick="switchTab('blockchain', event)">Blockchain Sim</button>
-      <button class="tab-btn" onclick="switchTab('crypto101', event)">Crypto 101</button>
-      <button class="tab-btn" onclick="switchTab('news', event)">News Wire</button>
+      <button class="tab-btn active" onclick="switchTab('crypto101', event)">Crypto 101</button>
+      <button class="tab-btn" onclick="switchTab('blockchain', event)">Blockchain Sim</button>
       <button class="tab-btn" onclick="switchTab('logs', event)">Logs</button>
     </nav>
 
     <main>
-      <!-- TAB 1: BLOCKCHAIN SIM -->
-      <div id="tab-blockchain" class="tab-pane active">
+      <!-- TAB 1: CRYPTO 101 (DENGAN TOMBOL MASUK DIMENSI) -->
+      <div id="tab-crypto101" class="tab-pane active">
+        <div class="glow-card" style="padding: 24px;">
+          <div class="glow-spot"></div>
+          <span class="blog-tag">Beginner Guide</span>
+          <h2>Crypto 101 // Panduan Dasar Kripto</h2>
+          
+          <!-- Portal Trigger Box -->
+          <div id="cryptoPortalCard" class="crypto-portal-box">
+            <span class="blog-tag" style="margin-bottom: 5px;">Portal Eksplorasi</span>
+            <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 10px;">Masuk ke dalam dimensi untuk membuka seluruh esensi dan pengetahuan dasar dunia Kripto.</p>
+            <button class="portal-trigger-btn" onclick="triggerCryptoPortal()">
+              <span>⚡ MULAI PETUALANGAN KRIPTO</span>
+            </button>
+          </div>
+
+          <!-- Konten Definisi (Awalnya tersembunyi, muncul setelah masuk portal) -->
+          <div id="cryptoContentContainer" style="display: none; margin-top: 15px;">
+            <div class="crypto-grid">
+              <div class="crypto-item">
+                <h3>⚡ Cryptocurrency</h3>
+                <p>Mata uang digital yang dienkripsi secara kriptografis, berjalan tanpa otoritas terpusat seperti bank sentral.</p>
+              </div>
+              <div class="crypto-item">
+                <h3>🔗 Blockchain</h3>
+                <p>Buku besar digital terdesentralisasi tempat mencatat semua transaksi secara permanen dan transparan.</p>
+              </div>
+              <div class="crypto-item">
+                <h3>📝 Smart Contract</h3>
+                <p>Program komputer yang berjalan otomatis di blockchain saat kondisi yang ditentukan terpenuhi.</p>
+              </div>
+              <div class="crypto-item">
+                <h3>🌐 DeFi</h3>
+                <p>Sistem keuangan tanpa perantara, memungkinkan pinjam-meminjam dan trading langsung secara P2P.</p>
+              </div>
+              <div class="crypto-item">
+                <h3>🔐 Keys</h3>
+                <p>Public Key berfungsi sebagai nomor rekening, sedangkan Private Key adalah password rahasiamu.</p>
+              </div>
+              <div class="crypto-item">
+                <h3>🐳 Whale</h3>
+                <p>Sebutan untuk individu atau entitas yang memiliki aset kripto dalam jumlah besar yang bisa mempengaruhi pasar.</p>
+              </div>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+              <button class="portal-trigger-btn" onclick="resetCryptoPortal()" style="font-size: 0.7rem; padding: 8px 16px;">
+                <span>⟲ Tutup & Kembali ke Portal</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: BLOCKCHAIN SIM -->
+      <div id="tab-blockchain" class="tab-pane">
         <div class="glow-card" style="padding: 24px;">
           <div class="glow-spot"></div>
           <span class="blog-tag">Visual Walkthrough</span>
@@ -551,60 +647,7 @@
         </div>
       </div>
 
-      <!-- TAB 2: CRYPTO 101 (FITUR BARU) -->
-      <div id="tab-crypto101" class="tab-pane">
-        <div class="glow-card" style="padding: 24px;">
-          <div class="glow-spot"></div>
-          <span class="blog-tag">Beginner Guide</span>
-          <h2>Crypto 101 // Panduan Dasar Kripto</h2>
-          <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 15px;">
-            Istilah "101" bermakna pengenalan dasar. Memahami konsep utama sebelum masuk ke dunia Web3 & Trading.
-          </p>
-
-          <div class="crypto-grid">
-            <div class="crypto-item">
-              <h3>⚡ Cryptocurrency</h3>
-              <p>Mata uang digital yang dienkripsi secara kriptografis, berjalan tanpa otoritas terpusat seperti bank sentral.</p>
-            </div>
-            <div class="crypto-item">
-              <h3>🔗 Blockchain</h3>
-              <p>Buku besar digital terdesentralisasi tempat mencatat semua transaksi secara permanen dan transparan.</p>
-            </div>
-            <div class="crypto-item">
-              <h3>📝 Smart Contract</h3>
-              <p>Program komputer yang berjalan otomatis di blockchain saat kondisi yang ditentukan terpenuhi.</p>
-            </div>
-            <div class="crypto-item">
-              <h3>🌐 DeFi (Decentralized Finance)</h3>
-              <p>Sistem keuangan tanpa perantara (tanpa bank), memungkinkan pinjam-meminjam dan trading langsung P2P.</p>
-            </div>
-            <div class="crypto-item">
-              <h3>🔐 Public & Private Key</h3>
-              <p>Public Key berfungsi seperti nomor rekening (alamat transfer), sedangkan Private Key adalah password rahasiamu.</p>
-            </div>
-            <div class="crypto-item">
-              <h3>🐳 Whale (Paus)</h3>
-              <p>Sebutan untuk individu atau entitas yang memiliki aset kripto dalam jumlah sangat besar hingga bisa mempengaruhi pasar.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- TAB 3: NEWS WIRE -->
-      <div id="tab-news" class="tab-pane">
-        <div class="blog-card glow-card">
-          <div class="glow-spot"></div>
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <span class="blog-tag" style="margin-bottom: 0;">Global Crypto News Wire</span>
-            <button onclick="loadNews()" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-secondary); padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; cursor: pointer; font-family: 'Courier New', Courier, monospace;">⟳ Refresh News</button>
-          </div>
-          <div id="news-feed">
-            <div style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: var(--text-secondary);">Memuat berita terbaru...</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- TAB 4: LOGS -->
+      <!-- TAB 3: LOGS -->
       <div id="tab-logs" class="tab-pane">
         <div class="blog-card glow-card">
           <div class="glow-spot"></div>
@@ -627,6 +670,7 @@
   <script>
     const bgAudio = document.getElementById('bgAudio');
     const splashScreen = document.getElementById('splash-screen');
+    const portalScreen = document.getElementById('portal-screen');
     const mainContainer = document.getElementById('mainContainer');
     const audioToggleBtn = document.getElementById('audioToggle');
     const audioText = document.getElementById('audioText');
@@ -698,6 +742,87 @@
     }
     drawWarp();
 
+    // --- PORTAL CRYPTO 101 ANIMATION SETUP ---
+    const portalCanvas = document.getElementById('portalCanvas');
+    const portalCtx = portalCanvas.getContext('2d');
+    let portalW, portalH;
+
+    function resizePortal() {
+      portalW = portalCanvas.width = window.innerWidth;
+      portalH = portalCanvas.height = window.innerHeight;
+    }
+    resizePortal();
+    window.addEventListener('resize', resizePortal);
+
+    const portalStars = [];
+    for (let i = 0; i < 300; i++) {
+      portalStars.push({
+        x: (Math.random() - 0.5) * window.innerWidth * 2,
+        y: (Math.random() - 0.5) * window.innerHeight * 2,
+        z: Math.random() * window.innerWidth,
+        size: Math.random() * 1.5
+      });
+    }
+
+    let portalSpeed = 2;
+    let isPortalWarping = false;
+    let portalAnimFrame;
+
+    function drawPortalWarp() {
+      portalCtx.fillStyle = 'rgba(3, 3, 3, 0.3)';
+      portalCtx.fillRect(0, 0, portalW, portalH);
+
+      let cx = portalW / 2;
+      let cy = portalH / 2;
+
+      for (let i = 0; i < portalStars.length; i++) {
+        let s = portalStars[i];
+        s.z -= portalSpeed;
+        if (s.z <= 0) {
+          s.z = portalW;
+          s.x = (Math.random() - 0.5) * portalW * 2;
+          s.y = (Math.random() - 0.5) * portalH * 2;
+        }
+
+        let k = 250 / s.z;
+        let px = s.x * k + cx;
+        let py = s.y * k + cy;
+
+        if (px >= 0 && px <= portalW && py >= 0 && py <= portalH) {
+          let p2x = s.x * (250 / (s.z + portalSpeed * 2)) + cx;
+          let p2y = s.y * (250 / (s.z + portalSpeed * 2)) + cy;
+
+          portalCtx.strokeStyle = 'rgba(88, 166, 255, ' + (1 - s.z / portalW) + ')';
+          portalCtx.lineWidth = s.size * (isPortalWarping ? k * 1.8 : k);
+          portalCtx.beginPath();
+          portalCtx.moveTo(px, py);
+          portalCtx.lineTo(p2x, p2y);
+          portalCtx.stroke();
+        }
+      }
+      portalAnimFrame = requestAnimationFrame(drawPortalWarp);
+    }
+    drawPortalWarp();
+
+    function triggerCryptoPortal() {
+      portalScreen.classList.add('active');
+      isPortalWarping = true;
+      portalSpeed = 80;
+
+      setTimeout(() => {
+        portalScreen.classList.remove('active');
+        isPortalWarping = false;
+        portalSpeed = 2;
+        document.getElementById('cryptoPortalCard').style.display = 'none';
+        document.getElementById('cryptoContentContainer').style.display = 'block';
+      }, 700);
+    }
+
+    function resetCryptoPortal() {
+      document.getElementById('cryptoContentContainer').style.display = 'none';
+      document.getElementById('cryptoPortalCard').style.display = 'block';
+    }
+
     function initApp() {
       if (appInitialized) return;
       appInitialized = true;
@@ -753,11 +878,10 @@
       });
     });
 
-    // --- BLOCKCHAIN SIMULATOR (18 SECONDS) ---
+    // --- BLOCKCHAIN SIMULATOR ---
     const canvas = document.getElementById('simCanvas');
     const ctx = canvas.getContext('2d');
 
-    // Mencegah memory-leak & freeze dengan Debounce Resize
     let resizeTimeout;
     function resizeCanvas() {
       clearTimeout(resizeTimeout);
@@ -815,7 +939,7 @@
         ctx.stroke();
       }
 
-      nodes.forEach((node, index) => {
+      nodes.forEach((node) => {
         let nx = node.x * scaleX;
         let ny = node.y * scaleY;
 
@@ -850,9 +974,6 @@
         ctx.beginPath();
         ctx.arc(currX, currY, 5, 0, Math.PI * 2);
         ctx.fill();
-
-        ctx.font = '8px monospace';
-        ctx.fillText("DATA_TX", currX + 8, currY - 5);
       } 
       else if (simTime >= 4.5 && simTime < 9.5) {
         ctx.strokeStyle = 'rgba(88, 166, 255, 0.5)';
@@ -865,10 +986,6 @@
           ctx.arc(nx, ny, radius, 0, Math.PI * 2);
           ctx.stroke();
         });
-
-        ctx.fillStyle = '#58a6ff';
-        ctx.font = '9px monospace';
-        ctx.fillText(">> HASH VERIFICATION ACTIVE <<", canvas.width / 2 - 75, 20);
       } 
       else if (simTime >= 9.5 && simTime < 14) {
         let boxWidth = 70 * scaleX;
@@ -885,9 +1002,6 @@
         ctx.fillStyle = '#ffffff';
         ctx.font = '9px monospace';
         ctx.fillText("NEW BLOCK #849", boxX + 6, boxY + 16);
-        ctx.fillStyle = '#888888';
-        ctx.font = '8px monospace';
-        ctx.fillText("Hash: 0x9fA2...3b", boxX + 6, boxY + 32);
       } 
       else if (simTime >= 14 && simTime <= 18) {
         let startX = canvas.width / 2 - 80 * scaleX;
@@ -900,19 +1014,6 @@
           ctx.lineWidth = 1.5;
           ctx.fillRect(bx, yPos - 18, 45 * scaleX, 36 * scaleY);
           ctx.strokeRect(bx, yPos - 18, 45 * scaleX, 36 * scaleY);
-
-          ctx.fillStyle = i === 2 ? '#000000' : '#ffffff';
-          ctx.font = '8px monospace';
-          ctx.fillText(`BLK-${i+1}`, bx + 6, yPos + 4);
-
-          if (i < 2) {
-            ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(bx + 45 * scaleX, yPos);
-            ctx.lineTo(bx + 55 * scaleX, yPos);
-            ctx.stroke();
-          }
         }
       }
       ctx.shadowBlur = 0;
@@ -976,22 +1077,6 @@
       drawSimulation();
     });
 
-    function loadNews() {
-      const mockNews = [
-        { title: "Bitcoin Menembus Level Kunci Di Tengah Lonjakan Aktivitas Whale", source: "CoinDesk", time: "15m ago" },
-        { title: "Analisis Tren Pasar Altcoin dan Proyeksi Likuiditas Kuartal Ini", source: "CryptoSlate", time: "42m ago" },
-        { title: "Pembaruan Protokol Keamanan Jaringan Desentralisasi Global", source: "Decrypt", time: "2h ago" },
-        { title: "Strategi Akumulasi Aset Produktif untuk Kebebasan Finansial Jangka Panjang", source: "Honalabs Research", time: "4h ago" }
-      ];
-      document.getElementById('news-feed').innerHTML = mockNews.map(item => `
-        <div class="news-item">
-          <a href="#" onclick="event.preventDefault();" class="news-title">> ${item.title}</a>
-          <div class="news-meta">Sumber: ${item.source} | ${item.time}</div>
-        </div>
-      `).join('');
-    }
-    loadNews();
-
     function initThreeJS() {
       const container = document.getElementById('canvas-container');
       const scene = new THREE.Scene();
@@ -1040,9 +1125,6 @@
       const halfX = window.innerWidth / 2, halfY = window.innerHeight / 2;
 
       document.addEventListener('mousemove', (e) => { mouseX = e.clientX - halfX; mouseY = e.clientY - halfY; });
-      document.addEventListener('touchmove', (e) => {
-        if(e.touches.length > 0) { mouseX = e.touches[0].clientX - halfX; mouseY = e.touches[0].clientY - halfY; }
-      });
 
       function animate() {
         requestAnimationFrame(animate);

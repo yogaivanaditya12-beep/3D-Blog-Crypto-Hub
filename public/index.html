@@ -124,9 +124,9 @@
       display: none;
       flex-direction: column;
       justify-content: space-between;
-      padding: 30px;
+      padding: 25px;
       opacity: 0;
-      transition: opacity 0.8s ease;
+      transition: opacity 0.5s ease;
     }
 
     #space-universe-overlay.active {
@@ -150,70 +150,78 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(10, 10, 18, 0.8);
+      background: rgba(10, 10, 18, 0.85);
       backdrop-filter: blur(15px);
       border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 15px 25px;
+      padding: 14px 20px;
       border-radius: 16px;
     }
 
     .universe-title {
-      font-size: 1rem;
+      font-size: 0.9rem;
       font-weight: 800;
-      letter-spacing: 3px;
+      letter-spacing: 2px;
       text-transform: uppercase;
       color: #fff;
     }
 
     .universe-subtitle {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       color: var(--text-secondary);
-      letter-spacing: 1.5px;
+      letter-spacing: 1px;
       text-transform: uppercase;
     }
 
     .universe-grid-container {
       position: relative;
       z-index: 5;
-      max-width: 900px;
+      max-width: 850px;
       width: 100%;
       margin: auto;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      max-height: 70vh;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      max-height: 65vh;
       overflow-y: auto;
-      padding: 10px;
+      padding: 5px;
     }
 
     .universe-node-card {
-      background: rgba(15, 15, 25, 0.75);
+      background: rgba(15, 15, 25, 0.8);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 16px;
-      padding: 20px;
+      padding: 18px;
       cursor: pointer;
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
       overflow: hidden;
+      animation: floatCard 4s ease-in-out infinite;
+    }
+
+    .universe-node-card:nth-child(even) { animation-delay: 2s; }
+
+    @keyframes floatCard {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-4px); }
     }
 
     .universe-node-card:hover {
-      background: rgba(30, 30, 50, 0.85);
-      border-color: rgba(255, 255, 255, 0.5);
-      transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(0, 150, 255, 0.2);
+      background: rgba(30, 30, 50, 0.95);
+      border-color: rgba(255, 255, 255, 0.6);
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 15px 35px rgba(0, 150, 255, 0.25);
     }
 
     .universe-node-card h3 {
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       color: #fff;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       letter-spacing: 1px;
     }
 
     .universe-node-card p {
-      font-size: 0.78rem;
+      font-size: 0.73rem;
       color: var(--text-secondary);
       line-height: 1.4;
     }
@@ -222,11 +230,11 @@
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.3);
       color: #fff;
-      padding: 10px 20px;
+      padding: 8px 16px;
       border-radius: 10px;
       font-weight: bold;
-      font-size: 0.75rem;
-      letter-spacing: 2px;
+      font-size: 0.7rem;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
       cursor: pointer;
       transition: all 0.3s ease;
@@ -417,7 +425,7 @@
       box-shadow: 0 10px 25px rgba(255, 255, 255, 0.25);
     }
 
-    /* --- TAB NAV (3 MENU RAPI DI DALAM GARIS) --- */
+    /* --- TAB NAV --- */
     .tab-nav {
       display: flex;
       justify-content: space-around;
@@ -485,7 +493,6 @@
     .blog-card h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
     .blog-card p { color: var(--text-secondary); font-size: 0.90rem; line-height: 1.5; }
 
-    /* CRYPTO 101 SPACE LAUNCHER BOX */
     .crypto-portal-box {
       background: radial-gradient(circle at center, #0f0f1a 0%, #030308 100%);
       border: 1px solid rgba(255, 255, 255, 0.2);
@@ -569,7 +576,7 @@
     .time-display { font-size: 0.72rem; color: var(--text-secondary); }
 
     @media (max-width: 768px) {
-      .universe-grid-container { grid-template-columns: repeat(1, 1fr); max-height: 65vh; }
+      .universe-grid-container { grid-template-columns: repeat(1, 1fr); max-height: 60vh; }
       h1 { font-size: 1.8rem; }
     }
   </style>
@@ -585,46 +592,46 @@
     </div>
   </div>
 
-  <!-- DEEP SPACE UNIVERSE SELECTION OVERLAY -->
+  <!-- DEEP SPACE UNIVERSE SELECTION OVERLAY DENGAN KANVAS WARP TERPISAH -->
   <div id="space-universe-overlay">
-    <canvas id="universeCanvas"></canvas>
+    <canvas id="universeWarpCanvas"></canvas>
     <div class="universe-header">
       <div>
         <div class="universe-title">DEEP SPACE KNOWLEDGE HUB</div>
-        <div class="universe-subtitle">Pilih Sektor Stasiun Kripto di Luar Angkasa</div>
+        <div class="universe-subtitle">Navigasi Galaksi Kripto</div>
       </div>
       <button class="universe-exit-btn" onclick="closeSpaceUniverse()">KEMBALI</button>
     </div>
 
     <div class="universe-grid-container">
       <div class="universe-node-card" onclick="alert('Stasiun Terpilih: Cryptocurrency — Mata uang digital terdesentralisasi tanpa otoritas pusat.')">
-        <h3>⚡ Cryptocurrency</h3>
+        <h3>Cryptocurrency</h3>
         <p>Mata uang digital yang diamankan kriptografi untuk transaksi global instan.</p>
       </div>
       <div class="universe-node-card" onclick="alert('Stasiun Terpilih: Blockchain — Buku besar digital terdistribusi dan permanen.')">
-        <h3>🔗 Blockchain</h3>
+        <h3>Blockchain</h3>
         <p>Infrastruktur rantai blok pencatat seluruh data transaksi secara transparan.</p>
       </div>
-      <div class="universe-node-card" onclick="alert('Stasiun Terpilih: DeFi (Decentralized Finance) — Layanan finansial peer-to-peer.')">
-        <h3>🌐 DeFi Hub</h3>
+      <div class="universe-node-card" onclick="alert('Stasiun Terpilih: DeFi Hub — Layanan finansial peer-to-peer.')">
+        <h3>DeFi Hub</h3>
         <p>Sistem keuangan tanpa perantara bank atau otoritas tunggal.</p>
       </div>
-      <div class="universe-node-card" onclick="alert('Stasiun Terpilih: Whale Tracker — Analisis aktivitas holder paus pasar.')">
-        <h3>🐋 Whale Movement</h3>
+      <div class="universe-node-card" onclick="alert('Stasiun Terpilih: Whale Movement — Analisis aktivitas holder paus pasar.')">
+        <h3>Whale Movement</h3>
         <p>Pemantauan pergerakan aset skala besar yang mampu menggerakkan market.</p>
       </div>
       <div class="universe-node-card" onclick="alert('Stasiun Terpilih: Smart Contract — Kontrak otomatis berbasis kode.')">
-        <h3>📝 Smart Contract</h3>
+        <h3>Smart Contract</h3>
         <p>Program otomatis di atas jaringan untuk mengeksekusi perjanjian secara aman.</p>
       </div>
       <div class="universe-node-card" onclick="alert('Stasiun Terpilih: Private & Public Keys — Keamanan kepemilikan aset.')">
-        <h3>🔐 Private & Public Keys</h3>
+        <h3>Private & Public Keys</h3>
         <p>Sistem kunci enkripsi mutlak untuk otorisasi kepemilikan dompet kripto.</p>
       </div>
     </div>
 
     <div class="universe-footer" style="justify-content: center;">
-      <div class="universe-subtitle">[ Status: Melayang di Galaksi Kripto — Klik Salah Satu Stasiun ]</div>
+      <div class="universe-subtitle">[ Status: Melayang di Galaksi Kripto — Pilih Sektor ]</div>
     </div>
   </div>
 
@@ -662,7 +669,7 @@
       </div>
     </header>
 
-    <!-- NAVIGATION TABS (3 MENU RAPI DI DALAM GARIS) -->
+    <!-- NAVIGATION TABS -->
     <nav class="tab-nav">
       <button class="tab-btn active" onclick="switchTab('crypto101', event)">Crypto 101</button>
       <button class="tab-btn" onclick="switchTab('blockchain', event)">Blockchain Sim</button>
@@ -670,7 +677,7 @@
     </nav>
 
     <main>
-      <!-- TAB 1: CRYPTO 101 (MASUK KE LUAR ANGKASA) -->
+      <!-- TAB 1: CRYPTO 101 -->
       <div id="tab-crypto101" class="tab-pane active">
         <div class="glow-card" style="padding: 24px;">
           <div class="glow-spot"></div>
@@ -820,57 +827,89 @@
     }
     drawWarp();
 
-    // --- DEEP SPACE UNIVERSE BACKGROUND ANIMATION ---
-    const universeCanvas = document.getElementById('universeCanvas');
-    const universeCtx = universeCanvas.getContext('2d');
-    let uW, uH;
+    // --- UNIVERSE HYPERSPACE WARP ANIMATION (SAAT MASUK KE STASIUN KRIPTO) ---
+    const universeWarpCanvas = document.getElementById('universeWarpCanvas');
+    const uWarpCtx = universeWarpCanvas.getContext('2d');
+    let uwW, uwH;
 
-    function resizeUniverse() {
-      uW = universeCanvas.width = window.innerWidth;
-      uH = universeCanvas.height = window.innerHeight;
+    function resizeUniverseWarp() {
+      uwW = universeWarpCanvas.width = window.innerWidth;
+      uwH = universeWarpCanvas.height = window.innerHeight;
     }
-    resizeUniverse();
-    window.addEventListener('resize', resizeUniverse);
+    resizeUniverseWarp();
+    window.addEventListener('resize', resizeUniverseWarp);
 
-    const universeStars = [];
+    const uStars = [];
     for (let i = 0; i < 350; i++) {
-      universeStars.push({
-        x: Math.random() * uW,
-        y: Math.random() * uH,
-        size: Math.random() * 2,
-        alpha: Math.random(),
-        speed: Math.random() * 0.03 + 0.005
+      uStars.push({
+        x: (Math.random() - 0.5) * uwW * 2,
+        y: (Math.random() - 0.5) * uwH * 2,
+        z: Math.random() * uwW,
+        size: Math.random() * 1.5
       });
     }
 
-    function drawUniverse() {
-      universeCtx.fillStyle = 'rgba(2, 2, 5, 0.4)';
-      universeCtx.fillRect(0, 0, uW, uH);
+    let uWarpSpeed = 1.5;
+    let isEnteringHyperspace = false;
+    let universeAnimFrame;
 
-      for (let i = 0; i < universeStars.length; i++) {
-        let us = universeStars[i];
-        us.alpha += us.speed;
-        let currentAlpha = Math.abs(Math.sin(us.alpha));
+    function drawUniverseWarp() {
+      uWarpCtx.fillStyle = 'rgba(2, 2, 5, 0.35)';
+      uWarpCtx.fillRect(0, 0, uwW, uwH);
 
-        universeCtx.fillStyle = `rgba(255, 255, 255, ${currentAlpha})`;
-        universeCtx.fillRect(us.x, us.y, us.size, us.size);
+      let cx = uwW / 2;
+      let cy = uwH / 2;
+
+      for (let i = 0; i < uStars.length; i++) {
+        let s = uStars[i];
+        s.z -= uWarpSpeed;
+        if (s.z <= 0) {
+          s.z = uwW;
+          s.x = (Math.random() - 0.5) * uwW * 2;
+          s.y = (Math.random() - 0.5) * uwH * 2;
+        }
+
+        let k = 250 / s.z;
+        let px = s.x * k + cx;
+        let py = s.y * k + cy;
+
+        if (px >= 0 && px <= uwW && py >= 0 && py <= uwH) {
+          let p2x = s.x * (250 / (s.z + uWarpSpeed * 2)) + cx;
+          let p2y = s.y * (250 / (s.z + uWarpSpeed * 2)) + cy;
+
+          uWarpCtx.strokeStyle = 'rgba(255, 255, 255, ' + (1 - s.z / uwW) + ')';
+          uWarpCtx.lineWidth = s.size * (isEnteringHyperspace ? k * 2 : k);
+          uWarpCtx.beginPath();
+          uWarpCtx.moveTo(px, py);
+          uWarpCtx.lineTo(p2x, p2y);
+          uWarpCtx.stroke();
+        }
       }
-      requestAnimationFrame(drawUniverse);
+      universeAnimFrame = requestAnimationFrame(drawUniverseWarp);
     }
-    drawUniverse();
+    drawUniverseWarp();
 
     function openSpaceUniverse() {
       spaceUniverseOverlay.style.display = 'flex';
+      isEnteringHyperspace = true;
+      uWarpSpeed = 60; // Kecepatan kilat melesat menembus luar angkasa
+
       setTimeout(() => {
         spaceUniverseOverlay.classList.add('active');
       }, 10);
+
+      // Setelah 1.2 detik melesat, perlambat kecepatan jadi mode melayang santai di galaksi
+      setTimeout(() => {
+        isEnteringHyperspace = false;
+        uWarpSpeed = 1.2;
+      }, 1200);
     }
 
     function closeSpaceUniverse() {
       spaceUniverseOverlay.classList.remove('active');
       setTimeout(() => {
         spaceUniverseOverlay.style.display = 'none';
-      }, 800);
+      }, 500);
     }
 
     function initApp() {

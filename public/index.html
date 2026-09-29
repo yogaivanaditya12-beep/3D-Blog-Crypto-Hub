@@ -299,7 +299,7 @@
       box-shadow: 0 10px 25px rgba(255, 255, 255, 0.25);
     }
 
-    /* --- TAB NAV (SAMA RATA KIRI, TENGAH, KANAN) --- */
+    /* --- TAB NAV (SAMA RATA) --- */
     .tab-nav {
       display: flex;
       justify-content: space-between;
@@ -418,7 +418,6 @@
     .space-header h3 { font-size: 0.95rem; letter-spacing: 2px; margin-bottom: 4px; color: #fff; }
     .space-header p { font-size: 0.7rem; color: var(--text-secondary); }
 
-    /* Interactive Matter Floating Nodes HTML Overlays */
     .matter-node {
       position: absolute;
       background: rgba(15, 15, 15, 0.9);
@@ -448,7 +447,6 @@
       transform: translate(-50%, -50%) scale(1.1);
     }
 
-    /* Reading Panel */
     .matter-reading-panel {
       position: absolute;
       top: 0;
@@ -495,7 +493,7 @@
       box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
     }
 
-    /* BLOCKCHAIN SIMULATOR */
+    /* BLOCKCHAIN SIMULATOR (Diperbarui agar pas di Mobile) */
     .video-sim-wrapper {
       background: #000000;
       border-radius: 16px;
@@ -509,7 +507,7 @@
 
     .sim-canvas-box {
       width: 100%;
-      height: 200px;
+      height: 220px;
       background: #000000;
       position: relative;
       overflow: hidden;
@@ -527,20 +525,20 @@
       position: relative;
     }
 
-    .video-stage-title { font-size: 0.95rem; font-weight: bold; color: #ffffff; margin-bottom: 4px; }
-    .video-stage-desc { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.4; }
-    .watermark { position: absolute; top: 15px; left: 15px; font-size: 0.65rem; color: rgba(255, 255, 255, 0.3); letter-spacing: 2px; z-index: 5; }
-    .live-indicator { position: absolute; top: 15px; right: 15px; display: flex; align-items: center; gap: 5px; font-size: 0.65rem; color: #58a6ff; z-index: 5; }
-    .live-dot { width: 6px; height: 6px; background-color: #58a6ff; border-radius: 50%; box-shadow: 0 0 6px #58a6ff; animation: pulse 1.5s infinite; }
+    .video-stage-title { font-size: 0.9rem; font-weight: bold; color: #ffffff; margin-bottom: 4px; }
+    .video-stage-desc { font-size: 0.72rem; color: var(--text-secondary); line-height: 1.4; }
+    .watermark { position: absolute; top: 12px; left: 15px; font-size: 0.6rem; color: rgba(255, 255, 255, 0.35); letter-spacing: 2px; z-index: 5; }
+    .live-indicator { position: absolute; top: 12px; right: 15px; display: flex; align-items: center; gap: 5px; font-size: 0.6rem; color: #58a6ff; z-index: 5; background: rgba(0,0,0,0.6); padding: 2px 8px; border-radius: 10px; border: 1px solid rgba(88, 166, 255, 0.3); }
+    .live-dot { width: 5px; height: 5px; background-color: #58a6ff; border-radius: 50%; box-shadow: 0 0 6px #58a6ff; animation: pulse 1.5s infinite; }
 
     .video-controls-bar { padding: 12px 16px; background: rgba(18, 18, 18, 0.95); display: flex; flex-direction: column; gap: 8px; }
     .progress-track { width: 100%; height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 3px; cursor: pointer; position: relative; pointer-events: auto; }
     .progress-fill { width: 0%; height: 100%; background: #ffffff; transition: width 0.1s linear; border-radius: 3px; }
     .controls-row { display: flex; justify-content: space-between; align-items: center; }
-    .control-group { display: flex; align-items: center; gap: 12px; }
-    .vid-btn { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff; cursor: pointer; font-size: 0.8rem; font-family: 'Courier New', Courier, monospace; font-weight: bold; display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 8px; transition: all 0.2s ease; z-index: 30; pointer-events: auto; }
+    .control-group { display: flex; align-items: center; gap: 10px; }
+    .vid-btn { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff; cursor: pointer; font-size: 0.75rem; font-family: 'Courier New', Courier, monospace; font-weight: bold; display: flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 8px; transition: all 0.2s ease; z-index: 30; pointer-events: auto; }
     .vid-btn:hover { background: #ffffff; color: #000000; border-color: #ffffff; }
-    .time-display { font-size: 0.72rem; color: var(--text-secondary); }
+    .time-display { font-size: 0.7rem; color: var(--text-secondary); }
 
     @media (max-width: 600px) {
       h1 { font-size: 1.8rem; }
@@ -594,14 +592,14 @@
 
     <!-- NAVIGATION TABS (SAMA RATA) -->
     <nav class="tab-nav">
-      <button class="tab-btn active" onclick="switchTab('crypto101', event)">Crypto 101</button>
-      <button class="tab-btn" onclick="switchTab('blockchain', event)">Blockchain Sim</button>
+      <button class="tab-btn" onclick="switchTab('crypto101', event)">Crypto 101</button>
+      <button class="tab-btn active" onclick="switchTab('blockchain', event)">Blockchain Sim</button>
       <button class="tab-btn" onclick="switchTab('logs', event)">Logs</button>
     </nav>
 
     <main>
-      <!-- TAB 1: CRYPTO 101 (SPACE FLOATING MATTER SYSTEM) -->
-      <div id="tab-crypto101" class="tab-pane active">
+      <!-- TAB 1: CRYPTO 101 -->
+      <div id="tab-crypto101" class="tab-pane">
         <div class="glow-card" style="padding: 24px;">
           <div class="glow-spot"></div>
           <span class="blog-tag">Portal</span>
@@ -618,7 +616,6 @@
               </div>
             </div>
 
-            <!-- DOM Matter Nodes (8 Materi Berurutan Terbang Satu Per Satu) -->
             <div id="matterNodesContainer">
               <div class="matter-node" data-id="0" onclick="openMatter(0)">01. Blockchain & Ledger</div>
               <div class="matter-node" data-id="1" onclick="openMatter(1)">02. Public & Private Key</div>
@@ -630,7 +627,6 @@
               <div class="matter-node" data-id="7" onclick="openMatter(7)">08. Risk & Portfolio Mgmt</div>
             </div>
 
-            <!-- Panel Membaca Materi -->
             <div id="matterReadingPanel" class="matter-reading-panel">
               <div class="reading-content">
                 <span class="blog-tag" id="readingTag">Materi 01</span>
@@ -647,7 +643,7 @@
       </div>
 
       <!-- TAB 2: BLOCKCHAIN SIM -->
-      <div id="tab-blockchain" class="tab-pane">
+      <div id="tab-blockchain" class="tab-pane active">
         <div class="glow-card" style="padding: 24px;">
           <div class="glow-spot"></div>
           <span class="blog-tag">Visual Walkthrough</span>
@@ -801,7 +797,6 @@
       });
     }
 
-    // 8 Data Materi Kripto
     const mattersData = [
       {
         tag: "Materi 01 // Fundamental",
@@ -845,9 +840,8 @@
       }
     ];
 
-    let activeMatterIndex = 0;
+    let spacePaused = false;
     const matterZDistance = 250;
-    
     const mattersState = mattersData.map((item, idx) => ({
       ...item,
       x: 0.2 + Math.random() * 0.6,
@@ -855,8 +849,6 @@
       z: 100 + (idx * matterZDistance),
       speed: 0.8
     }));
-
-    let spacePaused = false;
 
     function drawSpacePortal() {
       if (!spacePaused) {
@@ -886,10 +878,8 @@
         }
 
         const nodesDOM = document.querySelectorAll('.matter-node');
-        
         mattersState.forEach((m, idx) => {
           m.z -= m.speed;
-          
           if (m.z <= 10) {
             m.z = mattersState.length * matterZDistance;
             m.x = 0.2 + Math.random() * 0.6;
@@ -988,11 +978,11 @@
       card.addEventListener('mousemove', e => {
         const rect = card.getBoundingClientRect();
         card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
-        card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+        card.style.setProperty('--mouse-y`, `${e.clientY - rect.top}px`);
       });
     });
 
-    // --- BLOCKCHAIN SIMULATOR ---
+    // --- BLOCKCHAIN SIMULATOR (Diperbarui koordinat posisinya agar proporsional di mobile) ---
     const canvas = document.getElementById('simCanvas');
     const ctx = canvas.getContext('2d');
 
@@ -1029,12 +1019,13 @@
     const stageTitle = document.getElementById('stageTitle');
     const stageDesc = document.getElementById('stageDesc');
 
+    // Koordinat node disesuaikan agar tersebar merata dan tidak bertumpuk di layar kecil
     const nodes = [
-      { x: 45, y: 100, label: "PC-01" },
-      { x: 120, y: 50, label: "SRV-A" },
-      { x: 195, y: 120, label: "NODE-X" },
-      { x: 270, y: 60, label: "SRV-B" },
-      { x: 345, y: 110, label: "CORE-0" }
+      { x: 50, y: 110, label: "PC-01" },
+      { x: 125, y: 70, label: "SRV-A" },
+      { x: 200, y: 130, label: "NODE-X" },
+      { x: 275, y: 70, label: "SRV-B" },
+      { x: 350, y: 110, label: "CORE-0" }
     ];
 
     function drawSimulation() {
@@ -1042,7 +1033,7 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       let scaleX = canvas.width / 400;
-      let scaleY = canvas.height / 200;
+      let scaleY = canvas.height / 220;
 
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
       ctx.lineWidth = 1.5;
@@ -1074,8 +1065,10 @@
 
         ctx.fillStyle = '#888888';
         ctx.font = '8px monospace';
-        ctx.fillText(node.label, nx - 14, ny + 22);
+        ctx.textAlign = 'center';
+        ctx.fillText(node.label, nx, ny + 24);
       });
+      ctx.textAlign = 'left'; // Reset alignment
 
       if (simTime < 4.5) {
         let progress = (simTime / 4.5);
@@ -1102,7 +1095,7 @@
         });
       } 
       else if (simTime >= 9.5 && simTime < 14) {
-        let boxWidth = 70 * scaleX;
+        let boxWidth = 75 * scaleX;
         let boxHeight = 45 * scaleY;
         let boxX = (canvas.width / 2) - (boxWidth / 2);
         let boxY = (canvas.height / 2) - (boxHeight / 2);
@@ -1114,20 +1107,22 @@
         ctx.strokeRect(boxX, boxY, boxWidth, boxHeight);
 
         ctx.fillStyle = '#ffffff';
-        ctx.font = '9px monospace';
-        ctx.fillText("NEW BLOCK #849", boxX + 6, boxY + 16);
+        ctx.font = '8.5px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText("NEW BLOCK #849", boxX + (boxWidth/2), boxY + (boxHeight/2) + 3);
+        ctx.textAlign = 'left';
       } 
       else if (simTime >= 14 && simTime <= 18) {
-        let startX = canvas.width / 2 - 80 * scaleX;
+        let startX = canvas.width / 2 - 75 * scaleX;
         let yPos = canvas.height / 2;
 
         for (let i = 0; i < 3; i++) {
-          let bx = startX + (i * 55 * scaleX);
+          let bx = startX + (i * 52 * scaleX);
           ctx.fillStyle = i === 2 ? '#ffffff' : 'rgba(255, 255, 255, 0.25)';
           ctx.strokeStyle = '#ffffff';
           ctx.lineWidth = 1.5;
-          ctx.fillRect(bx, yPos - 18, 45 * scaleX, 36 * scaleY);
-          ctx.strokeRect(bx, yPos - 18, 45 * scaleX, 36 * scaleY);
+          ctx.fillRect(bx, yPos - 16, 42 * scaleX, 32 * scaleY);
+          ctx.strokeRect(bx, yPos - 16, 42 * scaleX, 32 * scaleY);
         }
       }
       ctx.shadowBlur = 0;

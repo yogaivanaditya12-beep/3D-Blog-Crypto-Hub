@@ -42,7 +42,7 @@
       pointer-events: none;
     }
 
-    /* --- HYPERSPACE WARP SPLASH SCREEN & PORTAL EFFECT --- */
+    /* --- HYPERSPACE WARP SPLASH & PORTAL --- */
     #splash-screen, #portal-screen {
       position: fixed;
       top: 0;
@@ -77,7 +77,7 @@
       width: 100%;
       height: 100%;
       z-index: 1;
-      pointer-events: none; /* Agar klik tembus ke layar utama */
+      pointer-events: none;
     }
 
     .splash-content, .portal-content {
@@ -127,7 +127,7 @@
       100% { transform: scale(0.98); border-color: rgba(255, 255, 255, 0.15); }
     }
 
-    /* --- MAIN CONTAINER ENTRY --- */
+    /* --- MAIN CONTAINER --- */
     .container {
       position: relative;
       z-index: 10;
@@ -138,6 +138,7 @@
       transform: scale(0.9) translateY(40px);
       transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
       display: none;
+      pointer-events: auto;
     }
 
     .container.active {
@@ -172,7 +173,8 @@
     .audio-btn {
       cursor: pointer;
       transition: all 0.3s ease;
-      z-index: 20;
+      z-index: 30;
+      pointer-events: auto;
     }
 
     .audio-btn:hover {
@@ -218,6 +220,7 @@
       border-radius: 24px;
       overflow: hidden;
       transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+      pointer-events: auto;
     }
 
     .glow-card:hover {
@@ -283,6 +286,7 @@
       gap: 12px;
       position: relative;
       z-index: 20;
+      pointer-events: auto;
     }
 
     .social-btn {
@@ -297,6 +301,7 @@
       text-transform: uppercase;
       letter-spacing: 1.5px;
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: auto;
     }
 
     .social-btn:hover {
@@ -320,6 +325,7 @@
       border-radius: 18px;
       position: relative;
       z-index: 20;
+      pointer-events: auto;
     }
 
     .tab-btn {
@@ -337,12 +343,13 @@
       transition: all 0.3s ease;
       white-space: nowrap;
       text-align: center;
+      pointer-events: auto;
     }
 
     .tab-btn:hover { color: #ffffff; }
     .tab-btn.active { background: #ffffff; color: #000000; box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2); }
 
-    .tab-pane { display: none; animation: fadeIn 0.4s ease; }
+    .tab-pane { display: none; animation: fadeIn 0.4s ease; pointer-events: auto; }
     .tab-pane.active { display: block; }
 
     @keyframes fadeIn {
@@ -358,6 +365,7 @@
       display: block;
       position: relative;
       z-index: 20;
+      pointer-events: auto;
     }
 
     .blog-tag {
@@ -375,7 +383,7 @@
     .blog-card h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
     .blog-card p { color: var(--text-secondary); font-size: 0.90rem; line-height: 1.5; }
 
-    /* CRYPTO 101 PORTAL KOSMIK STYLES */
+    /* CRYPTO 101 PETUALANGAN KOSMIK INTERAKTIF STYLES */
     .crypto-portal-box {
       background: radial-gradient(circle at center, #111 0%, #000 100%);
       border: 1px solid rgba(255, 255, 255, 0.2);
@@ -386,6 +394,7 @@
       position: relative;
       overflow: hidden;
       z-index: 20;
+      pointer-events: auto;
     }
 
     .portal-trigger-btn {
@@ -404,6 +413,7 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      pointer-events: auto;
     }
 
     .portal-trigger-btn:hover {
@@ -413,38 +423,68 @@
       box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
     }
 
-    .crypto-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-top: 15px;
-    }
-
-    .crypto-item {
+    /* Adventure Stage UI inside Crypto 101 */
+    .adventure-stage {
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 16px;
-      transition: all 0.3s ease;
+      border-radius: 16px;
+      padding: 24px;
+      margin-top: 15px;
+      text-align: left;
+      position: relative;
+      z-index: 20;
+      pointer-events: auto;
     }
 
-    .crypto-item:hover {
-      background: rgba(255, 255, 255, 0.06);
-      border-color: rgba(255, 255, 255, 0.4);
+    .stage-indicator {
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      color: #58a6ff;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      font-weight: bold;
     }
 
-    .crypto-item h3 {
-      font-size: 0.95rem;
+    .adventure-stage h3 {
+      font-size: 1.1rem;
       color: #ffffff;
-      margin-bottom: 6px;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
     }
 
-    .crypto-item p {
-      font-size: 0.8rem;
+    .adventure-stage p {
+      font-size: 0.88rem;
       color: var(--text-secondary);
-      line-height: 1.4;
+      line-height: 1.6;
+      margin-bottom: 20px;
     }
 
+    .adventure-choices {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .choice-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      padding: 12px 16px;
+      border-radius: 10px;
+      text-align: left;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      pointer-events: auto;
+    }
+
+    .choice-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: #ffffff;
+      transform: translateX(4px);
+    }
+
+    /* BLOCKCHAIN SIMULATOR */
     .video-sim-wrapper {
       background: #000000;
       border-radius: 16px;
@@ -453,6 +493,7 @@
       font-family: 'Courier New', Courier, monospace;
       position: relative;
       z-index: 20;
+      pointer-events: auto;
     }
 
     .sim-canvas-box {
@@ -482,16 +523,15 @@
     .live-dot { width: 6px; height: 6px; background-color: #58a6ff; border-radius: 50%; box-shadow: 0 0 6px #58a6ff; animation: pulse 1.5s infinite; }
 
     .video-controls-bar { padding: 12px 16px; background: rgba(18, 18, 18, 0.95); display: flex; flex-direction: column; gap: 8px; }
-    .progress-track { width: 100%; height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 3px; cursor: pointer; position: relative; }
+    .progress-track { width: 100%; height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 3px; cursor: pointer; position: relative; pointer-events: auto; }
     .progress-fill { width: 0%; height: 100%; background: #ffffff; transition: width 0.1s linear; border-radius: 3px; }
     .controls-row { display: flex; justify-content: space-between; align-items: center; }
     .control-group { display: flex; align-items: center; gap: 12px; }
-    .vid-btn { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff; cursor: pointer; font-size: 0.8rem; font-family: 'Courier New', Courier, monospace; font-weight: bold; display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 8px; transition: all 0.2s ease; z-index: 30; }
+    .vid-btn { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff; cursor: pointer; font-size: 0.8rem; font-family: 'Courier New', Courier, monospace; font-weight: bold; display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 8px; transition: all 0.2s ease; z-index: 30; pointer-events: auto; }
     .vid-btn:hover { background: #ffffff; color: #000000; border-color: #ffffff; }
     .time-display { font-size: 0.72rem; color: var(--text-secondary); }
 
     @media (max-width: 600px) {
-      .crypto-grid { grid-template-columns: 1fr; }
       h1 { font-size: 1.8rem; }
     }
   </style>
@@ -558,55 +598,77 @@
     </nav>
 
     <main>
-      <!-- TAB 1: CRYPTO 101 -->
+      <!-- TAB 1: CRYPTO 101 (INTERACTIVE PETUALANGAN / PILIHAN JALUR) -->
       <div id="tab-crypto101" class="tab-pane active">
         <div class="glow-card" style="padding: 24px;">
           <div class="glow-spot"></div>
-          <span class="blog-tag">Beginner Guide</span>
-          <h2>Crypto 101 // Panduan Dasar Kripto</h2>
+          <span class="blog-tag">Interactive Quest</span>
+          <h2>Crypto 101 // Portal Petualangan Kripto</h2>
           
-          <!-- Portal Trigger Box -->
+          <!-- Portal Trigger Box Awal -->
           <div id="cryptoPortalCard" class="crypto-portal-box">
-            <span class="blog-tag" style="margin-bottom: 5px;">Portal Eksplorasi</span>
-            <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 10px;">Masuk ke dalam dimensi untuk membuka seluruh esensi dan pengetahuan dasar dunia Kripto.</p>
+            <span class="blog-tag" style="margin-bottom: 5px;">Mulai Misi Pengetahuan</span>
+            <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 10px;">Masuk ke dalam simulasi portal untuk memilih jalur belajar esensi dasar dunia Kripto secara interaktif.</p>
             <button class="portal-trigger-btn" onclick="triggerCryptoPortal()">
-              <span>Mulai Petualangan Kripto</span>
+              <span>Masuk Portal Petualangan</span>
             </button>
           </div>
 
-          <!-- Konten Definisi Materi Kripto -->
-          <div id="cryptoContentContainer" style="display: none; margin-top: 15px;">
-            <div class="crypto-grid">
-              <div class="crypto-item">
-                <h3>Cryptocurrency</h3>
-                <p>Mata uang digital yang dienkripsi secara kriptografis, berjalan tanpa otoritas terpusat seperti bank sentral.</p>
-              </div>
-              <div class="crypto-item">
-                <h3>Blockchain</h3>
-                <p>Buku besar digital terdesentralisasi tempat mencatat semua transaksi secara permanen dan transparan.</p>
-              </div>
-              <div class="crypto-item">
-                <h3>Smart Contract</h3>
-                <p>Program komputer yang berjalan otomatis di blockchain saat kondisi yang ditentukan terpenuhi.</p>
-              </div>
-              <div class="crypto-item">
-                <h3>DeFi Hub</h3>
-                <p>Sistem keuangan tanpa perantara, memungkinkan pinjam-meminjam dan trading langsung secara P2P.</p>
-              </div>
-              <div class="crypto-item">
-                <h3>Private & Public Keys</h3>
-                <p>Public Key berfungsi sebagai alamat publik, sedangkan Private Key adalah kata sandi mutlak.</p>
-              </div>
-              <div class="crypto-item">
-                <h3>Whale Movement</h3>
-                <p>Sebutan untuk individu atau entitas yang memiliki aset kripto dalam jumlah besar yang bisa mempengaruhi pasar.</p>
+          <!-- Konten Interaktif Petualangan Kripto -->
+          <div id="cryptoAdventureContainer" style="display: none;">
+            
+            <!-- Stage 1 -->
+            <div id="questStage1" class="adventure-stage">
+              <div class="stage-indicator">Misi 01 dari 03 // Titik Awal</div>
+              <h3>Pilih Langkah Pertama Anda di Dunia Kripto</h3>
+              <p>Anda baru saja terbangun di ekosistem Web3. Keputusan pertama menentukan arah penguasaan aset Anda. Apa fokus utama Anda saat ini?</p>
+              <div class="adventure-choices">
+                <button class="choice-btn" onclick="nextQuestStage(2, 'desentralisasi')">1. Memahami Buku Besar & Keamanan Mandiri (Blockchain & Wallet)</button>
+                <button class="choice-btn" onclick="nextQuestStage(2, 'aset')">2. Memburu Aset Potensial & Membaca Pergerakan Whale</button>
               </div>
             </div>
-            <div style="text-align: center; margin-top: 20px;">
-              <button class="portal-trigger-btn" onclick="resetCryptoPortal()" style="font-size: 0.7rem; padding: 8px 16px;">
-                <span>Tutup & Kembali ke Portal</span>
+
+            <!-- Stage 2 (Cabang A) -->
+            <div id="questStage2-desentralisasi" class="adventure-stage" style="display: none;">
+              <div class="stage-indicator">Misi 02 dari 03 // Jalur Keamanan & Desentralisasi</div>
+              <h3>Pintu Kunci Jaringan (Public vs Private Key)</h3>
+              <p>Anda memilih jalur kedaulatan mandiri. Di dunia kripto, kunci privat adalah nyawa Anda. Bagaimana cara Anda mengamankan aset dari risiko peretasan?</p>
+              <div class="adventure-choices">
+                <button class="choice-btn" onclick="nextQuestStage(3, 'sukses')">Simpan *seed phrase* secara offline di atas baja/kertas rahasia.</button>
+                <button class="choice-btn" onclick="nextQuestStage(3, 'gagal')">Simpan foto tangkapan layar (screenshot) *seed phrase* di galeri cloud.</button>
+              </div>
+            </div>
+
+            <!-- Stage 2 (Cabang B) -->
+            <div id="questStage2-aset" class="adventure-stage" style="display: none;">
+              <div class="stage-indicator">Misi 02 dari 03 // Jalur Pasar & Aset</div>
+              <h3>Membaca Gelombang Pasar & Whale</h3>
+              <p>Pasar kripto digerakkan oleh likuiditas besar (Whale). Anda melihat akumulasi dana besar secara tiba-tiba di dompet tak dikenal. Apa tindakan strategis Anda?</p>
+              <div class="adventure-choices">
+                <button class="choice-btn" onclick="nextQuestStage(3, 'sukses')">Analisis tren secara terukur dan atur manajemen risiko ketat.</button>
+                <button class="choice-btn" onclick="nextQuestStage(3, 'gagal')">Langsung FOMO masuk seluruh modal tanpa manajemen risiko.</button>
+              </div>
+            </div>
+
+            <!-- Stage 3 (Hasil Akhir Petualangan) -->
+            <div id="questStage3-sukses" class="adventure-stage" style="display: none; border-color: rgba(88,166,255,0.4);">
+              <div class="stage-indicator" style="color: #58a6ff;">Misi Selesai // Akses Terbuka</div>
+              <h3>Anda Berhasil Menguasai Esensi Fundamental!</h3>
+              <p>Keputusan cerdas! Anda memahami bahwa disiplin pengamanan aset dan manajemen risiko adalah kunci utama menuju kebebasan waktu di masa depan.</p>
+              <button class="portal-trigger-btn" onclick="resetCryptoPortal()">
+                <span>Ulangi Petualangan Portal</span>
               </button>
             </div>
+
+            <div id="questStage3-gagal" class="adventure-stage" style="display: none; border-color: rgba(255,100,100,0.4);">
+              <div class="stage-indicator" style="color: #ff6464;">Peringatan Sistem // Risiko Tinggi</div>
+              <h3>Simulasi Mengindikasikan Bahaya Likuidasi!</h3>
+              <p>Keputusan tersebut terlalu berisiko di dunia kripto tanpa perlindungan keamanan atau analisis fundamental yang matang. Mari coba jalankan ulang misi ini.</p>
+              <button class="portal-trigger-btn" onclick="resetCryptoPortal()">
+                <span>Coba Jalur Lain</span>
+              </button>
+            </div>
+
           </div>
         </div>
       </div>
@@ -816,12 +878,39 @@
         isPortalWarping = false;
         portalSpeed = 2;
         document.getElementById('cryptoPortalCard').style.display = 'none';
-        document.getElementById('cryptoContentContainer').style.display = 'block';
+        document.getElementById('cryptoAdventureContainer').style.display = 'block';
+        document.getElementById('questStage1').style.display = 'block';
+        document.getElementById('questStage2-desentralisasi').style.display = 'none';
+        document.getElementById('questStage2-aset').style.display = 'none';
+        document.getElementById('questStage3-sukses').style.display = 'none';
+        document.getElementById('questStage3-gagal').style.display = 'none';
       }, 700);
     }
 
+    function nextQuestStage(stageNum, pathType) {
+      document.getElementById('questStage1').style.display = 'none';
+      document.getElementById('questStage2-desentralisasi').style.display = 'none';
+      document.getElementById('questStage2-aset').style.display = 'none';
+      document.getElementById('questStage3-sukses').style.display = 'none';
+      document.getElementById('questStage3-gagal').style.display = 'none';
+
+      if (stageNum === 2) {
+        if (pathType === 'desentralisasi') {
+          document.getElementById('questStage2-desentralisasi').style.display = 'block';
+        } else {
+          document.getElementById('questStage2-aset').style.display = 'block';
+        }
+      } else if (stageNum === 3) {
+        if (pathType === 'sukses') {
+          document.getElementById('questStage3-sukses').style.display = 'block';
+        } else {
+          document.getElementById('questStage3-gagal').style.display = 'block';
+        }
+      }
+    }
+
     function resetCryptoPortal() {
-      document.getElementById('cryptoContentContainer').style.display = 'none';
+      document.getElementById('cryptoAdventureContainer').style.display = 'none';
       document.getElementById('cryptoPortalCard').style.display = 'block';
     }
 

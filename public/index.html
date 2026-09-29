@@ -444,14 +444,14 @@
   <div id="space-universe-overlay">
     <div class="universe-header">
       <div>
-        <div class="universe-title">CRYPTO HUB // KOSMIK 3D</div>
-        <div class="universe-subtitle">Tangkup & Ketuk Kartu Materi yang Meluncur dari Jauh</div>
+        <div class="universe-title">CRYPTO HUB // INTERACTIVE VAULT</div>
+        <div class="universe-subtitle">Jelajahi & Ketuk Modul Materi Kripto Interaktif</div>
       </div>
       <button class="universe-exit-btn" onclick="closeSpaceUniverse()">KEMBALI</button>
     </div>
 
     <canvas id="universe3dCanvas"></canvas>
-    <div class="game-hint-overlay">Siap-siap! Klik Kartu Materi Saat Mendekat</div>
+    <div class="game-hint-overlay">Ketuk Modul Materi Saat Mendekat</div>
   </div>
 
   <!-- MODAL DETAIL MATERI KARTU -->
@@ -459,7 +459,7 @@
     <div class="modal-box">
       <h2 id="modalTitle">Judul Materi</h2>
       <p id="modalDesc">Pengertian materi akan muncul di sini...</p>
-      <button class="modal-close-btn" onclick="closeModalAndReturn()">LANJUTKAN PENJELAJAHAN</button>
+      <button class="modal-close-btn" onclick="closeModalAndReturn()">LANJUTKAN EKSPLORASI</button>
     </div>
   </div>
 
@@ -510,10 +510,10 @@
           <h2>Crypto 101 // Panduan Dasar Kripto</h2>
           
           <div class="crypto-portal-box">
-            <span class="blog-tag" style="margin-bottom: 4px;">Mini-Game Kosmik 3D</span>
-            <p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 10px;">Masuk ke ruang angkasa dan tangkap materi yang melayang mendekat ke arah Anda.</p>
+            <span class="blog-tag" style="margin-bottom: 4px;">Interactive Vault 3D</span>
+            <p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 10px;">Masuk ke ruang virtual interaktif untuk mempelajari modul dasar ekosistem kripto.</p>
             <button class="portal-trigger-btn" onclick="openSpaceUniverse()">
-              <span>MASUK RUANG LUAR ANGKASA</span>
+              <span>MASUK RUANG EKSPLORASI</span>
             </button>
           </div>
         </div>
@@ -599,7 +599,7 @@
     }
     drawWarp();
 
-    // --- 3D UNIVERSE DEEP SPACE ENGINE (DENGAN EFEK BINTANG GALAKSI) ---
+    // --- 3D UNIVERSE DEEP SPACE ENGINE ---
     const cardData = [
       { title: "Cryptocurrency", desc: "Mata uang digital terdesentralisasi yang diamankan dengan kriptografi, sehingga hampir tidak mungkin dipalsukan." },
       { title: "Blockchain", desc: "Buku besar digital terdistribusi yang mencatat seluruh transaksi lintas jaringan komputer secara permanen." },
@@ -677,7 +677,7 @@
 
       ctx.fillStyle = '#888888';
       ctx.font = 'bold 22px sans-serif';
-      ctx.fillText("MATERI KOSMIK", 40, 65);
+      ctx.fillText("MODUL KRIPTO", 40, 65);
 
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 38px sans-serif';
@@ -685,7 +685,7 @@
 
       ctx.fillStyle = '#58a6ff';
       ctx.font = 'bold 20px sans-serif';
-      ctx.fillText("[ KLIK SEKARANG ]", 40, 195);
+      ctx.fillText("[ KETUK UNTUK MEMBACA ]", 40, 195);
 
       return new THREE.CanvasTexture(c);
     }
@@ -714,14 +714,13 @@
       if (!isUniverseActive) return;
       u3dAnimFrame = requestAnimationFrame(animateUniverse3D);
 
-      // Animasi pergerakan partikel bintang ruang angkasa (efek melayang di galaksi)
       if (universeStarsParticles) {
         const positions = universeStarsParticles.geometry.attributes.position.array;
         const velocities = universeStarsParticles.userData.velocities;
         for (let i = 0; i < positions.length / 3; i++) {
           positions[i * 3 + 2] += velocities[i];
           if (positions[i * 3 + 2] > 20) {
-            positions[i * 3 + 2] = -100; // Reset kebelakang layar
+            positions[i * 3 + 2] = -100;
             positions[i * 3] = (Math.random() - 0.5) * 100;
             positions[i * 3 + 1] = (Math.random() - 0.5) * 100;
           }

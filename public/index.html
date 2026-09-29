@@ -566,7 +566,7 @@
               <option value="bitcoin">BTC</option>
               <option value="ethereum">ETH</option>
               <option value="solana" selected>SOL</option>
-              <option value="binancecoin">BNB</option>
+              <option value="binance-coin">BNB</option>
               <option value="ripple">XRP</option>
             </select>
           </div>
@@ -684,24 +684,19 @@
 
     async function loadDefaultMarket() {
       try {
-        // Jika Anda memiliki API Key CoinGecko, masukkan header 'x-cg-demo-api-key' di bawah ini
-        const res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=15&page=1&sparkline=false');
+        const res = await fetch('https://api.coincap.io/v2/assets?limit=15');
+        if (!res.ok) throw new Error("Network response was not ok");
         
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-
-        let data = await res.json();
-        data = data.filter(coin => coin.id !== 'figure-heloc');
-        defaultCoinsCache = data.slice(0, 10);
-        renderMarketList(defaultCoinsCache);
+        const json = await res.json();
+        defaultCoinsCache = json.data;
+        renderMarketList(defaultCoinsCache.slice(0, 10));
         calculateConversion();
       } catch (e) {
         console.error("Gagal memuat API market:", e);
         document.getElementById('market-feed').innerHTML = `
           <div class="market-row" style="flex-direction: column; align-items: flex-start; gap: 4px; padding: 10px 0;">
             <span style="color:#f85149">> Gagal memuat data pasar.</span>
-            <span style="color: var(--text-secondary); font-size: 0.75rem;">Batas akses publik CoinGecko tercapai (Rate Limit). Silakan coba beberapa saat lagi atau gunakan API Key pribadi.</span>
+            <span style="color: var(--text-secondary); font-size: 0.75rem;">Periksa koneksi internet Anda atau coba beberapa saat lagi.</span>
           </div>`;
       }
     }
@@ -715,8 +710,11 @@
       let htmlContent = '';
       coins.forEach(coin => {
         const symbol = coin.symbol.toUpperCase() + '/USD';
-        const price = coin.current_price ? coin.current_price.toLocaleString() : '0.00';
-        const change = coin.price_change_percentage_24h ? coin.price_change_percentage_24h.toFixed(2) : '0.00';
+        const priceNum = parseFloat(coin.priceUsd);
+        const price = !isNaN(priceNum) ? priceNum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: priceNum < 1 ? 6 : 2 }) : '0.00';
+        
+        const changeNum = parseFloat(coin.changePercent24Hr);
+        const change = !isNaN(changeNum) ? changeNum.toFixed(2) : '0.00';
         const color = change >= 0 ? '#56d364' : '#f85149';
         const sign = change >= 0 ? '+' : '';
 
@@ -736,41 +734,25 @@
       clearTimeout(searchTimeout);
 
       if (query === '') {
-        renderMarketList(defaultCoinsCache);
+        renderMarketList(defaultCoinsCache.slice(0, 10));
         return;
       }
 
       searchTimeout = setTimeout(async () => {
         document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color: var(--text-secondary);">Mencari koin di jaringan global...</span></div>`;
         try {
-          const searchRes = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false`);
-          if (!searchRes.ok) throw new Error("Rate limit exceeded");
-          
-          const allCoins = await searchRes.json();
+          const res = await fetch(`https://api.coincap.io/v2/assets?search=${encodeURIComponent(query)}&limit=6`);
+          const json = await res.json();
+          const filtered = json.data;
 
-          const filtered = allCoins.filter(coin => 
-            coin.id.toLowerCase().includes(query) || 
-            coin.symbol.toLowerCase().includes(query) || 
-            coin.name.toLowerCase().includes(query)
-          ).slice(0, 6);
-
-          if (filtered.length === 0) {
+          if (!filtered || filtered.length === 0) {
             document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color: var(--text-secondary);">Koin "${query}" tidak ditemukan</span></div>`;
             return;
           }
 
           renderMarketList(filtered);
         } catch (err) {
-          try {
-            const directRes = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${query}&sparkline=false`);
-            const directData = await directRes.json();
-            if (directData && directData.length > 0) {
-              renderMarketList(directData);
-              return;
-            }
-          } catch(e) {}
-
-          document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color:#f85149">Gagal mencari aset (Rate Limit).</span></div>`;
+          document.getElementById('market-feed').innerHTML = `<div class="market-row"><span style="color:#f85149">Gagal mencari aset.</span></div>`;
         }
       }, 400);
     }
@@ -790,15 +772,15 @@
 
       try {
         if (!coinObj) {
-          const res = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${selectedCoinId}&sparkline=false`);
-          const data = await res.json();
-          if (data && data.length > 0) {
-            coinObj = data[0];
+          const res = await fetch(`https://api.coincap.io/v2/assets/${selectedCoinId}`);
+          const json = await res.json();
+          if (json && json.data) {
+            coinObj = json.data;
           }
         }
 
-        if (coinObj && coinObj.current_price) {
-          const priceInUSD = coinObj.current_price;
+        if (coinObj && coinObj.priceUsd) {
+          const priceInUSD = parseFloat(coinObj.priceUsd);
           const total = amount * priceInUSD;
           const formattedTotal = total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
           resultDiv.textContent = `Hasil: $${formattedTotal} USD`;

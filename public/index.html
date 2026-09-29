@@ -42,8 +42,8 @@
       pointer-events: none;
     }
 
-    /* --- HYPERSPACE WARP SPLASH SCREEN & PORTAL EFFECT --- */
-    #splash-screen, #portal-screen {
+    /* --- INITIAL SPLASH SCREEN --- */
+    #splash-screen {
       position: fixed;
       top: 0;
       left: 0;
@@ -58,18 +58,7 @@
       transition: opacity 0.5s ease;
     }
 
-    #portal-screen {
-      z-index: 99998;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    #portal-screen.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    #splash-screen canvas, #portal-screen canvas {
+    #splash-screen canvas {
       position: absolute;
       top: 0;
       left: 0;
@@ -78,7 +67,7 @@
       z-index: 1;
     }
 
-    .splash-content, .portal-content {
+    .splash-content {
       position: relative;
       z-index: 2;
       text-align: center;
@@ -90,19 +79,17 @@
       border-radius: 20px;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
       cursor: pointer;
+      animation: pulseGlow 2s infinite ease-in-out;
     }
 
-    .splash-content { animation: pulseGlow 2s infinite ease-in-out; }
-
-    #splash-screen.warp-active .splash-content,
-    #portal-screen.warp-active .portal-content {
+    #splash-screen.warp-active .splash-content {
       transform: scale(2.2);
       opacity: 0;
       filter: blur(6px);
       transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.5s ease;
     }
 
-    .splash-title, .portal-title {
+    .splash-title {
       font-size: 1.8rem;
       font-weight: 900;
       letter-spacing: 8px;
@@ -112,7 +99,7 @@
       text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
     }
 
-    .splash-subtitle, .portal-subtitle {
+    .splash-subtitle {
       font-size: 0.75rem;
       letter-spacing: 3px;
       color: var(--text-secondary);
@@ -123,6 +110,131 @@
       0% { transform: scale(0.98); border-color: rgba(255, 255, 255, 0.15); }
       50% { transform: scale(1.02); border-color: rgba(255, 255, 255, 0.4); }
       100% { transform: scale(0.98); border-color: rgba(255, 255, 255, 0.15); }
+    }
+
+    /* --- DEEP SPACE UNIVERSE PORTAL OVERLAY --- */
+    #space-universe-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #020205;
+      z-index: 9998;
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 30px;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    #space-universe-overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    #universeCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .universe-header, .universe-footer {
+      position: relative;
+      z-index: 5;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(10, 10, 18, 0.8);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 15px 25px;
+      border-radius: 16px;
+    }
+
+    .universe-title {
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    .universe-subtitle {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .universe-grid-container {
+      position: relative;
+      z-index: 5;
+      max-width: 900px;
+      width: 100%;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      max-height: 70vh;
+      overflow-y: auto;
+      padding: 10px;
+    }
+
+    .universe-node-card {
+      background: rgba(15, 15, 25, 0.75);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .universe-node-card:hover {
+      background: rgba(30, 30, 50, 0.85);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 150, 255, 0.2);
+    }
+
+    .universe-node-card h3 {
+      font-size: 0.95rem;
+      color: #fff;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+
+    .universe-node-card p {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .universe-exit-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .universe-exit-btn:hover {
+      background: #fff;
+      color: #000;
     }
 
     /* --- MAIN CONTAINER ENTRY --- */
@@ -305,7 +417,7 @@
       box-shadow: 0 10px 25px rgba(255, 255, 255, 0.25);
     }
 
-    /* --- TAB NAV (3 MENU PAS DI DALAM GARIS) --- */
+    /* --- TAB NAV (3 MENU RAPI DI DALAM GARIS) --- */
     .tab-nav {
       display: flex;
       justify-content: space-around;
@@ -373,9 +485,9 @@
     .blog-card h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
     .blog-card p { color: var(--text-secondary); font-size: 0.90rem; line-height: 1.5; }
 
-    /* CRYPTO 101 PORTAL INTERAKTIF STYLES */
+    /* CRYPTO 101 SPACE LAUNCHER BOX */
     .crypto-portal-box {
-      background: radial-gradient(circle at center, #111 0%, #000 100%);
+      background: radial-gradient(circle at center, #0f0f1a 0%, #030308 100%);
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 16px;
       padding: 30px 20px;
@@ -390,7 +502,7 @@
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.3);
       color: #ffffff;
-      padding: 12px 24px;
+      padding: 14px 28px;
       border-radius: 12px;
       font-weight: bold;
       font-size: 0.8rem;
@@ -408,39 +520,7 @@
       background: #ffffff;
       color: #000000;
       border-color: #ffffff;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
-    }
-
-    .crypto-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-top: 15px;
-    }
-
-    .crypto-item {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 16px;
-      transition: all 0.3s ease;
-    }
-
-    .crypto-item:hover {
-      background: rgba(255, 255, 255, 0.06);
-      border-color: rgba(255, 255, 255, 0.4);
-    }
-
-    .crypto-item h3 {
-      font-size: 0.95rem;
-      color: #ffffff;
-      margin-bottom: 6px;
-    }
-
-    .crypto-item p {
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      line-height: 1.4;
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
     }
 
     .video-sim-wrapper {
@@ -488,15 +568,15 @@
     .vid-btn:hover { background: #ffffff; color: #000000; border-color: #ffffff; }
     .time-display { font-size: 0.72rem; color: var(--text-secondary); }
 
-    @media (max-width: 600px) {
-      .crypto-grid { grid-template-columns: 1fr; }
+    @media (max-width: 768px) {
+      .universe-grid-container { grid-template-columns: repeat(1, 1fr); max-height: 65vh; }
       h1 { font-size: 1.8rem; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Layar Masuk Dimensi Pertama (Splash) -->
+  <!-- Layar Masuk Dimensi Utama (Splash) -->
   <div id="splash-screen" onclick="initApp()">
     <canvas id="warpCanvas"></canvas>
     <div class="splash-content">
@@ -505,12 +585,46 @@
     </div>
   </div>
 
-  <!-- Layar Masuk Dimensi Khusus (Portal Crypto 101) -->
-  <div id="portal-screen">
-    <canvas id="portalCanvas"></canvas>
-    <div class="portal-content">
-      <div class="portal-title">MEMASUKI DIMENSI KRIPTO</div>
-      <div class="portal-subtitle">[ Sinkronisasi Jaringan Web3... ]</div>
+  <!-- DEEP SPACE UNIVERSE SELECTION OVERLAY -->
+  <div id="space-universe-overlay">
+    <canvas id="universeCanvas"></canvas>
+    <div class="universe-header">
+      <div>
+        <div class="universe-title">DEEP SPACE KNOWLEDGE HUB</div>
+        <div class="universe-subtitle">Pilih Sektor Stasiun Kripto di Luar Angkasa</div>
+      </div>
+      <button class="universe-exit-btn" onclick="closeSpaceUniverse()">KEMBALI</button>
+    </div>
+
+    <div class="universe-grid-container">
+      <div class="universe-node-card" onclick="alert('Stasiun Terpilih: Cryptocurrency — Mata uang digital terdesentralisasi tanpa otoritas pusat.')">
+        <h3>⚡ Cryptocurrency</h3>
+        <p>Mata uang digital yang diamankan kriptografi untuk transaksi global instan.</p>
+      </div>
+      <div class="universe-node-card" onclick="alert('Stasiun Terpilih: Blockchain — Buku besar digital terdistribusi dan permanen.')">
+        <h3>🔗 Blockchain</h3>
+        <p>Infrastruktur rantai blok pencatat seluruh data transaksi secara transparan.</p>
+      </div>
+      <div class="universe-node-card" onclick="alert('Stasiun Terpilih: DeFi (Decentralized Finance) — Layanan finansial peer-to-peer.')">
+        <h3>🌐 DeFi Hub</h3>
+        <p>Sistem keuangan tanpa perantara bank atau otoritas tunggal.</p>
+      </div>
+      <div class="universe-node-card" onclick="alert('Stasiun Terpilih: Whale Tracker — Analisis aktivitas holder paus pasar.')">
+        <h3>🐋 Whale Movement</h3>
+        <p>Pemantauan pergerakan aset skala besar yang mampu menggerakkan market.</p>
+      </div>
+      <div class="universe-node-card" onclick="alert('Stasiun Terpilih: Smart Contract — Kontrak otomatis berbasis kode.')">
+        <h3>📝 Smart Contract</h3>
+        <p>Program otomatis di atas jaringan untuk mengeksekusi perjanjian secara aman.</p>
+      </div>
+      <div class="universe-node-card" onclick="alert('Stasiun Terpilih: Private & Public Keys — Keamanan kepemilikan aset.')">
+        <h3>🔐 Private & Public Keys</h3>
+        <p>Sistem kunci enkripsi mutlak untuk otorisasi kepemilikan dompet kripto.</p>
+      </div>
+    </div>
+
+    <div class="universe-footer" style="justify-content: center;">
+      <div class="universe-subtitle">[ Status: Melayang di Galaksi Kripto — Klik Salah Satu Stasiun ]</div>
     </div>
   </div>
 
@@ -556,55 +670,19 @@
     </nav>
 
     <main>
-      <!-- TAB 1: CRYPTO 101 (DENGAN TOMBOL MASUK DIMENSI) -->
+      <!-- TAB 1: CRYPTO 101 (MASUK KE LUAR ANGKASA) -->
       <div id="tab-crypto101" class="tab-pane active">
         <div class="glow-card" style="padding: 24px;">
           <div class="glow-spot"></div>
           <span class="blog-tag">Beginner Guide</span>
           <h2>Crypto 101 // Panduan Dasar Kripto</h2>
           
-          <!-- Portal Trigger Box -->
-          <div id="cryptoPortalCard" class="crypto-portal-box">
-            <span class="blog-tag" style="margin-bottom: 5px;">Portal Eksplorasi</span>
-            <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 10px;">Masuk ke dalam dimensi untuk membuka seluruh esensi dan pengetahuan dasar dunia Kripto.</p>
-            <button class="portal-trigger-btn" onclick="triggerCryptoPortal()">
-              <span>⚡ MULAI PETUALANGAN KRIPTO</span>
+          <div class="crypto-portal-box">
+            <span class="blog-tag" style="margin-bottom: 5px;">Eksplorasi Kosmik</span>
+            <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 10px;">Masuk ke luasnya galaksi luar angkasa untuk memilih berbagai stasiun materi kripto, DeFi, dan Whale.</p>
+            <button class="portal-trigger-btn" onclick="openSpaceUniverse()">
+              <span>MASUK RUANG LUAR ANGKASA</span>
             </button>
-          </div>
-
-          <!-- Konten Definisi (Awalnya tersembunyi, muncul setelah masuk portal) -->
-          <div id="cryptoContentContainer" style="display: none; margin-top: 15px;">
-            <div class="crypto-grid">
-              <div class="crypto-item">
-                <h3>⚡ Cryptocurrency</h3>
-                <p>Mata uang digital yang dienkripsi secara kriptografis, berjalan tanpa otoritas terpusat seperti bank sentral.</p>
-              </div>
-              <div class="crypto-item">
-                <h3>🔗 Blockchain</h3>
-                <p>Buku besar digital terdesentralisasi tempat mencatat semua transaksi secara permanen dan transparan.</p>
-              </div>
-              <div class="crypto-item">
-                <h3>📝 Smart Contract</h3>
-                <p>Program komputer yang berjalan otomatis di blockchain saat kondisi yang ditentukan terpenuhi.</p>
-              </div>
-              <div class="crypto-item">
-                <h3>🌐 DeFi</h3>
-                <p>Sistem keuangan tanpa perantara, memungkinkan pinjam-meminjam dan trading langsung secara P2P.</p>
-              </div>
-              <div class="crypto-item">
-                <h3>🔐 Keys</h3>
-                <p>Public Key berfungsi sebagai nomor rekening, sedangkan Private Key adalah password rahasiamu.</p>
-              </div>
-              <div class="crypto-item">
-                <h3>🐳 Whale</h3>
-                <p>Sebutan untuk individu atau entitas yang memiliki aset kripto dalam jumlah besar yang bisa mempengaruhi pasar.</p>
-              </div>
-            </div>
-            <div style="text-align: center; margin-top: 20px;">
-              <button class="portal-trigger-btn" onclick="resetCryptoPortal()" style="font-size: 0.7rem; padding: 8px 16px;">
-                <span>⟲ Tutup & Kembali ke Portal</span>
-              </button>
-            </div>
           </div>
         </div>
       </div>
@@ -670,7 +748,7 @@
   <script>
     const bgAudio = document.getElementById('bgAudio');
     const splashScreen = document.getElementById('splash-screen');
-    const portalScreen = document.getElementById('portal-screen');
+    const spaceUniverseOverlay = document.getElementById('space-universe-overlay');
     const mainContainer = document.getElementById('mainContainer');
     const audioToggleBtn = document.getElementById('audioToggle');
     const audioText = document.getElementById('audioText');
@@ -742,85 +820,57 @@
     }
     drawWarp();
 
-    // --- PORTAL CRYPTO 101 ANIMATION SETUP ---
-    const portalCanvas = document.getElementById('portalCanvas');
-    const portalCtx = portalCanvas.getContext('2d');
-    let portalW, portalH;
+    // --- DEEP SPACE UNIVERSE BACKGROUND ANIMATION ---
+    const universeCanvas = document.getElementById('universeCanvas');
+    const universeCtx = universeCanvas.getContext('2d');
+    let uW, uH;
 
-    function resizePortal() {
-      portalW = portalCanvas.width = window.innerWidth;
-      portalH = portalCanvas.height = window.innerHeight;
+    function resizeUniverse() {
+      uW = universeCanvas.width = window.innerWidth;
+      uH = universeCanvas.height = window.innerHeight;
     }
-    resizePortal();
-    window.addEventListener('resize', resizePortal);
+    resizeUniverse();
+    window.addEventListener('resize', resizeUniverse);
 
-    const portalStars = [];
-    for (let i = 0; i < 300; i++) {
-      portalStars.push({
-        x: (Math.random() - 0.5) * window.innerWidth * 2,
-        y: (Math.random() - 0.5) * window.innerHeight * 2,
-        z: Math.random() * window.innerWidth,
-        size: Math.random() * 1.5
+    const universeStars = [];
+    for (let i = 0; i < 350; i++) {
+      universeStars.push({
+        x: Math.random() * uW,
+        y: Math.random() * uH,
+        size: Math.random() * 2,
+        alpha: Math.random(),
+        speed: Math.random() * 0.03 + 0.005
       });
     }
 
-    let portalSpeed = 2;
-    let isPortalWarping = false;
-    let portalAnimFrame;
+    function drawUniverse() {
+      universeCtx.fillStyle = 'rgba(2, 2, 5, 0.4)';
+      universeCtx.fillRect(0, 0, uW, uH);
 
-    function drawPortalWarp() {
-      portalCtx.fillStyle = 'rgba(3, 3, 3, 0.3)';
-      portalCtx.fillRect(0, 0, portalW, portalH);
+      for (let i = 0; i < universeStars.length; i++) {
+        let us = universeStars[i];
+        us.alpha += us.speed;
+        let currentAlpha = Math.abs(Math.sin(us.alpha));
 
-      let cx = portalW / 2;
-      let cy = portalH / 2;
-
-      for (let i = 0; i < portalStars.length; i++) {
-        let s = portalStars[i];
-        s.z -= portalSpeed;
-        if (s.z <= 0) {
-          s.z = portalW;
-          s.x = (Math.random() - 0.5) * portalW * 2;
-          s.y = (Math.random() - 0.5) * portalH * 2;
-        }
-
-        let k = 250 / s.z;
-        let px = s.x * k + cx;
-        let py = s.y * k + cy;
-
-        if (px >= 0 && px <= portalW && py >= 0 && py <= portalH) {
-          let p2x = s.x * (250 / (s.z + portalSpeed * 2)) + cx;
-          let p2y = s.y * (250 / (s.z + portalSpeed * 2)) + cy;
-
-          portalCtx.strokeStyle = 'rgba(88, 166, 255, ' + (1 - s.z / portalW) + ')';
-          portalCtx.lineWidth = s.size * (isPortalWarping ? k * 1.8 : k);
-          portalCtx.beginPath();
-          portalCtx.moveTo(px, py);
-          portalCtx.lineTo(p2x, p2y);
-          portalCtx.stroke();
-        }
+        universeCtx.fillStyle = `rgba(255, 255, 255, ${currentAlpha})`;
+        universeCtx.fillRect(us.x, us.y, us.size, us.size);
       }
-      portalAnimFrame = requestAnimationFrame(drawPortalWarp);
+      requestAnimationFrame(drawUniverse);
     }
-    drawPortalWarp();
+    drawUniverse();
 
-    function triggerCryptoPortal() {
-      portalScreen.classList.add('active');
-      isPortalWarping = true;
-      portalSpeed = 80;
-
+    function openSpaceUniverse() {
+      spaceUniverseOverlay.style.display = 'flex';
       setTimeout(() => {
-        portalScreen.classList.remove('active');
-        isPortalWarping = false;
-        portalSpeed = 2;
-        document.getElementById('cryptoPortalCard').style.display = 'none';
-        document.getElementById('cryptoContentContainer').style.display = 'block';
-      }, 700);
+        spaceUniverseOverlay.classList.add('active');
+      }, 10);
     }
 
-    function resetCryptoPortal() {
-      document.getElementById('cryptoContentContainer').style.display = 'none';
-      document.getElementById('cryptoPortalCard').style.display = 'block';
+    function closeSpaceUniverse() {
+      spaceUniverseOverlay.classList.remove('active');
+      setTimeout(() => {
+        spaceUniverseOverlay.style.display = 'none';
+      }, 800);
     }
 
     function initApp() {

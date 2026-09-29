@@ -444,14 +444,14 @@
   <div id="space-universe-overlay">
     <div class="universe-header">
       <div>
-        <div class="universe-title">CRYPTO HUB // INTERACTIVE VAULT</div>
-        <div class="universe-subtitle">Jelajahi & Ketuk Modul Materi Kripto Interaktif</div>
+        <div class="universe-title">CRYPTO HUB // KOSMIK 3D</div>
+        <div class="universe-subtitle">Tangkup & Ketuk Kartu Materi yang Meluncur dari Jauh</div>
       </div>
       <button class="universe-exit-btn" onclick="closeSpaceUniverse()">KEMBALI</button>
     </div>
 
     <canvas id="universe3dCanvas"></canvas>
-    <div class="game-hint-overlay">Ketuk Modul Materi Saat Mendekat</div>
+    <div class="game-hint-overlay">Siap-siap! Klik Kartu Materi Saat Mendekat</div>
   </div>
 
   <!-- MODAL DETAIL MATERI KARTU -->
@@ -459,7 +459,7 @@
     <div class="modal-box">
       <h2 id="modalTitle">Judul Materi</h2>
       <p id="modalDesc">Pengertian materi akan muncul di sini...</p>
-      <button class="modal-close-btn" onclick="closeModalAndReturn()">LANJUTKAN EKSPLORASI</button>
+      <button class="modal-close-btn" onclick="closeModalAndReturn()">LANJUTKAN PENJELAJAHAN</button>
     </div>
   </div>
 
@@ -510,10 +510,10 @@
           <h2>Crypto 101 // Panduan Dasar Kripto</h2>
           
           <div class="crypto-portal-box">
-            <span class="blog-tag" style="margin-bottom: 4px;">Interactive Vault 3D</span>
-            <p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 10px;">Masuk ke ruang virtual interaktif untuk mempelajari modul dasar ekosistem kripto.</p>
+            <span class="blog-tag" style="margin-bottom: 4px;">Mini-Game Kosmik 3D</span>
+            <p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 10px;">Masuk ke ruang angkasa dan tangkap materi yang melayang mendekat ke arah Anda.</p>
             <button class="portal-trigger-btn" onclick="openSpaceUniverse()">
-              <span>MASUK RUANG EKSPLORASI</span>
+              <span>MASUK RUANG LUAR ANGKASA</span>
             </button>
           </div>
         </div>
@@ -599,7 +599,7 @@
     }
     drawWarp();
 
-    // --- 3D UNIVERSE DEEP SPACE ENGINE ---
+    // --- 3D UNIVERSE SEQUENTIAL WARP ENGINE ---
     const cardData = [
       { title: "Cryptocurrency", desc: "Mata uang digital terdesentralisasi yang diamankan dengan kriptografi, sehingga hampir tidak mungkin dipalsukan." },
       { title: "Blockchain", desc: "Buku besar digital terdistribusi yang mencatat seluruh transaksi lintas jaringan komputer secara permanen." },
@@ -611,7 +611,6 @@
 
     let u3dScene, u3dCamera, u3dRenderer, u3dAnimFrame;
     let activeCardMesh = null;
-    let universeStarsParticles = null;
     let raycaster = new THREE.Raycaster();
     let mouse = new THREE.Vector2();
     let isUniverseActive = false;
@@ -629,31 +628,18 @@
       u3dRenderer.setSize(window.innerWidth, window.innerHeight);
       u3dRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-      // Membuat Ribuan Partikel Bintang Ruang Angkasa Dinamis
       const starGeo = new THREE.BufferGeometry();
-      const starCount = 1200;
+      const starCount = 400;
       const starPos = new Float32Array(starCount * 3);
-      const starVelocities = new Float32Array(starCount);
-
-      for(let i = 0; i < starCount * 3; i += 3) {
-        starPos[i] = (Math.random() - 0.5) * 100;
-        starPos[i+1] = (Math.random() - 0.5) * 100;
-        starPos[i+2] = (Math.random() - 0.5) * 120 - 30;
-        starVelocities[i / 3] = Math.random() * 0.15 + 0.05;
+      for(let i=0; i<starCount*3; i+=3) {
+        starPos[i] = (Math.random() - 0.5) * 50;
+        starPos[i+1] = (Math.random() - 0.5) * 50;
+        starPos[i+2] = (Math.random() - 0.5) * 50 - 20;
       }
       starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
-      
-      const starMat = new THREE.PointsMaterial({ 
-        size: 0.12, 
-        color: 0xffffff, 
-        transparent: true, 
-        opacity: 0.8,
-        blending: THREE.AdditiveBlending 
-      });
-      
-      universeStarsParticles = new THREE.Points(starGeo, starMat);
-      universeStarsParticles.userData = { velocities: starVelocities };
-      u3dScene.add(universeStarsParticles);
+      const starMat = new THREE.PointsMaterial({ size: 0.04, color: 0xffffff, transparent: true, opacity: 0.5 });
+      const bgStars = new THREE.Points(starGeo, starMat);
+      u3dScene.add(bgStars);
 
       spawnNextSequentialCard();
 
@@ -677,7 +663,7 @@
 
       ctx.fillStyle = '#888888';
       ctx.font = 'bold 22px sans-serif';
-      ctx.fillText("MODUL KRIPTO", 40, 65);
+      ctx.fillText("MATERI KOSMIK", 40, 65);
 
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 38px sans-serif';
@@ -685,7 +671,7 @@
 
       ctx.fillStyle = '#58a6ff';
       ctx.font = 'bold 20px sans-serif';
-      ctx.fillText("[ KETUK UNTUK MEMBACA ]", 40, 195);
+      ctx.fillText("[ KLIK SEKARANG ]", 40, 195);
 
       return new THREE.CanvasTexture(c);
     }
@@ -713,21 +699,6 @@
     function animateUniverse3D() {
       if (!isUniverseActive) return;
       u3dAnimFrame = requestAnimationFrame(animateUniverse3D);
-
-      if (universeStarsParticles) {
-        const positions = universeStarsParticles.geometry.attributes.position.array;
-        const velocities = universeStarsParticles.userData.velocities;
-        for (let i = 0; i < positions.length / 3; i++) {
-          positions[i * 3 + 2] += velocities[i];
-          if (positions[i * 3 + 2] > 20) {
-            positions[i * 3 + 2] = -100;
-            positions[i * 3] = (Math.random() - 0.5) * 100;
-            positions[i * 3 + 1] = (Math.random() - 0.5) * 100;
-          }
-        }
-        universeStarsParticles.geometry.attributes.position.needsUpdate = true;
-        universeStarsParticles.rotation.z += 0.0005;
-      }
 
       if (activeCardMesh) {
         cardZDepth += 0.35;

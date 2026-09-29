@@ -55,12 +55,12 @@
       justify-content: center;
       align-items: center;
       touch-action: manipulation;
-      transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     #splash-screen.fade-out {
       opacity: 0;
-      transform: scale(1.1);
+      transform: scale(1.15);
       pointer-events: none;
     }
 
@@ -72,6 +72,12 @@
       border-radius: 24px;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
       animation: pulseGlow 2.5s infinite ease-in-out;
+      transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), filter 1.2s ease;
+    }
+
+    #splash-screen.fade-out .splash-content {
+      transform: scale(0.95);
+      filter: blur(10px);
     }
 
     .splash-title {
@@ -409,7 +415,7 @@
 </head>
 <body>
 
-  <!-- Layar Splash (Sangat responsif) -->
+  <!-- Layar Splash (Responsif dengan transisi smooth) -->
   <div id="splash-screen" onclick="initApp()">
     <div class="splash-content">
       <div class="splash-title">BLACKOUT</div>
@@ -526,7 +532,7 @@
     </main>
   </div>
 
-  <!-- Load Three.js secara async di bawah agar tidak membebani render awal -->
+  <!-- Load Three.js secara async di bawah -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
     const bgAudio = document.getElementById('bgAudio');
@@ -546,10 +552,11 @@
       splashScreen.classList.add('fade-out');
       mainContainer.classList.add('active');
 
+      // Sinkron dengan durasi transisi CSS (1.1 detik)
       setTimeout(() => {
         splashScreen.style.display = 'none';
         initThreeJS();
-      }, 600);
+      }, 1100);
     }
 
     audioToggleBtn.addEventListener('click', (e) => {

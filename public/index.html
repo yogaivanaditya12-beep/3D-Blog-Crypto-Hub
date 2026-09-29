@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BLACKOUT // Personal Hub</title>
+  <title>BLACKOUT // 3D Personal Hub</title>
   <link rel="icon" href="logo.PNG" type="image/png">
   <style>
     :root {
@@ -112,15 +112,112 @@
       100% { transform: scale(0.98); border-color: rgba(255, 255, 255, 0.15); }
     }
 
-    /* --- MODAL / BLOCKCHAIN SIMULATION CONTAINER --- */
-    #blockchain-modal {
+    /* --- DEEP SPACE 3D UNIVERSE PORTAL --- */
+    #space-universe-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(2, 2, 5, 0.92);
-      backdrop-filter: blur(20px);
+      background: #020205;
+      z-index: 9998;
+      display: none;
+      flex-direction: column;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      overflow: hidden;
+    }
+
+    #space-universe-overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    #universe3dCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 2;
+      cursor: crosshair;
+    }
+
+    .universe-header {
+      position: relative;
+      z-index: 20;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(10, 10, 18, 0.9);
+      backdrop-filter: blur(15px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 16px 24px;
+      pointer-events: auto;
+    }
+
+    .universe-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    .universe-subtitle {
+      font-size: 0.65rem;
+      color: var(--text-secondary);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .universe-exit-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 0.7rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .universe-exit-btn:hover {
+      background: #fff;
+      color: #000;
+    }
+
+    .game-hint-overlay {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      background: rgba(15, 15, 25, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 0.72rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #aaa;
+      pointer-events: none;
+      backdrop-filter: blur(10px);
+    }
+
+    /* Modal Detail Kartu */
+    #card-detail-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(2, 2, 5, 0.88);
+      backdrop-filter: blur(15px);
       z-index: 9999;
       display: none;
       justify-content: center;
@@ -130,18 +227,18 @@
       transition: opacity 0.3s ease;
     }
 
-    #blockchain-modal.active {
+    #card-detail-modal.active {
       display: flex;
       opacity: 1;
     }
 
-    .sim-box {
+    .modal-box {
       background: rgba(15, 15, 25, 0.95);
       border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 24px;
-      max-width: 650px;
+      border-radius: 20px;
+      max-width: 500px;
       width: 100%;
-      padding: 35px;
+      padding: 30px;
       box-shadow: 0 25px 60px rgba(0,0,0,0.9);
       text-align: center;
       position: relative;
@@ -153,62 +250,22 @@
       to { transform: scale(1); opacity: 1; }
     }
 
-    .sim-box h2 {
+    .modal-box h2 {
       font-size: 1.3rem;
       color: #fff;
-      margin-bottom: 8px;
+      margin-bottom: 15px;
       letter-spacing: 1.5px;
       text-transform: uppercase;
     }
 
-    .sim-box p {
+    .modal-box p {
       color: var(--text-secondary);
-      font-size: 0.88rem;
-      margin-bottom: 20px;
-    }
-
-    .blockchain-flow {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
+      font-size: 0.92rem;
+      line-height: 1.6;
       margin-bottom: 25px;
-      overflow-x: auto;
-      padding: 10px 0;
     }
 
-    .block-node {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 14px;
-      padding: 15px;
-      flex: 1;
-      min-width: 110px;
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-
-    .block-node:hover, .block-node.active {
-      border-color: #fff;
-      background: rgba(255, 255, 255, 0.08);
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-      transform: translateY(-3px);
-    }
-
-    .block-node h4 {
-      font-size: 0.75rem;
-      letter-spacing: 1px;
-      margin-bottom: 6px;
-      color: #fff;
-    }
-
-    .block-node span {
-      font-size: 0.65rem;
-      color: var(--text-secondary);
-      word-break: break-all;
-    }
-
-    .sim-close-btn {
+    .modal-close-btn {
       background: #fff;
       color: #000;
       border: none;
@@ -222,7 +279,7 @@
       transition: all 0.3s ease;
     }
 
-    .sim-close-btn:hover {
+    .modal-close-btn:hover {
       background: rgba(255, 255, 255, 0.8);
       box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
     }
@@ -379,34 +436,30 @@
     <canvas id="warpCanvas"></canvas>
     <div class="splash-content">
       <div class="splash-title">BLACKOUT</div>
-      <div class="splash-subtitle">[ Click To Enter Hub ]</div>
+      <div class="splash-subtitle">[ Click To Enter Hyperspace ]</div>
     </div>
   </div>
 
-  <!-- MODAL / SIMULASI BLOCKCHAIN -->
-  <div id="blockchain-modal">
-    <div class="sim-box">
-      <h2>Interactive Blockchain Simulation</h2>
-      <p>Simulasi rantai blok terdesentralisasi secara real-time.</p>
-      
-      <div class="blockchain-flow">
-        <div class="block-node active" onclick="selectBlock(this)">
-          <h4>Block #1</h4>
-          <span>Hash: 0x9f1a</span>
-        </div>
-        <div style="color: var(--text-secondary);">→</div>
-        <div class="block-node" onclick="selectBlock(this)">
-          <h4>Block #2</h4>
-          <span>Hash: 0x3b8c</span>
-        </div>
-        <div style="color: var(--text-secondary);">→</div>
-        <div class="block-node" onclick="selectBlock(this)">
-          <h4>Block #3</h4>
-          <span>Hash: 0x7e42</span>
-        </div>
+  <!-- DEEP SPACE 3D UNIVERSE PORTAL -->
+  <div id="space-universe-overlay">
+    <div class="universe-header">
+      <div>
+        <div class="universe-title">CRYPTO HUB // INTERACTIVE VAULT</div>
+        <div class="universe-subtitle">Jelajahi & Ketuk Modul Materi Kripto Interaktif</div>
       </div>
+      <button class="universe-exit-btn" onclick="closeSpaceUniverse()">KEMBALI</button>
+    </div>
 
-      <button class="sim-close-btn" onclick="closeBlockchainSim()">KEMBALI</button>
+    <canvas id="universe3dCanvas"></canvas>
+    <div class="game-hint-overlay">Ketuk Modul Materi Saat Mendekat</div>
+  </div>
+
+  <!-- MODAL DETAIL MATERI KARTU -->
+  <div id="card-detail-modal">
+    <div class="modal-box">
+      <h2 id="modalTitle">Judul Materi</h2>
+      <p id="modalDesc">Pengertian materi akan muncul di sini...</p>
+      <button class="modal-close-btn" onclick="closeModalAndReturn()">LANJUTKAN EKSPLORASI</button>
     </div>
   </div>
 
@@ -457,10 +510,10 @@
           <h2>Crypto 101 // Panduan Dasar Kripto</h2>
           
           <div class="crypto-portal-box">
-            <span class="blog-tag" style="margin-bottom: 4px;">Interactive Vault</span>
-            <p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 10px;">Akses simulasi interaktif untuk memahami cara kerja jaringan blockchain dan rantai transaksi.</p>
-            <button class="portal-trigger-btn" onclick="openBlockchainSim()">
-              <span>BUKA BLOCKCHAIN SIM</span>
+            <span class="blog-tag" style="margin-bottom: 4px;">Interactive Vault 3D</span>
+            <p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 10px;">Masuk ke ruang virtual interaktif untuk mempelajari modul dasar ekosistem kripto.</p>
+            <button class="portal-trigger-btn" onclick="openSpaceUniverse()">
+              <span>MASUK RUANG EKSPLORASI</span>
             </button>
           </div>
         </div>
@@ -481,6 +534,7 @@
   <script>
     const bgAudio = document.getElementById('bgAudio');
     const splashScreen = document.getElementById('splash-screen');
+    const spaceUniverseOverlay = document.getElementById('space-universe-overlay');
     const mainContainer = document.getElementById('mainContainer');
     const audioToggleBtn = document.getElementById('audioToggle');
     const audioText = document.getElementById('audioText');
@@ -545,23 +599,216 @@
     }
     drawWarp();
 
-    function openBlockchainSim() {
-      const modal = document.getElementById('blockchain-modal');
+    // --- 3D UNIVERSE DEEP SPACE ENGINE ---
+    const cardData = [
+      { title: "Cryptocurrency", desc: "Mata uang digital terdesentralisasi yang diamankan dengan kriptografi, sehingga hampir tidak mungkin dipalsukan." },
+      { title: "Blockchain", desc: "Buku besar digital terdistribusi yang mencatat seluruh transaksi lintas jaringan komputer secara permanen." },
+      { title: "DeFi Hub", desc: "Ekosistem keuangan terdesentralisasi (Decentralized Finance) yang memungkinkan peminjaman tanpa perbankan tradisional." },
+      { title: "Whale Movement", desc: "Pemantauan aktivitas pemegang aset berskala besar (whale) yang pergerakan dananya mempengaruhi tren pasar." },
+      { title: "Smart Contract", desc: "Program otomatis berbasis kode di dalam blockchain yang mengeksekusi perjanjian secara otomatis." },
+      { title: "Private & Public Keys", desc: "Pasangan kunci kriptografi di mana Public Key sebagai alamat publik, dan Private Key sebagai kata sandi mutlak." }
+    ];
+
+    let u3dScene, u3dCamera, u3dRenderer, u3dAnimFrame;
+    let activeCardMesh = null;
+    let universeStarsParticles = null;
+    let raycaster = new THREE.Raycaster();
+    let mouse = new THREE.Vector2();
+    let isUniverseActive = false;
+    let currentCardIndex = 0;
+    let cardZDepth = -60;
+
+    function initUniverse3D() {
+      const canvas = document.getElementById('universe3dCanvas');
+
+      u3dScene = new THREE.Scene();
+      u3dCamera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+      u3dCamera.position.z = 10;
+
+      u3dRenderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+      u3dRenderer.setSize(window.innerWidth, window.innerHeight);
+      u3dRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      // Membuat Ribuan Partikel Bintang Ruang Angkasa Dinamis
+      const starGeo = new THREE.BufferGeometry();
+      const starCount = 1200;
+      const starPos = new Float32Array(starCount * 3);
+      const starVelocities = new Float32Array(starCount);
+
+      for(let i = 0; i < starCount * 3; i += 3) {
+        starPos[i] = (Math.random() - 0.5) * 100;
+        starPos[i+1] = (Math.random() - 0.5) * 100;
+        starPos[i+2] = (Math.random() - 0.5) * 120 - 30;
+        starVelocities[i / 3] = Math.random() * 0.15 + 0.05;
+      }
+      starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+      
+      const starMat = new THREE.PointsMaterial({ 
+        size: 0.12, 
+        color: 0xffffff, 
+        transparent: true, 
+        opacity: 0.8,
+        blending: THREE.AdditiveBlending 
+      });
+      
+      universeStarsParticles = new THREE.Points(starGeo, starMat);
+      universeStarsParticles.userData = { velocities: starVelocities };
+      u3dScene.add(universeStarsParticles);
+
+      spawnNextSequentialCard();
+
+      window.addEventListener('resize', onUniverseResize);
+      canvas.addEventListener('pointerdown', onUniverseClick);
+    }
+
+    function createCardTexture(text) {
+      const c = document.createElement('canvas');
+      c.width = 512;
+      c.height = 256;
+      const ctx = c.getContext('2d');
+
+      ctx.fillStyle = 'rgba(12, 12, 20, 0.9)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+      ctx.lineWidth = 8;
+      ctx.beginPath();
+      ctx.roundRect(10, 10, 492, 236, 24);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#888888';
+      ctx.font = 'bold 22px sans-serif';
+      ctx.fillText("MODUL KRIPTO", 40, 65);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 38px sans-serif';
+      ctx.fillText(text, 40, 130);
+
+      ctx.fillStyle = '#58a6ff';
+      ctx.font = 'bold 20px sans-serif';
+      ctx.fillText("[ KETUK UNTUK MEMBACA ]", 40, 195);
+
+      return new THREE.CanvasTexture(c);
+    }
+
+    function spawnNextSequentialCard() {
+      if (activeCardMesh) {
+        u3dScene.remove(activeCardMesh);
+      }
+
+      const item = cardData[currentCardIndex];
+      const texture = createCardTexture(item.title);
+      const geometry = new THREE.PlaneGeometry(4.2, 2.1);
+      const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, side: THREE.DoubleSide });
+      
+      activeCardMesh = new THREE.Mesh(geometry, material);
+      
+      cardZDepth = -70;
+      activeCardMesh.position.set(0, 0, cardZDepth);
+      activeCardMesh.scale.set(0.15, 0.15, 0.15);
+
+      activeCardMesh.userData = { title: item.title, desc: item.desc };
+      u3dScene.add(activeCardMesh);
+    }
+
+    function animateUniverse3D() {
+      if (!isUniverseActive) return;
+      u3dAnimFrame = requestAnimationFrame(animateUniverse3D);
+
+      if (universeStarsParticles) {
+        const positions = universeStarsParticles.geometry.attributes.position.array;
+        const velocities = universeStarsParticles.userData.velocities;
+        for (let i = 0; i < positions.length / 3; i++) {
+          positions[i * 3 + 2] += velocities[i];
+          if (positions[i * 3 + 2] > 20) {
+            positions[i * 3 + 2] = -100;
+            positions[i * 3] = (Math.random() - 0.5) * 100;
+            positions[i * 3 + 1] = (Math.random() - 0.5) * 100;
+          }
+        }
+        universeStarsParticles.geometry.attributes.position.needsUpdate = true;
+        universeStarsParticles.rotation.z += 0.0005;
+      }
+
+      if (activeCardMesh) {
+        cardZDepth += 0.35;
+        activeCardMesh.position.z = cardZDepth;
+
+        let progressScale = Math.min(Math.max((cardZDepth + 70) / 72, 0.15), 1.35);
+        activeCardMesh.scale.set(progressScale, progressScale, progressScale);
+
+        if (cardZDepth > 4) {
+          currentCardIndex = (currentCardIndex + 1) % cardData.length;
+          spawnNextSequentialCard();
+        }
+      }
+
+      u3dRenderer.render(u3dScene, u3dCamera);
+    }
+
+    function onUniverseClick(e) {
+      if (!activeCardMesh) return;
+      mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, u3dCamera);
+      const intersects = raycaster.intersectObject(activeCardMesh);
+
+      if (intersects.length > 0) {
+        openCardDetail(activeCardMesh.userData.title, activeCardMesh.userData.desc);
+      }
+    }
+
+    function openSpaceUniverse() {
+      spaceUniverseOverlay.style.display = 'flex';
+      setTimeout(() => {
+        spaceUniverseOverlay.classList.add('active');
+        isUniverseActive = true;
+        if (!u3dScene) {
+          initUniverse3D();
+        } else {
+          currentCardIndex = 0;
+          spawnNextSequentialCard();
+        }
+        cancelAnimationFrame(u3dAnimFrame);
+        animateUniverse3D();
+      }, 50);
+    }
+
+    function closeSpaceUniverse() {
+      isUniverseActive = false;
+      cancelAnimationFrame(u3dAnimFrame);
+      spaceUniverseOverlay.classList.remove('active');
+      setTimeout(() => {
+        spaceUniverseOverlay.style.display = 'none';
+      }, 400);
+    }
+
+    function openCardDetail(title, desc) {
+      isUniverseActive = false;
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalDesc').textContent = desc;
+      const modal = document.getElementById('card-detail-modal');
       modal.style.display = 'flex';
       setTimeout(() => modal.classList.add('active'), 10);
     }
 
-    function closeBlockchainSim() {
-      const modal = document.getElementById('blockchain-modal');
+    function closeModalAndReturn() {
+      const modal = document.getElementById('card-detail-modal');
       modal.classList.remove('active');
       setTimeout(() => {
         modal.style.display = 'none';
+        currentCardIndex = (currentCardIndex + 1) % cardData.length;
+        spawnNextSequentialCard();
+        isUniverseActive = true;
+        animateUniverse3D();
       }, 300);
     }
 
-    function selectBlock(el) {
-      document.querySelectorAll('.block-node').forEach(node => node.classList.remove('active'));
-      el.classList.add('active');
+    function onUniverseResize() {
+      if (!u3dCamera || !u3dRenderer) return;
+      u3dCamera.aspect = window.innerWidth / window.innerHeight;
+      u3dCamera.updateProjectionMatrix();
+      u3dRenderer.setSize(window.innerWidth, window.innerHeight);
     }
 
     function initApp() {
@@ -608,72 +855,65 @@
       card.addEventListener('mousemove', e => {
         const rect = card.getBoundingClientRect();
         card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
-        card.style.setProperty('--mouse-y`, `${e.clientY - rect.top}px`);
+        card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
       });
     });
 
-    // --- THREE.JS BACKGROUND (BOLA IKOSAEDRON & PARTIKEL ASLI) ---
     function initThreeJS() {
       const container = document.getElementById('canvas-container');
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-      camera.position.z = 15;
+      camera.position.z = 6;
 
       const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       container.appendChild(renderer.domElement);
 
-      const sphereGroup = new THREE.Group();
-      scene.add(sphereGroup);
+      const group = new THREE.Group();
+      scene.add(group);
 
-      const geometry = new THREE.IcosahedronGeometry(6, 2);
-      const material = new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.15
-      });
-      const sphereMesh = new THREE.Mesh(geometry, material);
-      sphereGroup.add(sphereMesh);
+      const mesh = new THREE.Mesh(
+        new THREE.IcosahedronGeometry(2.1, 2),
+        new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.12 })
+      );
+      group.add(mesh);
 
-      // Partikel Debu di Sekitar Bola
-      const particlesCount = 400;
+      const particlesCount = 300;
       const posArray = new Float32Array(particlesCount * 3);
-      for(let i = 0; i < particlesCount * 3; i++) {
-        posArray[i] = (Math.random() - 0.5) * 35;
+      const velocities = new Float32Array(particlesCount);
+
+      for(let i = 0; i < particlesCount; i++) {
+        posArray[i * 3] = (Math.random() - 0.5) * 30;
+        posArray[i * 3 + 1] = (Math.random() - 0.5) * 30;
+        posArray[i * 3 + 2] = (Math.random() - 0.5) * 40;
+        velocities[i] = Math.random() * 0.02 + 0.01;
       }
+
       const particlesGeo = new THREE.BufferGeometry();
       particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-      const particlesMat = new THREE.PointsMaterial({
-        size: 0.06,
-        color: 0xffffff,
-        transparent: true,
-        opacity: 0.5
-      });
-      const particlesMesh = new THREE.Points(particlesGeo, particlesMat);
-      scene.add(particlesMesh);
+      const dustParticles = new THREE.Points(particlesGeo, new THREE.PointsMaterial({
+        size: 0.045, color: 0xffffff, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending
+      }));
+      scene.add(dustParticles);
 
       let mouseX = 0, mouseY = 0;
-      let targetX = 0, targetY = 0;
-      const windowHalfX = window.innerWidth / 2;
-      const windowHalfY = window.innerHeight / 2;
-
-      document.addEventListener('mousemove', (event) => {
-        mouseX = (event.clientX - windowHalfX);
-        mouseY = (event.clientY - windowHalfY);
-      });
+      const halfX = window.innerWidth / 2, halfY = window.innerHeight / 2;
+      document.addEventListener('mousemove', (e) => { mouseX = e.clientX - halfX; mouseY = e.clientY - halfY; });
 
       function animate() {
         requestAnimationFrame(animate);
+        mesh.rotation.x += 0.002; mesh.rotation.y += 0.004;
 
-        targetX = mouseX * 0.001;
-        targetY = mouseY * 0.001;
+        const positions = particlesGeo.attributes.position.array;
+        for(let i = 0; i < particlesCount; i++) {
+          positions[i * 3 + 2] += velocities[i] + 0.005;
+          if (positions[i * 3 + 2] > 10) positions[i * 3 + 2] = -30;
+        }
+        particlesGeo.attributes.position.needsUpdate = true;
 
-        sphereGroup.rotation.y += 0.003 + (targetX - sphereGroup.rotation.y) * 0.05;
-        sphereGroup.rotation.x += 0.002 + (targetY - sphereGroup.rotation.x) * 0.05;
-        
-        particlesMesh.rotation.y -= 0.001;
+        group.rotation.y += ((mouseX * 0.0008) - group.rotation.y) * 0.05;
+        group.rotation.x += ((mouseY * 0.0008) - group.rotation.x) * 0.05;
 
         renderer.render(scene, camera);
       }
